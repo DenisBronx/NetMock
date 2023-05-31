@@ -1,6 +1,7 @@
 package com.denisbrandi.netmock.okhttp
 
 import com.denisbrandi.netmock.*
+import com.denisbrandi.netmock.assets.readFromResources
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.junit.*
@@ -186,7 +187,11 @@ class OkHttpMockTest {
         val EXPECTED_NOT_MATCHING_REQUEST = EXPECTED_COMPLETE_REQUEST.copy(
             containsHeaders = mapOf("a" to "b", "c" to "d", "e" to "f")
         )
-        val EXPECTED_RESPONSE = NetMockResponse(code = 200, containsHeaders = mapOf("x" to "y"), body = "data")
+        val EXPECTED_RESPONSE = NetMockResponse(
+            code = 200,
+            containsHeaders = mapOf("x" to "y"),
+            body = readFromResources("body_response.json")
+        )
         val DEFAULT_RESPONSE = NetMockResponse(code = 201, containsHeaders = mapOf("a" to "b"), body = "default")
         private fun getCompleteRequest(baseUrl: String): Request {
             return getCompleteRequestBuilder(baseUrl).get().build()
