@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
 }
 
 java {
@@ -16,4 +17,16 @@ dependencies {
     testImplementation "com.squareup.retrofit2:retrofit:2.9.0"
     testImplementation "com.squareup.retrofit2:converter-scalars:2.9.0"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.denisbrandi.netmock'
+            artifactId = 'netmock-okhttp'
+            version = '0.1'
+
+            from components.java
+        }
+    }
 }
