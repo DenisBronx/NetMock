@@ -7,6 +7,10 @@ class OkHttpRule(
     private val netMock: NetMock = OkHttpMock()
 ) : ExternalResource(), NetMock by netMock {
 
+    init {
+        netMock.start()
+    }
+
     override fun after() {
         netMock.shutDown()
         super.after()

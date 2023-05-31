@@ -15,6 +15,9 @@ class OkHttpMock : NetMock {
 
     init {
         server.dispatcher = dispatcher
+    }
+
+    override fun start() {
         server.start()
     }
 
