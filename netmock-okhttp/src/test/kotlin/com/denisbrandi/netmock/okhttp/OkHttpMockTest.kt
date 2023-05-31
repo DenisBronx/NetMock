@@ -7,7 +7,9 @@ import org.junit.*
 import org.junit.Assert.*
 
 class OkHttpMockTest {
-    private val netMock = OkHttpMock()
+    @get:Rule
+    val netMock = OkHttpRule()
+
     private val sut = OkHttpClient.Builder().build()
 
     @Test
@@ -170,11 +172,6 @@ class OkHttpMockTest {
             assertTrue(actualResponse.networkResponse!!.headers.contains(it.key to it.value))
         }
         assertEquals(expectedResponse.body, actualResponse.body!!.string())
-    }
-
-    @After
-    fun tearDown() {
-        netMock.shutDown()
     }
 
     private companion object {

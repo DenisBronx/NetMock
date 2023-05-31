@@ -10,7 +10,10 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.*
 
 class RetrofitMockTest {
-    private val netMock = OkHttpMock()
+
+    @get:Rule
+    val netMock = OkHttpRule()
+
     private val sut = Retrofit.Builder()
         .baseUrl(netMock.baseUrl)
         .addConverterFactory(ScalarsConverterFactory.create())
