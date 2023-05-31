@@ -25,7 +25,7 @@ class OkHttpMock : NetMock {
         request: NetMockRequest,
         response: NetMockResponse
     ) {
-        dispatcher.addMapping(request, response)
+        dispatcher.requestResponseList.add(NetMockRequestResponse(request, response))
     }
 
     override fun setDefaultResponse(netMockResponse: NetMockResponse) {
