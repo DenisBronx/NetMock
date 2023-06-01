@@ -1,7 +1,12 @@
 package com.denisbrandi.netmock.okhttp
 
 import com.denisbrandi.netmock.*
+import com.denisbrandi.netmock.assets.readFromResources
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.*
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody
 import org.junit.*
 import org.junit.Assert.*
@@ -17,6 +22,7 @@ class RetrofitMockTest {
     private val sut = Retrofit.Builder()
         .baseUrl(netMock.baseUrl)
         .addConverterFactory(ScalarsConverterFactory.create())
+        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .build()
         .create(RetrofitApi::class.java)
 
@@ -134,7 +140,7 @@ class RetrofitMockTest {
     }
 
     private companion object {
-        const val REQUEST_BODY = "requestBody"
+        val REQUEST_BODY = readFromResources("request_body.json")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
             path = "/somePath",
             method = Method.GET,

@@ -2,6 +2,7 @@ plugins {
     id 'java-library'
     id 'org.jetbrains.kotlin.jvm'
     id 'maven-publish'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 java {
@@ -15,9 +16,11 @@ dependencies {
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
     implementation("com.squareup.okhttp3:okhttp")
     implementation "com.squareup.okhttp3:mockwebserver:4.11.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
 
     testImplementation "com.squareup.retrofit2:retrofit:2.9.0"
     testImplementation "com.squareup.retrofit2:converter-scalars:2.9.0"
+    testImplementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
 }
 

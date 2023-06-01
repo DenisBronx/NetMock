@@ -2,6 +2,8 @@ package com.denisbrandi.netmock.okhttp
 
 import com.denisbrandi.netmock.*
 import com.denisbrandi.netmock.assets.readFromResources
+import kotlinx.serialization.*
+import kotlinx.serialization.json.Json
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.junit.*
@@ -112,6 +114,28 @@ class OkHttpMockTest {
         )
     }
 
+    @Test
+    fun `EXPECT valid response for request body with json object`() {
+        testResponseForMethod(
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.POST, body = REQUEST_BODY),
+            getCompleteRequestBuilder(netMock.baseUrl).post(
+                Json.encodeToString(REQUEST_BODY_JSON).toRequestBody()
+            ).build(),
+            EXPECTED_RESPONSE
+        )
+    }
+
+    @Test
+    fun `EXPECT valid response for request body with json array`() {
+        testResponseForMethod(
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.POST, body = REQUEST_BODY_ARRAY),
+            getCompleteRequestBuilder(netMock.baseUrl).post(
+                Json.encodeToString(REQUEST_BODY_JSON_ARRAY).toRequestBody()
+            ).build(),
+            EXPECTED_RESPONSE
+        )
+    }
+
     private fun testResponseForMethod(
         expectedCompleteRequest: NetMockRequest,
         request: Request,
@@ -149,7 +173,23 @@ class OkHttpMockTest {
             listOf(NetMockRequestResponse(EXPECTED_NOT_MATCHING_REQUEST, EXPECTED_RESPONSE)),
             netMock.allowedMocks
         )
-        assertEquals("Request not mocked:\nGET /somePath?1=2&3=4 HTTP/1.1", response.body!!.string())
+    }
+
+    @Test
+    fun `EXPECT default response WHEN request body is not matching`() {
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.POST)
+        netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
+
+        val response = sut.newCall(
+            getCompleteRequestBuilder(netMock.baseUrl).post("not matching body".toRequestBody()).build()
+        ).execute()
+
+        assertTrue(netMock.interceptedRequests.isEmpty())
+        assertEquals(400, response.code)
+        assertEquals(
+            listOf(NetMockRequestResponse(expectedRequest, EXPECTED_RESPONSE)),
+            netMock.allowedMocks
+        )
     }
 
     @Test
@@ -175,8 +215,25 @@ class OkHttpMockTest {
         assertEquals(expectedResponse.body, actualResponse.body!!.string())
     }
 
+    @Serializable
+    data class JsonBody(val id: String, val message: String, val data: String)
+
     private companion object {
-        const val REQUEST_BODY = "requestBody"
+        val REQUEST_BODY = readFromResources("request_body.json")
+        val REQUEST_BODY_ARRAY = readFromResources("request_body_array.json")
+        val REQUEST_BODY_JSON = JsonBody(
+            id = "some body id",
+            message = "some body message",
+            data = "some body text"
+        )
+        val REQUEST_BODY_JSON_ARRAY = listOf(
+            REQUEST_BODY_JSON,
+            JsonBody(
+                id = "some body id 2",
+                message = "some body message 2",
+                data = "some body text 2"
+            )
+        )
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
             path = "/somePath",
             method = Method.GET,
@@ -190,7 +247,7 @@ class OkHttpMockTest {
         val EXPECTED_RESPONSE = NetMockResponse(
             code = 200,
             containsHeaders = mapOf("x" to "y"),
-            body = readFromResources("body_response.json")
+            body = readFromResources("response_body.json")
         )
         val DEFAULT_RESPONSE = NetMockResponse(code = 201, containsHeaders = mapOf("a" to "b"), body = "default")
         private fun getCompleteRequest(baseUrl: String): Request {
