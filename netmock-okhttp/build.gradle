@@ -22,6 +22,14 @@ dependencies {
     testImplementation "com.squareup.retrofit2:converter-scalars:2.9.0"
     testImplementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
+
+    //ktor
+    def ktor_version = "2.3.1"
+    testImplementation "io.ktor:ktor-client-core:$ktor_version"
+    testImplementation "io.ktor:ktor-client-cio:$ktor_version"
+    testImplementation "io.ktor:ktor-client-content-negotiation:$ktor_version"
+    testImplementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
+    testImplementation "io.ktor:ktor-client-mock:$ktor_version"
 }
 
 publishing {
