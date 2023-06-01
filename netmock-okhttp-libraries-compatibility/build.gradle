@@ -1,0 +1,30 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+dependencies {
+    testImplementation project(':netmock-okhttp')
+    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
+
+    //retrofit
+    def retrofit_version = "2.9.0"
+    testImplementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    testImplementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
+    testImplementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
+
+    //ktor
+    def ktor_version = "2.3.1"
+    testImplementation "io.ktor:ktor-client-core:$ktor_version"
+    testImplementation "io.ktor:ktor-client-cio:$ktor_version"
+    testImplementation "io.ktor:ktor-client-content-negotiation:$ktor_version"
+    testImplementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
+    testImplementation "io.ktor:ktor-client-mock:$ktor_version"
+}

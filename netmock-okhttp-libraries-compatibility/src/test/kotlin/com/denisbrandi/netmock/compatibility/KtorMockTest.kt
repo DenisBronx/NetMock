@@ -1,7 +1,8 @@
-package com.denisbrandi.netmock.okhttp
+package com.denisbrandi.netmock.compatibility
 
 import com.denisbrandi.netmock.*
 import com.denisbrandi.netmock.assets.readFromResources
+import com.denisbrandi.netmock.okhttp.OkHttpRule
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
