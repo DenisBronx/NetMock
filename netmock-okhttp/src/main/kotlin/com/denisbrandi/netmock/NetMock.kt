@@ -14,7 +14,7 @@ interface NetMock {
     fun shutDown()
 }
 
-fun NetMock.addMock(
+inline fun NetMock.addMock(
     request: NetMockRequestBuilder.() -> Unit,
     response: NetMockResponseBuilder.() -> Unit
 ) {
