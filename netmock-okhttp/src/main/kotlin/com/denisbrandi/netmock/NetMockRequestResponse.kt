@@ -10,8 +10,32 @@ data class NetMockRequest(
     val body: String = "",
 )
 
-enum class Method {
-    GET, HEAD, POST, PUT, DELETE, PATCH
+sealed interface Method {
+    val name: String
+
+    object Get : Method {
+        override val name = "GET"
+    }
+
+    object Head : Method {
+        override val name = "HEAD"
+    }
+
+    object Post : Method {
+        override val name = "POST"
+    }
+
+    object Put : Method {
+        override val name = "PUT"
+    }
+
+    object Delete : Method {
+        override val name = "DELETE"
+    }
+
+    object Patch : Method {
+        override val name = "PATCH"
+    }
 }
 
 data class NetMockResponse(

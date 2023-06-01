@@ -63,7 +63,7 @@ class OkHttpMockTest {
     @Test
     fun `EXPECT valid response for GET`() {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.GET),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Get),
             getCompleteRequestBuilder(netMock.baseUrl).get().build(),
             EXPECTED_RESPONSE
         )
@@ -72,7 +72,7 @@ class OkHttpMockTest {
     @Test
     fun `EXPECT valid response for HEAD`() {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.HEAD),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Head),
             getCompleteRequestBuilder(netMock.baseUrl).head().build(),
             EXPECTED_RESPONSE.copy(body = "") // body is empty in head responses
         )
@@ -81,7 +81,7 @@ class OkHttpMockTest {
     @Test
     fun `EXPECT valid response for POST`() {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.POST, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY),
             getCompleteRequestBuilder(netMock.baseUrl).post(REQUEST_BODY.toRequestBody()).build(),
             EXPECTED_RESPONSE
         )
@@ -90,7 +90,7 @@ class OkHttpMockTest {
     @Test
     fun `EXPECT valid response for PUT`() {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.PUT, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Put, body = REQUEST_BODY),
             getCompleteRequestBuilder(netMock.baseUrl).put(REQUEST_BODY.toRequestBody()).build(),
             EXPECTED_RESPONSE
         )
@@ -99,7 +99,7 @@ class OkHttpMockTest {
     @Test
     fun `EXPECT valid response for DELETE`() {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.DELETE, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Delete, body = REQUEST_BODY),
             getCompleteRequestBuilder(netMock.baseUrl).delete(REQUEST_BODY.toRequestBody()).build(),
             EXPECTED_RESPONSE
         )
@@ -108,7 +108,7 @@ class OkHttpMockTest {
     @Test
     fun `EXPECT valid response for PATCH`() {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.PATCH, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Patch, body = REQUEST_BODY),
             getCompleteRequestBuilder(netMock.baseUrl).patch(REQUEST_BODY.toRequestBody()).build(),
             EXPECTED_RESPONSE
         )
@@ -117,7 +117,7 @@ class OkHttpMockTest {
     @Test
     fun `EXPECT valid response for request body with json object`() {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.POST, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY),
             getCompleteRequestBuilder(netMock.baseUrl).post(
                 Json.encodeToString(REQUEST_BODY_JSON).toRequestBody()
             ).build(),
@@ -128,7 +128,7 @@ class OkHttpMockTest {
     @Test
     fun `EXPECT valid response for request body with json array`() {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.POST, body = REQUEST_BODY_ARRAY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY_ARRAY),
             getCompleteRequestBuilder(netMock.baseUrl).post(
                 Json.encodeToString(REQUEST_BODY_JSON_ARRAY).toRequestBody()
             ).build(),
@@ -177,7 +177,7 @@ class OkHttpMockTest {
 
     @Test
     fun `EXPECT default response WHEN request body is not matching`() {
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.POST)
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post)
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
 
         val response = sut.newCall(
@@ -236,11 +236,11 @@ class OkHttpMockTest {
         )
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
             path = "/somePath",
-            method = Method.GET,
+            method = Method.Get,
             containsHeaders = mapOf("a" to "b", "c" to "d"),
             params = mapOf("1" to "2", "3" to "4")
         )
-        val EXPECTED_MISSING_FIELDS_REQUEST = NetMockRequest(method = Method.GET)
+        val EXPECTED_MISSING_FIELDS_REQUEST = NetMockRequest(method = Method.Get)
         val EXPECTED_NOT_MATCHING_REQUEST = EXPECTED_COMPLETE_REQUEST.copy(
             containsHeaders = mapOf("a" to "b", "c" to "d", "e" to "f")
         )

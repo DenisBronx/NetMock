@@ -39,7 +39,7 @@ class KtorMockTest {
     @Test
     fun `EXPECT HEAD response`() = runTest {
         netMock.addMock(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.HEAD),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Head),
             EXPECTED_RESPONSE.copy(body = "")
         )
 
@@ -53,7 +53,7 @@ class KtorMockTest {
     @Test
     fun `EXPECT POST response`() = runTest {
         netMock.addMock(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.POST, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY),
             EXPECTED_RESPONSE
         )
 
@@ -70,7 +70,7 @@ class KtorMockTest {
     @Test
     fun `EXPECT PUT response`() = runTest {
         netMock.addMock(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.PUT, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Put, body = REQUEST_BODY),
             EXPECTED_RESPONSE
         )
 
@@ -87,7 +87,7 @@ class KtorMockTest {
     @Test
     fun `EXPECT DELETE response`() = runTest {
         netMock.addMock(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.DELETE, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Delete, body = REQUEST_BODY),
             EXPECTED_RESPONSE
         )
 
@@ -104,7 +104,7 @@ class KtorMockTest {
     @Test
     fun `EXPECT PATCH response`() = runTest {
         netMock.addMock(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.PATCH, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Patch, body = REQUEST_BODY),
             EXPECTED_RESPONSE
         )
 
@@ -142,7 +142,7 @@ class KtorMockTest {
         val RESPONSE_BODY = readFromResources("response_body.json")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
             path = "/somePath",
-            method = Method.GET,
+            method = Method.Get,
             containsHeaders = mapOf("a" to "b", "c" to "d"),
             params = mapOf("1" to "2", "3" to "4")
         )

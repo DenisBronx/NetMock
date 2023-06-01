@@ -37,7 +37,7 @@ class RetrofitMockTest {
 
     @Test
     fun `EXPECT HEAD response`() = runTest {
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.HEAD)
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.Head)
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE.copy(body = ""))
 
         val response = sut.head(headers = mapOf("a" to "b", "c" to "d"), params = mapOf("1" to "2", "3" to "4"))
@@ -51,7 +51,7 @@ class RetrofitMockTest {
 
     @Test
     fun `EXPECT POST response`() = runTest {
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.POST, body = REQUEST_BODY)
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY)
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
 
         val response =
@@ -62,7 +62,7 @@ class RetrofitMockTest {
 
     @Test
     fun `EXPECT PUT response`() = runTest {
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.PUT, body = REQUEST_BODY)
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.Put, body = REQUEST_BODY)
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
 
         val response =
@@ -73,7 +73,7 @@ class RetrofitMockTest {
 
     @Test
     fun `EXPECT DELETE response`() = runTest {
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.DELETE, body = REQUEST_BODY)
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.Delete, body = REQUEST_BODY)
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
 
         val response =
@@ -84,7 +84,7 @@ class RetrofitMockTest {
 
     @Test
     fun `EXPECT PATCH response`() = runTest {
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.PATCH, body = REQUEST_BODY)
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.Patch, body = REQUEST_BODY)
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
 
         val response =
@@ -143,7 +143,7 @@ class RetrofitMockTest {
         val REQUEST_BODY = readFromResources("request_body.json")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
             path = "/somePath",
-            method = Method.GET,
+            method = Method.Get,
             containsHeaders = mapOf("a" to "b", "c" to "d"),
             params = mapOf("1" to "2", "3" to "4")
         )
