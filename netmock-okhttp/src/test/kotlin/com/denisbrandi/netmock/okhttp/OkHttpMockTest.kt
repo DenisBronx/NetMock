@@ -115,6 +115,15 @@ class OkHttpMockTest {
     }
 
     @Test
+    fun `EXPECT valid response for custom method`() {
+        testResponseForMethod(
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Custom("CUSTOM"), body = REQUEST_BODY),
+            getCompleteRequestBuilder(netMock.baseUrl).method("CUSTOM", REQUEST_BODY.toRequestBody()).build(),
+            EXPECTED_RESPONSE
+        )
+    }
+
+    @Test
     fun `EXPECT valid response for request body with json object`() {
         testResponseForMethod(
             EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY),

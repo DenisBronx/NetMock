@@ -36,6 +36,8 @@ sealed interface Method {
     object Patch : Method {
         override val name = "PATCH"
     }
+
+    data class Custom(override val name: String) : Method
 }
 
 data class NetMockResponse(
