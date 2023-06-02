@@ -11,17 +11,15 @@ java {
 
 dependencies {
     testImplementation project(':netmock-okhttp')
-    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
+    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
 
     //retrofit
-    def retrofit_version = "2.9.0"
     testImplementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     testImplementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
-    testImplementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
+    testImplementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$retrofit_serialization_version"
 
     //ktor
-    def ktor_version = "2.3.1"
     testImplementation "io.ktor:ktor-client-core:$ktor_version"
     testImplementation "io.ktor:ktor-client-cio:$ktor_version"
     testImplementation "io.ktor:ktor-client-content-negotiation:$ktor_version"
