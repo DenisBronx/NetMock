@@ -7,10 +7,26 @@ data class NetMockResponse(
 )
 
 class NetMockResponseBuilder {
-    private val defaultResponse = NetMockResponse()
-    var code: Int = defaultResponse.code
-    var containsHeaders: Map<String, String> = defaultResponse.containsHeaders
-    var body: String = defaultResponse.body
+    var code: Int = 0
+    lateinit var containsHeaders: Map<String, String>
+    lateinit var body: String
+
+    init {
+        fromResponse(NetMockResponse())
+    }
+
+    fun fromBuilder(builder: NetMockResponseBuilder) {
+        code = builder.code
+        containsHeaders = builder.containsHeaders
+        body = builder.body
+    }
+
+    fun fromResponse(response: NetMockResponse) {
+        code = response.code
+        containsHeaders = response.containsHeaders
+        body = response.body
+    }
+
     fun build(): NetMockResponse {
         return NetMockResponse(
             code = code,
