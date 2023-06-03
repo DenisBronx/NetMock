@@ -2,8 +2,6 @@ package com.denisbrandi.netmock.okhttp
 
 import com.denisbrandi.netmock.*
 import com.denisbrandi.netmock.assets.readFromResources
-import kotlinx.serialization.*
-import kotlinx.serialization.json.Json
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.junit.*

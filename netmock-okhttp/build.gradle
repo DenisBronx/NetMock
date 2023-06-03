@@ -2,7 +2,6 @@ plugins {
     id 'java-library'
     id 'org.jetbrains.kotlin.jvm'
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 java {
@@ -17,7 +16,6 @@ dependencies {
     api(platform("com.squareup.okhttp3:okhttp-bom:$okhttp_version"))
     api("com.squareup.okhttp3:okhttp")
     api "com.squareup.okhttp3:mockwebserver"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version"
 }
 
 publishing {
