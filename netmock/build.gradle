@@ -2,6 +2,7 @@ plugins {
     id 'java-library'
     id 'org.jetbrains.kotlin.jvm'
     id 'maven-publish'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 java {
@@ -12,6 +13,7 @@ java {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version"
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 }
 

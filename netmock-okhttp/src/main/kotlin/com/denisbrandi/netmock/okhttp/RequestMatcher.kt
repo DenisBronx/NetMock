@@ -1,7 +1,7 @@
 package com.denisbrandi.netmock.okhttp
 
 import com.denisbrandi.netmock.NetMockRequest
-import kotlinx.serialization.json.*
+import com.denisbrandi.netmock.matchers.RequestBodyMatcher
 import okhttp3.mockwebserver.RecordedRequest
 
 internal object RequestMatcher {
@@ -12,7 +12,7 @@ internal object RequestMatcher {
     ): Boolean {
         return recordedRequest.method == netMockRequest.method.name &&
                 isMatchingPathAndParams(recordedRequest, netMockRequest) &&
-                isMatchingTheBody(recordedRequestBody, netMockRequest.body) &&
+                RequestBodyMatcher.isMatchingTheBody(recordedRequestBody, netMockRequest.body) &&
                 isMatchingTheHeaders(recordedRequest, netMockRequest)
     }
 
@@ -36,39 +36,5 @@ internal object RequestMatcher {
             }
         }
         return true
-    }
-
-    private fun isMatchingTheBody(recordedRequestBody: String, netMockRequestBody: String): Boolean {
-        return if (recordedRequestBody == netMockRequestBody) {
-            true
-        } else {
-            val recordedJsonObject = asJsonObject(recordedRequestBody)
-            if (recordedJsonObject != null) {
-                recordedJsonObject == asJsonObject(netMockRequestBody)
-            } else {
-                val recordedJsonArray = asJsonArray(recordedRequestBody)
-                if (recordedJsonArray != null) {
-                    recordedJsonArray == asJsonArray(netMockRequestBody)
-                } else {
-                    false
-                }
-            }
-        }
-    }
-
-    private fun asJsonObject(jsonString: String): JsonObject? {
-        return try {
-            Json.decodeFromString<JsonObject>(jsonString)
-        } catch (t: Throwable) {
-            null
-        }
-    }
-
-    private fun asJsonArray(jsonString: String): JsonArray? {
-        return try {
-            Json.decodeFromString<JsonArray>(jsonString)
-        } catch (t: Throwable) {
-            null
-        }
     }
 }

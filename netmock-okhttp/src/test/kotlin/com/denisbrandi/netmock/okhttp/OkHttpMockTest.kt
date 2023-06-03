@@ -123,28 +123,6 @@ class OkHttpMockTest {
         )
     }
 
-    @Test
-    fun `EXPECT valid response for request body with json object`() {
-        testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY),
-            getCompleteRequestBuilder(netMock.baseUrl).post(
-                Json.encodeToString(REQUEST_BODY_JSON).toRequestBody()
-            ).build(),
-            EXPECTED_RESPONSE
-        )
-    }
-
-    @Test
-    fun `EXPECT valid response for request body with json array`() {
-        testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY_ARRAY),
-            getCompleteRequestBuilder(netMock.baseUrl).post(
-                Json.encodeToString(REQUEST_BODY_JSON_ARRAY).toRequestBody()
-            ).build(),
-            EXPECTED_RESPONSE
-        )
-    }
-
     private fun testResponseForMethod(
         expectedCompleteRequest: NetMockRequest,
         request: Request,
@@ -224,25 +202,8 @@ class OkHttpMockTest {
         assertEquals(expectedResponse.body, actualResponse.body!!.string())
     }
 
-    @Serializable
-    data class JsonBody(val id: String, val message: String, val data: String)
-
     private companion object {
         val REQUEST_BODY = readFromResources("request_body.json")
-        val REQUEST_BODY_ARRAY = readFromResources("request_body_array.json")
-        val REQUEST_BODY_JSON = JsonBody(
-            id = "some body id",
-            message = "some body message",
-            data = "some body text"
-        )
-        val REQUEST_BODY_JSON_ARRAY = listOf(
-            REQUEST_BODY_JSON,
-            JsonBody(
-                id = "some body id 2",
-                message = "some body message 2",
-                data = "some body text 2"
-            )
-        )
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
             path = "/somePath",
             method = Method.Get,

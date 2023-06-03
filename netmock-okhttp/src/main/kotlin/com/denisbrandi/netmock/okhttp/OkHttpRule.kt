@@ -4,7 +4,7 @@ import com.denisbrandi.netmock.NetMock
 import org.junit.rules.ExternalResource
 
 class OkHttpRule(
-    private val netMock: NetMock = OkHttpMock()
+    private val netMock: OkHttpMock = OkHttpMock()
 ) : ExternalResource(), NetMock by netMock {
 
     init {

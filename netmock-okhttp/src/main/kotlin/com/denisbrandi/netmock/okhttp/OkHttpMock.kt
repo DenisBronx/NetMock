@@ -17,7 +17,7 @@ class OkHttpMock : NetMock {
         server.dispatcher = dispatcher
     }
 
-    override fun start() {
+    fun start() {
         server.start()
     }
 
@@ -32,7 +32,7 @@ class OkHttpMock : NetMock {
         dispatcher.defaultResponse = netMockResponse
     }
 
-    override fun shutDown() {
+    fun shutDown() {
         server.shutdown()
     }
 

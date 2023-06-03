@@ -5,8 +5,6 @@ interface NetMock {
     val interceptedRequests: List<NetMockRequest>
     val allowedMocks: List<NetMockRequestResponse>
 
-    fun start()
-
     fun addMock(request: NetMockRequest, response: NetMockResponse)
 
     fun addMock(
@@ -21,6 +19,4 @@ interface NetMock {
     }
 
     fun setDefaultResponse(netMockResponse: NetMockResponse)
-
-    fun shutDown()
 }

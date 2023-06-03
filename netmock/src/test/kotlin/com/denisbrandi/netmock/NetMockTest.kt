@@ -77,16 +77,11 @@ class NetMockTest {
         override val baseUrl: String = ""
         override val interceptedRequests: List<NetMockRequest> = emptyList()
         override val allowedMocks = mutableListOf<NetMockRequestResponse>()
-
-        override fun start() {}
-
         override fun addMock(request: NetMockRequest, response: NetMockResponse) {
             allowedMocks.add(NetMockRequestResponse(request, response))
         }
 
         override fun setDefaultResponse(netMockResponse: NetMockResponse) {}
-
-        override fun shutDown() {}
     }
 
     private companion object {
