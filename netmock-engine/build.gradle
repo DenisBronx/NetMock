@@ -14,9 +14,9 @@ java {
 
 dependencies {
     api project(':netmock')
-    implementation "io.ktor:ktor-client-core:$ktor_version"
+    api "io.ktor:ktor-client-core:$ktor_version"
     implementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
-    implementation "io.ktor:ktor-client-mock:$ktor_version"
+    api "io.ktor:ktor-client-mock:$ktor_version"
     testImplementation "io.ktor:ktor-client-content-negotiation:$ktor_version"
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
