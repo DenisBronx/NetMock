@@ -7,7 +7,7 @@ import okhttp3.mockwebserver.*
 import java.util.logging.Logger
 
 internal class MockDispatcher(
-    private val okHttpMockInterceptor: RequestInterceptor<RecordedRequest, MockResponse>
+    okHttpMockInterceptor: RequestInterceptor<RecordedRequest, MockResponse>
 ) : Dispatcher(), RequestInterceptor<RecordedRequest, MockResponse> by okHttpMockInterceptor {
 
     override fun dispatch(request: RecordedRequest): MockResponse {

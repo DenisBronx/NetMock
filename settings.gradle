@@ -16,3 +16,4 @@ rootProject.name = "NetMock"
 include ':netmock-okhttp'
 include ':netmock-okhttp-libraries-compatibility'
 include ':netmock'
+include ':netmock-engine'
