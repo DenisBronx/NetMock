@@ -1,7 +1,6 @@
 package com.denisbrandi.netmock
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import kotlin.test.*
 
 class NetMockTest {
 
