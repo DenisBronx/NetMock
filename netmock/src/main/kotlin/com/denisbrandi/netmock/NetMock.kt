@@ -4,6 +4,7 @@ interface NetMock {
     val baseUrl: String
     val interceptedRequests: List<NetMockRequest>
     val allowedMocks: List<NetMockRequestResponse>
+    var defaultResponse: NetMockResponse?
 
     fun addMock(request: NetMockRequest, response: NetMockResponse)
 
@@ -17,6 +18,4 @@ interface NetMock {
         response(responseBuilder)
         addMock(requestBuilder.build(), responseBuilder.build())
     }
-
-    fun setDefaultResponse(netMockResponse: NetMockResponse)
 }

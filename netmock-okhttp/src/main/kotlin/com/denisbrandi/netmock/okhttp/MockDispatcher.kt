@@ -1,22 +1,19 @@
 package com.denisbrandi.netmock.okhttp
 
-import com.denisbrandi.netmock.*
-import com.denisbrandi.netmock.okhttp.RequestMatcher.isMatchingTheRequest
-import com.denisbrandi.netmock.okhttp.ResponseMapper.mapResponse
+import com.denisbrandi.netmock.NetMockResponse
+import com.denisbrandi.netmock.interceptors.RequestInterceptor
+import com.denisbrandi.netmock.okhttp.MockWebServerResponseMapper.mapResponse
 import okhttp3.mockwebserver.*
 import java.util.logging.Logger
 
-internal class MockDispatcher : Dispatcher() {
-
-    val requestResponseList = mutableListOf<NetMockRequestResponse>()
-    val interceptedRequests = mutableListOf<NetMockRequest>()
-
-    var defaultResponse: NetMockResponse? = null
+internal class MockDispatcher(
+    private val okHttpMockInterceptor: RequestInterceptor<RecordedRequest, MockResponse>
+) : Dispatcher(), RequestInterceptor<RecordedRequest, MockResponse> by okHttpMockInterceptor {
 
     override fun dispatch(request: RecordedRequest): MockResponse {
         // Body can be read only once
         val recordedRequestBody = request.body.readUtf8()
-        return matchRequest(request, recordedRequestBody) ?: getDefaultResponse(request, recordedRequestBody)
+        return intercept(request, recordedRequestBody) ?: getDefaultResponse(request, recordedRequestBody)
     }
 
     private fun getDefaultResponse(request: RecordedRequest, recordedRequestBody: String): MockResponse {
@@ -34,20 +31,10 @@ internal class MockDispatcher : Dispatcher() {
             "Request not mocked:\n${request}\nWith headers:\n${request.headers}With body:\n${recordedRequestBody}"
         Logger.getLogger("NetMock").apply {
             severe(errorMessage)
-            info("The following requests and responses were expected:\n${requestResponseList}")
+            info("The following requests and responses were expected:\n${allowedMocks}")
             info("The following requests have been successfully mocked:\n${interceptedRequests}")
         }
 
         return mapResponse(NetMockResponse(code = 400, body = errorMessage))
-    }
-
-    private fun matchRequest(recordedRequest: RecordedRequest, recordedRequestBody: String): MockResponse? {
-        return requestResponseList.filter { requestResponse ->
-            isMatchingTheRequest(recordedRequest, recordedRequestBody, requestResponse.request)
-        }.firstNotNullOfOrNull { requestResponse ->
-            interceptedRequests.add(requestResponse.request)
-            requestResponseList.remove(requestResponse)
-            mapResponse(requestResponse.response)
-        }
     }
 }

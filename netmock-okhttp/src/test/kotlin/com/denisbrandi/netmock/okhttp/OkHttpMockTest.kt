@@ -180,7 +180,7 @@ class OkHttpMockTest {
     @Test
     fun `EXPECT overridden default response WHEN request is not matching and default response is overridden`() {
         netMock.addMock(EXPECTED_NOT_MATCHING_REQUEST, EXPECTED_RESPONSE)
-        netMock.setDefaultResponse(DEFAULT_RESPONSE)
+        netMock.defaultResponse = DEFAULT_RESPONSE
 
         val response = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
 

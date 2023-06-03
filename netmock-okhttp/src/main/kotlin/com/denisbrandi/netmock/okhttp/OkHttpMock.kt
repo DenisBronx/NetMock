@@ -1,17 +1,15 @@
 package com.denisbrandi.netmock.okhttp
 
-import com.denisbrandi.netmock.*
-import okhttp3.mockwebserver.MockWebServer
+import com.denisbrandi.netmock.NetMock
+import com.denisbrandi.netmock.interceptors.*
+import okhttp3.mockwebserver.*
 
-class OkHttpMock : NetMock {
+class OkHttpMock private constructor(
+    private val dispatcher: MockDispatcher
+) : NetMock, RequestInterceptor<RecordedRequest, MockResponse> by dispatcher {
     private val server = MockWebServer()
-    private val dispatcher = MockDispatcher()
     override val baseUrl: String
         get() = server.url("").toString()
-    override val interceptedRequests: List<NetMockRequest>
-        get() = dispatcher.interceptedRequests
-    override val allowedMocks: List<NetMockRequestResponse>
-        get() = dispatcher.requestResponseList
 
     init {
         server.dispatcher = dispatcher
@@ -21,19 +19,16 @@ class OkHttpMock : NetMock {
         server.start()
     }
 
-    override fun addMock(
-        request: NetMockRequest,
-        response: NetMockResponse
-    ) {
-        dispatcher.requestResponseList.add(NetMockRequestResponse(request, response))
-    }
-
-    override fun setDefaultResponse(netMockResponse: NetMockResponse) {
-        dispatcher.defaultResponse = netMockResponse
-    }
-
     fun shutDown() {
         server.shutdown()
+    }
+
+    companion object {
+        operator fun invoke(): OkHttpMock {
+            return OkHttpMock(
+                MockDispatcher(RequestInterceptorImpl(MockWebServerRequestMatcher, MockWebServerResponseMapper))
+            )
+        }
     }
 
 }

@@ -1,19 +1,19 @@
 package com.denisbrandi.netmock.okhttp
 
 import com.denisbrandi.netmock.NetMockRequest
-import com.denisbrandi.netmock.matchers.RequestBodyMatcher
+import com.denisbrandi.netmock.matchers.*
 import okhttp3.mockwebserver.RecordedRequest
 
-internal object RequestMatcher {
-    fun isMatchingTheRequest(
+internal object MockWebServerRequestMatcher: RequestMatcher<RecordedRequest> {
+    override fun isMatchingTheRequest(
         recordedRequest: RecordedRequest,
         recordedRequestBody: String,
-        netMockRequest: NetMockRequest
+        expectedRequest: NetMockRequest
     ): Boolean {
-        return recordedRequest.method == netMockRequest.method.name &&
-                isMatchingPathAndParams(recordedRequest, netMockRequest) &&
-                RequestBodyMatcher.isMatchingTheBody(recordedRequestBody, netMockRequest.body) &&
-                isMatchingTheHeaders(recordedRequest, netMockRequest)
+        return recordedRequest.method == expectedRequest.method.name &&
+                isMatchingPathAndParams(recordedRequest, expectedRequest) &&
+                RequestBodyMatcher.isMatchingTheBody(recordedRequestBody, expectedRequest.body) &&
+                isMatchingTheHeaders(recordedRequest, expectedRequest)
     }
 
     private fun isMatchingPathAndParams(recordedRequest: RecordedRequest, netMockRequest: NetMockRequest): Boolean {
