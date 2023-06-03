@@ -1,4 +1,4 @@
-package com.denisbrandi.netmock.okhttp
+package com.denisbrandi.netmock.server
 
 import com.denisbrandi.netmock.NetMockResponse
 import com.denisbrandi.netmock.mappers.ResponseMapper

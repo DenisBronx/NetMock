@@ -1,10 +1,10 @@
-package com.denisbrandi.netmock.okhttp
+package com.denisbrandi.netmock.server
 
 import com.denisbrandi.netmock.NetMock
 import org.junit.rules.ExternalResource
 
-class OkHttpRule(
-    private val netMock: OkHttpMock = OkHttpMock()
+class NetMockServerRule(
+    private val netMock: NetMockServer = NetMockServer()
 ) : ExternalResource(), NetMock by netMock {
 
     init {

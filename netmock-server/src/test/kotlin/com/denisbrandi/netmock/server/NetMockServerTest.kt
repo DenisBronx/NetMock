@@ -1,4 +1,4 @@
-package com.denisbrandi.netmock.okhttp
+package com.denisbrandi.netmock.server
 
 import com.denisbrandi.netmock.*
 import com.denisbrandi.netmock.assets.readFromResources
@@ -7,9 +7,9 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.junit.*
 import org.junit.Assert.*
 
-class OkHttpMockTest {
+class NetMockServerTest {
     @get:Rule
-    val netMock = OkHttpRule()
+    val netMock = NetMockServerRule()
 
     private val sut = OkHttpClient.Builder().build()
 

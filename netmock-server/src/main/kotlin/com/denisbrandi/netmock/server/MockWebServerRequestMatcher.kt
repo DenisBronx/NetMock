@@ -1,4 +1,4 @@
-package com.denisbrandi.netmock.okhttp
+package com.denisbrandi.netmock.server
 
 import com.denisbrandi.netmock.NetMockRequest
 import com.denisbrandi.netmock.matchers.*

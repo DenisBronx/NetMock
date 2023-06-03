@@ -2,7 +2,7 @@ package com.denisbrandi.netmock.compatibility
 
 import com.denisbrandi.netmock.*
 import com.denisbrandi.netmock.assets.readFromResources
-import com.denisbrandi.netmock.okhttp.OkHttpRule
+import com.denisbrandi.netmock.server.NetMockServerRule
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -16,7 +16,7 @@ import org.junit.Assert.assertEquals
 
 class KtorMockTest {
     @get:Rule
-    val netMock = OkHttpRule()
+    val netMock = NetMockServerRule()
     private val sut = HttpClient(CIO.create()) {
         install(ContentNegotiation) {
             json()

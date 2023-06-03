@@ -2,7 +2,7 @@ package com.denisbrandi.netmock.compatibility
 
 import com.denisbrandi.netmock.*
 import com.denisbrandi.netmock.assets.readFromResources
-import com.denisbrandi.netmock.okhttp.OkHttpRule
+import com.denisbrandi.netmock.server.NetMockServerRule
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.*
@@ -18,7 +18,7 @@ import retrofit2.http.*
 class RetrofitMockTest {
 
     @get:Rule
-    val netMock = OkHttpRule()
+    val netMock = NetMockServerRule()
 
     private val sut = Retrofit.Builder()
         .baseUrl(netMock.baseUrl)

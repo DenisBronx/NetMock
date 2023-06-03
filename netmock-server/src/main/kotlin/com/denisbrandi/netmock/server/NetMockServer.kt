@@ -1,10 +1,10 @@
-package com.denisbrandi.netmock.okhttp
+package com.denisbrandi.netmock.server
 
 import com.denisbrandi.netmock.NetMock
 import com.denisbrandi.netmock.interceptors.*
 import okhttp3.mockwebserver.*
 
-class OkHttpMock private constructor(
+class NetMockServer private constructor(
     private val dispatcher: MockDispatcher
 ) : NetMock, RequestInterceptor<RecordedRequest, MockResponse> by dispatcher {
     private val server = MockWebServer()
@@ -24,8 +24,8 @@ class OkHttpMock private constructor(
     }
 
     companion object {
-        operator fun invoke(): OkHttpMock {
-            return OkHttpMock(
+        operator fun invoke(): NetMockServer {
+            return NetMockServer(
                 MockDispatcher(RequestInterceptorImpl(MockWebServerRequestMatcher, MockWebServerResponseMapper))
             )
         }

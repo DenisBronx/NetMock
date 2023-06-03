@@ -1,8 +1,8 @@
-package com.denisbrandi.netmock.okhttp
+package com.denisbrandi.netmock.server
 
 import com.denisbrandi.netmock.NetMockResponse
 import com.denisbrandi.netmock.interceptors.RequestInterceptor
-import com.denisbrandi.netmock.okhttp.MockWebServerResponseMapper.mapResponse
+import com.denisbrandi.netmock.server.MockWebServerResponseMapper.mapResponse
 import okhttp3.mockwebserver.*
 import java.util.logging.Logger
 
