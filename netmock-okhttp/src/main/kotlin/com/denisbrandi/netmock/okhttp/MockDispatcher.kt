@@ -13,11 +13,7 @@ internal class MockDispatcher(
     override fun dispatch(request: RecordedRequest): MockResponse {
         // Body can be read only once
         val recordedRequestBody = request.body.readUtf8()
-        return intercept(request, recordedRequestBody) ?: getDefaultResponse(request, recordedRequestBody)
-    }
-
-    private fun getDefaultResponse(request: RecordedRequest, recordedRequestBody: String): MockResponse {
-        return defaultResponse?.let { mapResponse(it) } ?: returnDefaultErrorResponseAndLogError(
+        return intercept(request, recordedRequestBody) ?: returnDefaultErrorResponseAndLogError(
             request,
             recordedRequestBody
         )
