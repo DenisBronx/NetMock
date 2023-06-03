@@ -13,7 +13,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "NetMock"
-include ':netmock-okhttp'
-include ':netmock-okhttp-libraries-compatibility'
-include ':netmock'
+include ':netmock-core'
 include ':netmock-engine'
+include ':netmock-server'
+include ':netmock-server-test-compatibility'

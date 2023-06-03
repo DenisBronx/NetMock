@@ -10,11 +10,14 @@ java {
 }
 
 dependencies {
-    testImplementation project(':netmock-okhttp')
+    testImplementation project(':netmock-server')
+    testImplementation "junit:junit:$junit_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version"
 
     //retrofit
+    testImplementation(platform("com.squareup.okhttp3:okhttp-bom:$okhttp_version"))
+    testImplementation("com.squareup.okhttp3:okhttp")
     testImplementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     testImplementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
     testImplementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$retrofit_serialization_version"

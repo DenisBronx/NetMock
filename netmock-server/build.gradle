@@ -12,17 +12,17 @@ java {
 }
 
 dependencies {
-    api project(':netmock')
-    api(platform("com.squareup.okhttp3:okhttp-bom:$okhttp_version"))
-    api("com.squareup.okhttp3:okhttp")
-    api "com.squareup.okhttp3:mockwebserver"
+    api project(':netmock-core')
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:$okhttp_version"))
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation "com.squareup.okhttp3:mockwebserver"
 }
 
 publishing {
     publications {
         maven(MavenPublication) {
             groupId = 'com.denisbrandi.netmock'
-            artifactId = 'netmock-okhttp'
+            artifactId = 'netmock-server'
             version = '0.1'
 
             from components.java
