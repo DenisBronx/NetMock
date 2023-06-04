@@ -4,6 +4,14 @@ plugins {
     id("maven-publish")
 }
 
+publishing {
+    publications.withType<MavenPublication> {
+        groupId = "com.denisbrandi.netmock"
+        artifactId = "netmock-server"
+        version = netmock_version
+    }
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -17,15 +25,3 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:mockwebserver")
 }
-
-//publishing {
-//    publications {
-//        maven(MavenPublication) {
-//            groupId = 'com.denisbrandi.netmock'
-//            artifactId = 'netmock-server'
-//            version = '0.1'
-//
-//            from components.java
-//        }
-//    }
-//}

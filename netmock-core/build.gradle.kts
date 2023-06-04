@@ -4,6 +4,14 @@ plugins {
     id("maven-publish")
 }
 
+publishing {
+    publications.withType<MavenPublication> {
+        groupId = "com.denisbrandi.netmock"
+        artifactId = "netmock-core"
+        version = netmock_version
+    }
+}
+
 kotlin {
     jvm {
         jvmToolchain(11)
@@ -42,13 +50,3 @@ kotlin {
         }
     }
 }
-
-//publishing {
-//    publications {
-//        maven(MavenPublication) {
-//            groupId = "com.denisbrandi.netmock"
-//            artifactId = "netmock-core"
-//            version = "$netmock_version"
-//        }
-//    }
-//}
