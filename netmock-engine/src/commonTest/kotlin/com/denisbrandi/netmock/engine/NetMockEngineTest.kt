@@ -255,14 +255,14 @@ class NetMockEngineTest {
     }
 
     private companion object {
-        val REQUEST_BODY = """
+        const val REQUEST_BODY = """
             {
               "id": "some body id",
               "message": "some body message",
               "data": "some body text"
             }
         """
-        val RESPONSE_BODY = """
+        const val RESPONSE_BODY = """
             {
               "code": 200,
               "message": "some message",
