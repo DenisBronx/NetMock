@@ -1,6 +1,9 @@
 package com.denisbrandi.netmock.engine
 
-import com.denisbrandi.netmock.*
+import com.denisbrandi.netmock.Method
+import com.denisbrandi.netmock.NetMockRequest
+import com.denisbrandi.netmock.NetMockRequestResponse
+import com.denisbrandi.netmock.NetMockResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -10,7 +13,9 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.test.runTest
 import kotlin.js.JsName
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class NetMockEngineTest {
 
@@ -32,6 +37,7 @@ class NetMockEngineTest {
         assertValidResponse(EXPECTED_RESPONSE, response)
         assertTrue(netMock.allowedMocks.isEmpty())
     }
+
     @JsName("mappedResponses")
     @Test
     fun `EXPECT mapped responses`() = runTest {
@@ -48,6 +54,7 @@ class NetMockEngineTest {
         assertValidResponse(expectedResponse2, response2)
         assertTrue(netMock.allowedMocks.isEmpty())
     }
+
     @JsName("mappedResponseAndDefaultResponse_noMoreMocks")
     @Test
     fun `EXPECT mapped responses and default response WHEN dispatcher runs out of mocks`() = runTest {
@@ -66,6 +73,7 @@ class NetMockEngineTest {
         assertEquals(400, response3.status.value)
         assertTrue(netMock.allowedMocks.isEmpty())
     }
+
     @JsName("validGET")
     @Test
     fun `EXPECT valid response for GET`() = runTest {
@@ -77,6 +85,7 @@ class NetMockEngineTest {
             EXPECTED_RESPONSE
         )
     }
+
     @JsName("validHEAD")
     @Test
     fun `EXPECT valid response for HEAD`() = runTest {
@@ -88,6 +97,7 @@ class NetMockEngineTest {
             EXPECTED_RESPONSE.copy(body = "") // body is empty in head responses
         )
     }
+
     @JsName("validPOST")
     @Test
     fun `EXPECT valid response for POST`() = runTest {
@@ -100,6 +110,7 @@ class NetMockEngineTest {
             EXPECTED_RESPONSE
         )
     }
+
     @JsName("validPUT")
     @Test
     fun `EXPECT valid response for PUT`() = runTest {
@@ -112,6 +123,7 @@ class NetMockEngineTest {
             EXPECTED_RESPONSE
         )
     }
+
     @JsName("validDELETE")
     @Test
     fun `EXPECT valid response for DELETE`() = runTest {
@@ -124,6 +136,7 @@ class NetMockEngineTest {
             EXPECTED_RESPONSE
         )
     }
+
     @JsName("validPATCH")
     @Test
     fun `EXPECT valid response for PATCH`() = runTest {
@@ -136,6 +149,7 @@ class NetMockEngineTest {
             EXPECTED_RESPONSE
         )
     }
+
     @JsName("validCUSTOM")
     @Test
     fun `EXPECT valid response for custom method`() = runTest {
@@ -162,6 +176,7 @@ class NetMockEngineTest {
         assertValidResponse(expectedResponse, response)
         assertTrue(netMock.allowedMocks.isEmpty())
     }
+
     @JsName("mappedResponse_missingFields")
     @Test
     fun `EXPECT mapped response WHEN request has missing fields`() = runTest {
@@ -173,6 +188,7 @@ class NetMockEngineTest {
         assertValidResponse(EXPECTED_RESPONSE, response)
         assertTrue(netMock.allowedMocks.isEmpty())
     }
+
     @JsName("defaultResponse_noMatch")
     @Test
     fun `EXPECT default response WHEN request is not matching`() = runTest {
@@ -187,8 +203,8 @@ class NetMockEngineTest {
             netMock.allowedMocks
         )
     }
-    @JsName("defaultResponse_bodyNotMatching")
 
+    @JsName("defaultResponse_bodyNotMatching")
     @Test
     fun `EXPECT default response WHEN request body is not matching`() = runTest {
         val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post)
@@ -208,8 +224,8 @@ class NetMockEngineTest {
             netMock.allowedMocks
         )
     }
-    @JsName("overriddenDefaultResponse_noMatch")
 
+    @JsName("overriddenDefaultResponse_noMatch")
     @Test
     fun `EXPECT overridden default response WHEN request is not matching and default response is overridden`() =
         runTest {
