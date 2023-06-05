@@ -1,10 +1,15 @@
 package com.denisbrandi.netmock.interceptors
 
-import com.denisbrandi.netmock.*
+import com.denisbrandi.netmock.NetMockRequest
+import com.denisbrandi.netmock.NetMockRequestResponse
+import com.denisbrandi.netmock.NetMockResponse
 import com.denisbrandi.netmock.mappers.ResponseMapper
 import com.denisbrandi.netmock.matchers.RequestMatcher
 import kotlin.js.JsName
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class RequestInterceptorImplTest {
     private val fakeRequestMatcher = FakeRequestMatcher()
@@ -35,6 +40,7 @@ class RequestInterceptorImplTest {
         assertEquals(listOf(ALLOWED_MOCK), sut.allowedMocks)
         assertTrue(sut.interceptedRequests.isEmpty())
     }
+
     @JsName("null_defaultResponse")
     @Test
     fun `EXPECT default response WHEN request does not match and there is default response`() {
@@ -48,6 +54,7 @@ class RequestInterceptorImplTest {
         assertEquals(listOf(ALLOWED_MOCK), sut.allowedMocks)
         assertTrue(sut.interceptedRequests.isEmpty())
     }
+
     @JsName("mappedResponse_match")
     @Test
     fun `EXPECT mapped response WHEN request matches`() {
@@ -60,6 +67,7 @@ class RequestInterceptorImplTest {
         assertTrue(sut.allowedMocks.isEmpty())
         assertEquals(listOf(EXPECTED_REQUEST), sut.interceptedRequests)
     }
+
     @JsName("null_multipleCalls")
     @Test
     fun `EXPECT null WHEN request was mocked only once`() {

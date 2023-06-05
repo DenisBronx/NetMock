@@ -1,7 +1,8 @@
 package com.denisbrandi.netmock
 
 import kotlin.js.JsName
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class NetMockTest {
 
@@ -30,6 +31,7 @@ class NetMockTest {
             sut.allowedMocks
         )
     }
+
     @JsName("call_withBuilders")
     @Test
     fun `EXPECT interface method properly called with all fields WHEN passing builders`() {
@@ -47,6 +49,7 @@ class NetMockTest {
             sut.allowedMocks
         )
     }
+
     @JsName("call_withRequest")
     @Test
     fun `EXPECT interface method properly called with all fields WHEN passing requests and responses`() {
@@ -64,6 +67,7 @@ class NetMockTest {
             sut.allowedMocks
         )
     }
+
     @JsName("call_noFields")
     @Test
     fun `EXPECT interface method properly called with no fields`() {

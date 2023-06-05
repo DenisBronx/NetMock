@@ -1,8 +1,8 @@
 package com.denisbrandi.netmock
 
 import kotlin.js.JsName
-import kotlin.test.*
-
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class MethodTest {
     @JsName("validMethodName")
