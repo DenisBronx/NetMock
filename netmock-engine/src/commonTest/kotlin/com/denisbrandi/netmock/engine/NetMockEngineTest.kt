@@ -12,6 +12,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.Serializable
 import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -242,6 +243,30 @@ class NetMockEngineTest {
             )
         }
 
+    @JsName("jsonResponse")
+    @Test
+    fun `EXPECT valid response WHEN using json`() = runTest {
+        val expectedCompleteRequest =
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Custom("CUSTOM"), body = REQUEST_BODY)
+        val request = getCompleteRequestBuilder(netMock.baseUrl).apply {
+            method = HttpMethod("CUSTOM")
+            setBody(REQUEST_OBJECT)
+            headers {
+                append(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+            }
+        }
+        val expectedResponse = EXPECTED_JSON_RESPONSE
+        netMock.addMock(expectedCompleteRequest, expectedResponse)
+
+        val response = sut.request(request)
+
+        assertEquals(listOf(expectedCompleteRequest), netMock.interceptedRequests)
+        assertEquals(expectedResponse.code, response.status.value)
+        assertHeaders(expectedResponse.containsHeaders, response.headers)
+        assertEquals(RESPONSE_OBJECT, response.body<ResponseObject>())
+        assertTrue(netMock.allowedMocks.isEmpty())
+    }
+
     private suspend fun assertValidResponse(expectedResponse: NetMockResponse, actualResponse: HttpResponse) {
         assertEquals(expectedResponse.code, actualResponse.status.value)
         assertHeaders(expectedResponse.containsHeaders, actualResponse.headers)
@@ -253,6 +278,12 @@ class NetMockEngineTest {
             assertEquals(value, actualHeaders[key] as Any)
         }
     }
+
+    @Serializable
+    private data class RequestObject(val id: String, val message: String, val data: String)
+
+    @Serializable
+    private data class ResponseObject(val code: Int, val message: String, val data: String)
 
     private companion object {
         const val REQUEST_BODY = """
@@ -269,6 +300,8 @@ class NetMockEngineTest {
               "data": "some text"
             }
         """
+        val REQUEST_OBJECT = RequestObject("some body id", "some body message", "some body text")
+        val RESPONSE_OBJECT = ResponseObject(200, "some message", "some text")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
             path = "/somePath",
             method = Method.Get,
@@ -282,6 +315,11 @@ class NetMockEngineTest {
         val EXPECTED_RESPONSE = NetMockResponse(
             code = 200,
             containsHeaders = mapOf("x" to "y"),
+            body = RESPONSE_BODY
+        )
+        val EXPECTED_JSON_RESPONSE = NetMockResponse(
+            code = 200,
+            containsHeaders = mapOf("x" to "y", "Content-Type" to "application/json"),
             body = RESPONSE_BODY
         )
         val DEFAULT_RESPONSE = NetMockResponse(code = 201, containsHeaders = mapOf("a" to "b"), body = "default")
