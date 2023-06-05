@@ -1,4 +1,4 @@
-package com.denisbrandi.netmock.assets
+package com.denisbrandi.netmock.engine.resources
 
 import java.io.File
 

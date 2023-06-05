@@ -1,7 +1,7 @@
 package com.denisbrandi.netmock.server
 
 import com.denisbrandi.netmock.*
-import com.denisbrandi.netmock.assets.readFromResources
+import com.denisbrandi.netmock.server.resources.readFromResources
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.junit.*
