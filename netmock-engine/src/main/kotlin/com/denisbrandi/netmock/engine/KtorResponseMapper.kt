@@ -5,7 +5,9 @@ import com.denisbrandi.netmock.mappers.ResponseMapper
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.util.date.*
+import io.ktor.utils.io.*
 import kotlinx.coroutines.*
+import kotlinx.serialization.json.Json
 
 internal object KtorResponseMapper : ResponseMapper<HttpResponseData> {
 
@@ -18,7 +20,7 @@ internal object KtorResponseMapper : ResponseMapper<HttpResponseData> {
                     append(it.key, it.value)
                 }
             }.build(),
-            body = netMockResponse.body,
+            body = ByteReadChannel(netMockResponse.body),
             version = HttpProtocolVersion.HTTP_1_1,
             callContext = CoroutineScope(Dispatchers.Unconfined).coroutineContext
         )

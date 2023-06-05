@@ -1,6 +1,8 @@
 package com.denisbrandi.netmock.compatibility
 
-import com.denisbrandi.netmock.*
+import com.denisbrandi.netmock.Method
+import com.denisbrandi.netmock.NetMockRequest
+import com.denisbrandi.netmock.NetMockResponse
 import com.denisbrandi.netmock.assets.readFromResources
 import com.denisbrandi.netmock.server.NetMockServerRule
 import io.ktor.client.*
@@ -11,8 +13,10 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.test.runTest
-import org.junit.*
+import kotlinx.serialization.Serializable
 import org.junit.Assert.assertEquals
+import org.junit.Rule
+import org.junit.Test
 
 class KtorMockTest {
     @get:Rule
@@ -34,7 +38,7 @@ class KtorMockTest {
 
         assertEquals(200, response.status.value)
         assertHeaders(EXPECTED_RESPONSE_HEADERS, response.headers)
-        assertEquals(RESPONSE_BODY, response.body<String>())
+        assertEquals(RESPONSE_OBJECT, response.body<ResponseObject>())
     }
 
     @Test
@@ -54,69 +58,69 @@ class KtorMockTest {
     @Test
     fun `EXPECT POST response`() = runTest {
         netMock.addMock(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY_RAW),
             EXPECTED_RESPONSE
         )
 
         val response = sut.post(getUrl()) {
             addHeaders()
-            setBody(REQUEST_BODY)
+            setBody(REQUEST_OBJECT)
         }
 
         assertEquals(200, response.status.value)
         assertHeaders(EXPECTED_RESPONSE_HEADERS, response.headers)
-        assertEquals(RESPONSE_BODY, response.body<String>())
+        assertEquals(RESPONSE_OBJECT, response.body<ResponseObject>())
     }
 
     @Test
     fun `EXPECT PUT response`() = runTest {
         netMock.addMock(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Put, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Put, body = REQUEST_BODY_RAW),
             EXPECTED_RESPONSE
         )
 
         val response = sut.put(getUrl()) {
             addHeaders()
-            setBody(REQUEST_BODY)
+            setBody(REQUEST_OBJECT)
         }
 
         assertEquals(200, response.status.value)
         assertHeaders(EXPECTED_RESPONSE_HEADERS, response.headers)
-        assertEquals(RESPONSE_BODY, response.body<String>())
+        assertEquals(RESPONSE_OBJECT, response.body<ResponseObject>())
     }
 
     @Test
     fun `EXPECT DELETE response`() = runTest {
         netMock.addMock(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Delete, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Delete, body = REQUEST_BODY_RAW),
             EXPECTED_RESPONSE
         )
 
         val response = sut.delete(getUrl()) {
             addHeaders()
-            setBody(REQUEST_BODY)
+            setBody(REQUEST_OBJECT)
         }
 
         assertEquals(200, response.status.value)
         assertHeaders(EXPECTED_RESPONSE_HEADERS, response.headers)
-        assertEquals(RESPONSE_BODY, response.body<String>())
+        assertEquals(RESPONSE_OBJECT, response.body<ResponseObject>())
     }
 
     @Test
     fun `EXPECT PATCH response`() = runTest {
         netMock.addMock(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Patch, body = REQUEST_BODY),
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Patch, body = REQUEST_BODY_RAW),
             EXPECTED_RESPONSE
         )
 
         val response = sut.patch(getUrl()) {
             addHeaders()
-            setBody(REQUEST_BODY)
+            setBody(REQUEST_OBJECT)
         }
 
         assertEquals(200, response.status.value)
         assertHeaders(EXPECTED_RESPONSE_HEADERS, response.headers)
-        assertEquals(RESPONSE_BODY, response.body<String>())
+        assertEquals(RESPONSE_OBJECT, response.body<ResponseObject>())
     }
 
     private fun getUrl() = "${netMock.baseUrl}somePath?1=2&3=4"
@@ -127,6 +131,7 @@ class KtorMockTest {
 
     private fun HttpRequestBuilder.addHeaders() {
         headers {
+            append(HttpHeaders.ContentType, ContentType.Application.Json.toString())
             append("a", "b")
             append("c", "d")
         }
@@ -138,17 +143,26 @@ class KtorMockTest {
         }
     }
 
+    @Serializable
+    private data class RequestObject(val id: String, val message: String, val data: String)
+
+    @Serializable
+    private data class ResponseObject(val code: Int, val message: String, val data: String)
+
     private companion object {
-        val REQUEST_BODY = readFromResources("request_body.json")
-        val RESPONSE_BODY = readFromResources("response_body.json")
+        val REQUEST_BODY_RAW = readFromResources("request_body.json")
+        val REQUEST_OBJECT = RequestObject("some body id", "some body message", "some body text")
+        val RESPONSE_BODY_RAW = readFromResources("response_body.json")
+        val RESPONSE_OBJECT = ResponseObject(200, "some message", "some text")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
             path = "/somePath",
             method = Method.Get,
-            containsHeaders = mapOf("a" to "b", "c" to "d"),
+            containsHeaders = mapOf("a" to "b", "c" to "d", "Content-Type" to "application/json"),
             params = mapOf("1" to "2", "3" to "4")
         )
-        val EXPECTED_RESPONSE_HEADERS = mapOf("x" to "y")
+        val EXPECTED_RESPONSE_HEADERS =
+            mapOf("x" to "y", "Content-Type" to "application/json")
         val EXPECTED_RESPONSE =
-            NetMockResponse(code = 200, containsHeaders = EXPECTED_RESPONSE_HEADERS, body = RESPONSE_BODY)
+            NetMockResponse(code = 200, containsHeaders = EXPECTED_RESPONSE_HEADERS, body = RESPONSE_BODY_RAW)
     }
 }
