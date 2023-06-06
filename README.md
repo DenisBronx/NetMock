@@ -1,21 +1,20 @@
 # NetMock
 NetMock is a powerful testing library that makes it incredibly easy to unit test your network requests. 
-It is compatible with Java, Kotlin, and Android, making it a versatile option for developers working on different platforms.
+It is compatible with `Java`, `Kotlin`, and `Android`, making it a versatile option for developers working on different platforms.
 
 The library offers a variety of features that can help you test your network requests against any network library, including `OkHttp`, `Ktor`, and `Retrofit`. 
-You can use a `mock-like` API to test your requests, making the entire process much simpler and more intuitive.
+You can use a mock-like API to test your requests, making the test code much simpler and more readable.
 
 NetMock comes in two different flavors: `netmock-server` and `netmock-engine`. 
 
-The `netmock-server` flavor is compatible with all network libraries and allows you to mock network requests by redirecting requests to a [localhost](http://localhost/) web server using https://github.com/square/okhttp/tree/master/mockwebserver. 
+The `netmock-server` flavor is compatible with Java/Kotlin/Android and it is library independent as it allows you to mock network requests by redirecting requests to a [localhost](http://localhost/) web server using [MockWebServer](https://github.com/square/okhttp/tree/master/mockwebserver). 
 This flavor is perfect for developers who want to test their network requests without having to worry about setting up a separate server.
 
-On the other hand, the `netmock-engine` flavor is designed specifically for developers using `Ktor`. 
+The `netmock-engine` flavor, on the other hand, is designed specifically for developers using `Ktor`. 
 It allows you to use `MockEngine` instead of a [localhost](http://localhost/) server, making it a more lightweight option for those working with `Ktor`.
-Soon available for multiplatform!
+If in your project you are using a variety of libraries and you don't want to import both flavors, just use `netmock-server` as it is compatible with all the libraries including `Ktor`.
 
-Whether you are using `netmock-server` or `netmock-engine`, `NetMock` makes it easy to generate a `baseUrl` that you will need to use for your requests. 
-Once your baseUrl is generated, you can use it to send requests using OkHttp, Retrofit, Ktor or any other library.
+`netmock-engine` will soon available for multiplatform projects!
 
 # Install
 Netmock is available on Jitpack.
@@ -117,29 +116,59 @@ fun `my test`() {
         }
     )
     
-    //you can also mock using NetMockRequest and NetMockResponse
-    val request = NetMockRequest(
-        method = Method.Post, 
-        path = "/somePath", 
-        params = mapOf("paramKey1" to "paramValue1", "paramKey2" to "paramValue2"), 
-        containsHeaders = mapOf("a" to "b", "b" to "c"),
-        body = readFromResources("requests/request_body.json")
-    )
-    val response = NetMockResponse(
-        code = 200,
-        containsHeaders = mapOf("a" to "b", "b" to "c"),
-        body = readFromResources("responses/response_body.json")
-    )
+    //...
+}
+```
+
+Or if you want to define requests and responses outside the test function for reusability:
+
+```kotlin
+private val request = NetMockRequest(
+    method = Method.Post, 
+    path = "/somePath",
+    params = mapOf("paramKey1" to "paramValue1", "paramKey2" to "paramValue2"), 
+    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    body = readFromResources("requests/request_body.json")
+)
+private val response = NetMockResponse(
+    code = 200,
+    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    body = readFromResources("responses/response_body.json")
+)
+
+@Test
+fun `my test`() {
     netMock.addMock(request, response)
     
-    //you can also use templates
+    //...
+}
+```
+
+You can also use templates and override the fields that need to change:
+
+```kotlin
+private val templateRequest = NetMockRequest(
+    method = Method.Post, 
+    path = "/somePath",
+    params = mapOf("paramKey1" to "paramValue1", "paramKey2" to "paramValue2"), 
+    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    body = readFromResources("requests/request_body.json")
+)
+private val templateResponse = NetMockResponse(
+    code = 200,
+    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    body = readFromResources("responses/response_body.json")
+)
+
+@Test
+fun `my test`() {
     netMock.addMock(
         request = {
-            fromRequest(request)
+            fromRequest(templateRequest)
             method = Method.Put
         },
         response = {
-            fromResponse(response)
+            fromResponse(templateResponse)
             code = 201
         }
     )
@@ -148,7 +177,8 @@ fun `my test`() {
 }
 ```
 
-Each mock will intercept only 1 request.
+Each mock will intercept only 1 request, once a request is intercepted `NetMock` will remove the mock from the queue.
+This allows you test what your code exactly does.
 If your code is making the same request multiple times (i.e polling) you would need to add a mock for each expected request:
 
 ```kotlin
@@ -162,7 +192,8 @@ fun `your test`() {
 }
 ```
 
-If you want to verify that a request has been intercepted:
+If you want to verify that a request has been intercepted you can use `netMock.interceptedRequests`, which will return a list of all the interceptedRequests by `NetMock`:
+
 ```kotlin
 @Test
 fun `your test`() {
@@ -174,14 +205,21 @@ fun `your test`() {
 }
 ```
 
+You can also check the requests that have not been intercepted yet with:
+
+```kotlin
+netMock.allowedMocks
+```
+This will return a `NetMockRequestResponse` which is the pair of the `NetMockRequest:NetMockResponse` you previously mocked.
+
 ## Not mocked requests
 By default requests that are not mocked will produce a `400 Bad Request` response and will be logged as errors in the JUnit console.
 You can override this behaviour by setting a default response:
 ```kotlin
 netMock.defaultResponse = NetMockResponse(
-        code = 200,
-        containsHeaders = mapOf("a" to "b", "b" to "c"),
-        body = readFromResources("responses/response_body.json")
-    )
+    code = 200,
+    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    body = readFromResources("responses/response_body.json")
+)
 ```
 by doing so, all the not mocked requests will return the specified response and no logs will be printed in the JUnit console.
