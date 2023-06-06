@@ -1,7 +1,7 @@
 package com.denisbrandi.netmock.compatibility
 
 import com.denisbrandi.netmock.*
-import com.denisbrandi.netmock.assets.readFromResources
+import com.denisbrandi.netmock.server.resources.readFromResources
 import com.denisbrandi.netmock.server.NetMockServerRule
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.test.runTest
