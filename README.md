@@ -83,7 +83,7 @@ private val ktorClient = HttpClient(CIO.create()) /*or HttpClient(netMock) if yo
 ktorClient.get("${baseUrl}requestPath")
 ```
 
-#### Mock requests/responses
+## Mock requests and responses
 
 ```kotlin
 @Test
@@ -149,7 +149,6 @@ fun `my test`() {
 ```
 
 Each mock will intercept only 1 request.
-
 If your code is making the same request multiple times (i.e polling) you would need to add a mock for each expected request:
 
 ```kotlin
@@ -174,3 +173,15 @@ fun `your test`() {
     assertEquals(listOf(request), netMock.interceptedRequests)
 }
 ```
+
+## Not mocked requests
+By default requests that are not mocked will produce a `400 Bad Request` response and will be logged as errors in the JUnit console.
+You can override this behaviour by setting a default response:
+```kotlin
+netMock.defaultResponse = NetMockResponse(
+        code = 200,
+        containsHeaders = mapOf("a" to "b", "b" to "c"),
+        body = readFromResources("responses/response_body.json")
+    )
+```
+by doing so, all the not mocked requests will return the specified response and no logs will be printed in the JUnit console.
