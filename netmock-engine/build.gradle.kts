@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform") version "1.8.21"
     id("org.jetbrains.kotlin.plugin.serialization")
     id("maven-publish")
+    id("convention.publication")
 }
 
 publishing {
