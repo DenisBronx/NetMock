@@ -4,7 +4,7 @@ import com.denisbrandi.netmock.Method
 import com.denisbrandi.netmock.NetMockRequest
 import com.denisbrandi.netmock.NetMockRequestResponse
 import com.denisbrandi.netmock.NetMockResponse
-import com.denisbrandi.netmock.engine.resources.readFromResources
+import com.denisbrandi.netmock.resources.readFromResources
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
