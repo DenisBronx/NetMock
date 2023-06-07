@@ -1,7 +1,7 @@
 package com.denisbrandi.netmock.compatibility
 
 import com.denisbrandi.netmock.*
-import com.denisbrandi.netmock.server.resources.readFromResources
+import com.denisbrandi.netmock.resources.readFromResources
 import com.denisbrandi.netmock.server.NetMockServerRule
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.test.runTest
@@ -141,6 +141,7 @@ class RetrofitMockTest {
 
     @Serializable
     private data class RequestObject(val id: String, val message: String, val data: String)
+
     @Serializable
     private data class ResponseObject(val code: Int, val message: String, val data: String)
 

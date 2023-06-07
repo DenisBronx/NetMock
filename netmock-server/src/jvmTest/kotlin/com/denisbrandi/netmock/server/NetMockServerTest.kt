@@ -1,11 +1,19 @@
 package com.denisbrandi.netmock.server
 
-import com.denisbrandi.netmock.*
-import com.denisbrandi.netmock.server.resources.readFromResources
-import okhttp3.*
+import com.denisbrandi.netmock.Method
+import com.denisbrandi.netmock.NetMockRequest
+import com.denisbrandi.netmock.NetMockRequestResponse
+import com.denisbrandi.netmock.NetMockResponse
+import com.denisbrandi.netmock.resources.readFromJvmResources
+import okhttp3.Headers
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.junit.*
-import org.junit.Assert.*
+import okhttp3.Response
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Rule
+import org.junit.Test
 
 class NetMockServerTest {
     @get:Rule
@@ -201,7 +209,7 @@ class NetMockServerTest {
     }
 
     private companion object {
-        val REQUEST_BODY = readFromResources("request_body.json")
+        val REQUEST_BODY = readFromJvmResources("request_body.json")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
             path = "/somePath",
             method = Method.Get,
@@ -215,7 +223,7 @@ class NetMockServerTest {
         val EXPECTED_RESPONSE = NetMockResponse(
             code = 200,
             containsHeaders = mapOf("x" to "y"),
-            body = readFromResources("response_body.json")
+            body = readFromJvmResources("response_body.json")
         )
         val DEFAULT_RESPONSE = NetMockResponse(code = 201, containsHeaders = mapOf("a" to "b"), body = "default")
         private fun getCompleteRequest(baseUrl: String): Request {

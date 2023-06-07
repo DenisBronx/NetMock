@@ -15,8 +15,8 @@ import platform.posix.fseek
 import platform.posix.ftell
 import platform.posix.rewind
 
-actual class Resource actual constructor(actual val name: String) {
-    private val file: CPointer<FILE>? = fopen("$RESOURCE_PATH/$name", "r")
+actual class Resource actual constructor(actual val path: String, actual val name: String) {
+    private val file: CPointer<FILE>? = fopen("$path/$name", "r")
 
     actual fun exists(): Boolean = file != null
 
