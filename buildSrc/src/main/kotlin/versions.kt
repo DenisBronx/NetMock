@@ -1,4 +1,4 @@
-const val netmock_version = "0.1.4"
+const val netmock_version = "0.2.0"
 const val android_plugin_version = "7.4.1"
 const val kotlin_version = "1.8.21"
 const val junit_version = "4.13.1"

@@ -1,31 +1,31 @@
 # NetMock
 NetMock is a powerful testing library that makes it incredibly easy to unit test your network requests. 
-It is compatible with `Java`, `Kotlin`, and `Android`, making it a versatile option for developers working on different platforms.
+It is compatible with `Java`, `Kotlin`, `Android`, and `Kotlin-Multiplatform` making it a versatile option for developers working on different platforms.
 
 The library offers a variety of features that can help you test your network requests against any network library, including `OkHttp`, `Ktor`, and `Retrofit`. 
 You can use a mock-like API to test your requests, making the test code much simpler and more readable.
 
-NetMock comes in two different flavors: `netmock-server` and `netmock-engine`. 
+`NetMock` comes in two different flavors: `netmock-server` and `netmock-engine`. 
 
-The `netmock-server` flavor is compatible with Java/Kotlin/Android and it is library independent as it allows you to mock network requests by redirecting requests to a [localhost](http://localhost/) web server using [MockWebServer](https://github.com/square/okhttp/tree/master/mockwebserver). 
-This flavor is perfect for developers who want to test their network requests without having to worry about setting up a separate server.
+The `netmock-server` flavor is compatible with `Java`, `Kotlin`, and `Android`, and it is **library independent** as it allows you to mock network requests by redirecting requests to a [localhost](http://localhost/) web server using [MockWebServer](https://github.com/square/okhttp/tree/master/mockwebserver). 
+This flavor is perfect for developers that work on non-Multiplatform projects and that want to test their network requests without having to worry about setting up a separate server.
 
 The `netmock-engine` flavor, on the other hand, is designed specifically for developers using `Ktor` or working with `Kotlin Multiplatform`. 
-It allows you to use `MockEngine` instead of a [localhost](http://localhost/) server, making it a more lightweight and multiplatform option for those working with `Ktor`.
-If in your project is not a Kotlin multiplatform project, and you are using a variety of libraries, and you don't want to import both flavors, just use `netmock-server` as it is compatible with all the libraries including `Ktor`.
+It allows you to use `MockEngine` instead of a localhost server, making it a more lightweight and multiplatform option for those working with `Ktor`.
+If your project is not a Kotlin multiplatform project, and you are using a variety of libraries, and you don't want to import both flavors, just use `netmock-server` as it is compatible with all the libraries including `Ktor`.
 
 
 # Install
-Netmock is available on Maven Central.
+`Netmock` is available on Maven Central.
 
-For Gradle users, add the following to your module’s build.gradle
+For Gradle users, add the following to your module’s `build.gradle`
 
 ```groovy
 dependencies {
     //compatible with all libraries
-    testImplementation "io.github.denisbronx.netmock:netmock-server:0.1.3" 
+    testImplementation "io.github.denisbronx.netmock:netmock-server:0.2.0" 
     //lighter weight option for ktor only library users
-    testImplementation "io.github.benisbronx.netmock:netmock-engine:0.1.3"
+    testImplementation "io.github.benisbronx.netmock:netmock-engine:0.2.0"
 }
 ```
 
