@@ -13,6 +13,7 @@ plugins {
 ext["signing.keyId"] = null
 ext["signing.password"] = null
 ext["signing.secretKeyRingFile"] = null
+ext["signing.secretKey"] = null
 ext["ossrhUsername"] = null
 ext["ossrhPassword"] = null
 
@@ -29,7 +30,7 @@ if (secretPropsFile.exists()) {
 } else {
     ext["signing.keyId"] = System.getenv("SIGNING_KEY_ID")
     ext["signing.password"] = System.getenv("SIGNING_PASSWORD")
-    ext["signing.secretKeyRingFile"] = System.getenv("SIGNING_SECRET_KEY_RING_FILE")
+    ext["signing.secretKey"] = System.getenv("SIGNING_SECRET_KEY")
     ext["ossrhUsername"] = System.getenv("OSSRH_USERNAME")
     ext["ossrhPassword"] = System.getenv("OSSRH_PASSWORD")
 }
@@ -86,5 +87,9 @@ publishing {
 
 // Signing artifacts. Signing.* extra properties values will be used
 signing {
+    val signingKeyId: String = project.ext["signing.keyId"] as String
+    val signingKey: String = project.ext["signing.secretKey"] as String
+    val signingPassword: String = project.ext["signing.password"] as String
+    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
     sign(publishing.publications)
 }
