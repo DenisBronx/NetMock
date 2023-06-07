@@ -4,7 +4,6 @@ const val RESOURCES_PATH = "./src/test/resources"
 const val COMMON_RESOURCES_PATH = "./src/commonTest/resources"
 const val JVM_RESOURCES_PATH = "./src/jvmTest/resources"
 const val NATIVE_RESOURCES_PATH = "./src/nativeTest/resources"
-const val JS_RESOURCES_PATH = "./src/jsTest/resources"
 
 expect class Resource(path: String, name: String) {
     val path: String
@@ -28,8 +27,4 @@ fun readFromJvmResources(fileName: String): String {
 
 fun readFromNativeResources(fileName: String): String {
     return Resource(NATIVE_RESOURCES_PATH, fileName).readText()
-}
-
-fun readFromJsResources(fileName: String): String {
-    return Resource(JS_RESOURCES_PATH, fileName).readText()
 }

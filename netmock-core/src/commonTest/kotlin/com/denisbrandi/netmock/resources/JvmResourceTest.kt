@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class ResourceTest {
+class JvmResourceTest {
 
     private val sut = Resource(COMMON_RESOURCES_PATH, FILE_PATH)
 

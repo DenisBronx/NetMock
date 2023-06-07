@@ -21,16 +21,6 @@ kotlin {
             useJUnit()
         }
     }
-    // TODO: Fix js tests
-    //js(IR) {
-    //    browser {
-    //        commonWebpackConfig {
-    //            cssSupport {
-    //                enabled.set(true)
-    //            }
-    //        }
-    //    }
-    //}
     val hostOs = System.getProperty("os.name")
     val isMingwX64 = hostOs.startsWith("Windows")
     val nativeTarget = when {

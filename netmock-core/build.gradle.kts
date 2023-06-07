@@ -21,19 +21,6 @@ kotlin {
             useJUnit()
         }
     }
-    // TODO: Fix js browser "Cannot find module 'fs'"
-    //js(IR) {
-    //    nodejs {
-    //    }
-    //    browser {
-    //        commonWebpackConfig {
-    //            cssSupport {
-    //                enabled.set(true)
-    //            }
-    //            useCommonJs()
-    //        }
-    //    }
-    //}
     val hostOs = System.getProperty("os.name")
     val isMingwX64 = hostOs.startsWith("Windows")
     val nativeTarget = when {
@@ -55,17 +42,3 @@ kotlin {
         }
     }
 }
-
-tasks.create<Copy>("copyTestResourcesForNodeJs") {
-    from("$projectDir/src/commonTest/resources")
-    into("${rootProject.buildDir}/js/packages/${rootProject.name}-${project.name}-test/src/commonTest/resources")
-}
-
-tasks.findByName("jsNodeTest")?.dependsOn("copyTestResourcesForNodeJs")
-
-tasks.create<Copy>("copyTestResourcesForBrowserJs") {
-    from("$projectDir/src/commonTest/resources")
-    into("${rootProject.buildDir}/js/packages/${rootProject.name}-${project.name}-test/src/commonTest/resources")
-}
-
-tasks.findByName("jsBrowserTest")?.dependsOn("copyTestResourcesForBrowserJs")
