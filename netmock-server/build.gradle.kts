@@ -2,11 +2,12 @@ plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
     id("maven-publish")
+    id("convention.publication")
 }
 
 publishing {
     publications.withType<MavenPublication> {
-        groupId = "com.denisbrandi.netmock"
+        groupId = "io.github.denisbronx.netmock"
         artifactId = "netmock-server"
         version = netmock_version
     }

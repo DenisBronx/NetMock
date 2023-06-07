@@ -7,7 +7,7 @@ plugins {
 
 publishing {
     publications.withType<MavenPublication> {
-        groupId = "com.denisbrandi.netmock"
+        groupId = "io.github.denisbronx.netmock"
         artifactId = "netmock-engine"
         version = netmock_version
     }
