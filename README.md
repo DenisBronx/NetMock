@@ -10,33 +10,22 @@ NetMock comes in two different flavors: `netmock-server` and `netmock-engine`.
 The `netmock-server` flavor is compatible with Java/Kotlin/Android and it is library independent as it allows you to mock network requests by redirecting requests to a [localhost](http://localhost/) web server using [MockWebServer](https://github.com/square/okhttp/tree/master/mockwebserver). 
 This flavor is perfect for developers who want to test their network requests without having to worry about setting up a separate server.
 
-The `netmock-engine` flavor, on the other hand, is designed specifically for developers using `Ktor`. 
-It allows you to use `MockEngine` instead of a [localhost](http://localhost/) server, making it a more lightweight option for those working with `Ktor`.
-If in your project you are using a variety of libraries and you don't want to import both flavors, just use `netmock-server` as it is compatible with all the libraries including `Ktor`.
+The `netmock-engine` flavor, on the other hand, is designed specifically for developers using `Ktor` or working with `Kotlin Multiplatform`. 
+It allows you to use `MockEngine` instead of a [localhost](http://localhost/) server, making it a more lightweight and multiplatform option for those working with `Ktor`.
+If in your project is not a Kotlin multiplatform project, and you are using a variety of libraries, and you don't want to import both flavors, just use `netmock-server` as it is compatible with all the libraries including `Ktor`.
 
-`netmock-engine` will soon available for multiplatform projects!
 
 # Install
-Netmock is available on Jitpack.
+Netmock is available on Maven Central.
 
-For Gradle users, add the following to your root build.gradle
-
-```groovy
-allprojects {
-    repositories {
-        maven { url 'https://jitpack.io' }
-    }
-}
-```
-
-and the following to your module’s build.gradle
+For Gradle users, add the following to your module’s build.gradle
 
 ```groovy
 dependencies {
     //compatible with all libraries
-    testImplementation "com.github.DenisBronx.netmock:netmock-server:0.1.1" 
+    testImplementation "io.github.denisbronx.netmock:netmock-server:0.1.3" 
     //lighter weight option for ktor only library users
-    testImplementation "com.github.DenisBronx.netmock:netmock-engine:0.1.1"
+    testImplementation "io.github.benisbronx.netmock:netmock-engine:0.1.3"
 }
 ```
 
