@@ -4,7 +4,7 @@ import com.denisbrandi.netmock.Method
 import com.denisbrandi.netmock.NetMockRequest
 import com.denisbrandi.netmock.NetMockRequestResponse
 import com.denisbrandi.netmock.NetMockResponse
-import com.denisbrandi.netmock.resources.readFromResources
+import com.denisbrandi.netmock.resources.readFromCommonResources
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -287,8 +287,8 @@ class NetMockEngineTest {
     private data class ResponseObject(val code: Int, val message: String, val data: String)
 
     private companion object {
-        val REQUEST_BODY = readFromResources("request_body.json")
-        val RESPONSE_BODY = readFromResources("response_body.json")
+        val REQUEST_BODY = readFromCommonResources("request_body.json")
+        val RESPONSE_BODY = readFromCommonResources("response_body.json")
         val REQUEST_OBJECT = RequestObject("some body id", "some body message", "some body text")
         val RESPONSE_OBJECT = ResponseObject(200, "some message", "some text")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
