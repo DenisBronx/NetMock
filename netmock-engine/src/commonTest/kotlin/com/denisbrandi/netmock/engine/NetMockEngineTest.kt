@@ -12,12 +12,12 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.Serializable
 import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.Serializable
 
 class NetMockEngineTest {
 
@@ -51,7 +51,10 @@ class NetMockEngineTest {
         val response1 = sut.request(getCompleteRequest(netMock.baseUrl))
         val response2 = sut.request(getCompleteRequest(netMock.baseUrl))
 
-        assertEquals(listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST), netMock.interceptedRequests)
+        assertEquals(
+            listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST),
+            netMock.interceptedRequests
+        )
         assertValidResponse(expectedResponse1, response1)
         assertValidResponse(expectedResponse2, response2)
         assertTrue(netMock.allowedMocks.isEmpty())
@@ -69,7 +72,10 @@ class NetMockEngineTest {
         val response2 = sut.request(getCompleteRequest(netMock.baseUrl))
         val response3 = sut.request(getCompleteRequest(netMock.baseUrl))
 
-        assertEquals(listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST), netMock.interceptedRequests)
+        assertEquals(
+            listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST),
+            netMock.interceptedRequests
+        )
         assertValidResponse(expectedResponse1, response1)
         assertValidResponse(expectedResponse2, response2)
         assertEquals(400, response3.status.value)
@@ -268,7 +274,10 @@ class NetMockEngineTest {
         assertTrue(netMock.allowedMocks.isEmpty())
     }
 
-    private suspend fun assertValidResponse(expectedResponse: NetMockResponse, actualResponse: HttpResponse) {
+    private suspend fun assertValidResponse(
+        expectedResponse: NetMockResponse,
+        actualResponse: HttpResponse
+    ) {
         assertEquals(expectedResponse.code, actualResponse.status.value)
         assertHeaders(expectedResponse.containsHeaders, actualResponse.headers)
         assertEquals(expectedResponse.body, actualResponse.body<String>())
@@ -311,7 +320,8 @@ class NetMockEngineTest {
             containsHeaders = mapOf("x" to "y", "Content-Type" to "application/json"),
             body = RESPONSE_BODY
         )
-        val DEFAULT_RESPONSE = NetMockResponse(code = 201, containsHeaders = mapOf("a" to "b"), body = "default")
+        val DEFAULT_RESPONSE =
+            NetMockResponse(code = 201, containsHeaders = mapOf("a" to "b"), body = "default")
         private fun getCompleteRequest(baseUrl: String): HttpRequestBuilder {
             return getCompleteRequestBuilder(baseUrl).apply {
                 method = HttpMethod.Get

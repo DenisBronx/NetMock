@@ -2,7 +2,6 @@ package com.denisbrandi.netmock.engine
 
 import co.touchlab.kermit.CommonWriter
 import co.touchlab.kermit.Logger
-import co.touchlab.kermit.Severity
 import co.touchlab.kermit.loggerConfigInit
 import com.denisbrandi.netmock.NetMockResponse
 import com.denisbrandi.netmock.engine.KtorResponseMapper.mapResponse
@@ -23,7 +22,10 @@ internal class NetMockRequestHandler(
         } else {
             ""
         }
-        return intercept(request, requestBody) ?: returnDefaultErrorResponseAndLogError(request, requestBody)
+        return intercept(request, requestBody) ?: returnDefaultErrorResponseAndLogError(
+            request,
+            requestBody
+        )
     }
 
     private fun returnDefaultErrorResponseAndLogError(
@@ -31,10 +33,10 @@ internal class NetMockRequestHandler(
         recordedRequestBody: String
     ): HttpResponseData {
         val errorMessage =
-            "\n----\nRequest not mocked:\n${request}\nWith headers:\n${request.headers}With body:\n${recordedRequestBody}" +
-                    "\n\nThe following requests and responses were expected:\n${allowedMocks}" +
-                    "\n\nThe following requests have been successfully mocked:\n${interceptedRequests}" +
-                    "\n----"
+            "\n----\nRequest not mocked:\n${request}\nWith headers:\n${request.headers}With body:\n$recordedRequestBody" +
+                "\n\nThe following requests and responses were expected:\n$allowedMocks" +
+                "\n\nThe following requests have been successfully mocked:\n$interceptedRequests" +
+                "\n----"
         logError(errorMessage)
         return mapResponse(NetMockResponse(code = 400, body = errorMessage))
     }
