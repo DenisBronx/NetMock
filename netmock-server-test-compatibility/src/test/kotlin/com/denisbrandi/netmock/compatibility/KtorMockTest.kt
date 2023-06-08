@@ -3,7 +3,7 @@ package com.denisbrandi.netmock.compatibility
 import com.denisbrandi.netmock.Method
 import com.denisbrandi.netmock.NetMockRequest
 import com.denisbrandi.netmock.NetMockResponse
-import com.denisbrandi.netmock.assets.readFromResources
+import com.denisbrandi.netmock.resources.readFromResources
 import com.denisbrandi.netmock.server.NetMockServerRule
 import io.ktor.client.*
 import io.ktor.client.call.*
