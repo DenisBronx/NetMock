@@ -1,6 +1,8 @@
 package com.denisbrandi.netmock.interceptors
 
-import com.denisbrandi.netmock.*
+import com.denisbrandi.netmock.NetMockRequest
+import com.denisbrandi.netmock.NetMockRequestResponse
+import com.denisbrandi.netmock.NetMockResponse
 
 interface RequestInterceptor<Request : Any, Response : Any> {
     val interceptedRequests: List<NetMockRequest>
@@ -9,5 +11,5 @@ interface RequestInterceptor<Request : Any, Response : Any> {
 
     fun addMock(request: NetMockRequest, response: NetMockResponse)
 
-    fun intercept(interceptedRequest: Request, interceptedRequestBody: String): Response?
+    fun intercept(interceptedRequest: Request, headers: Any, interceptedRequestBody: String): Response
 }
