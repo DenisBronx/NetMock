@@ -4,6 +4,23 @@ import com.denisbrandi.netmock.NetMock
 import com.denisbrandi.netmock.interceptors.*
 import okhttp3.mockwebserver.*
 
+/**
+ * Wrapper of [MockWebServer], used to intercept requests and responses directed to localhost.
+ * In order to use [NetMock.addMock] you'll need to start the server first in order to obtain a [NetMock.baseUrl].
+ * You should also stop the server at the end of each test.
+ * Example:
+    private val netMock = NetMockServer()
+    @Before
+    fun setUp() {
+        netMock.start()
+    }
+
+    @After
+    fun tearDown() {
+        netMock.shutDown()
+    }
+ * To avoid to do this manually use [NetMockServerRule] which will deal with start and shutDown for you.
+ */
 class NetMockServer private constructor(
     private val dispatcher: MockDispatcher
 ) : NetMock, RequestInterceptor<RecordedRequest, MockResponse> by dispatcher {
