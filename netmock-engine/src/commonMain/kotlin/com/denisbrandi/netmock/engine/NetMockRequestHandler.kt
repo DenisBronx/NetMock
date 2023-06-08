@@ -3,10 +3,11 @@ package com.denisbrandi.netmock.engine
 import com.denisbrandi.netmock.NetMockResponse
 import com.denisbrandi.netmock.engine.KtorResponseMapper.mapResponse
 import com.denisbrandi.netmock.interceptors.RequestInterceptor
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import io.ktor.client.engine.mock.*
 import io.ktor.client.request.*
 import io.ktor.http.content.*
-import io.ktor.util.logging.*
 
 internal class NetMockRequestHandler(
     ktorInterceptor: RequestInterceptor<HttpRequestData, HttpResponseData>
@@ -28,12 +29,20 @@ internal class NetMockRequestHandler(
         recordedRequestBody: String
     ): HttpResponseData {
         val errorMessage =
-            "Request not mocked:\n${request}\nWith headers:\n${request.headers}With body:\n${recordedRequestBody}"
-        KtorSimpleLogger("NetMock").apply {
-            error(errorMessage)
-            info("The following requests and responses were expected:\n${allowedMocks}")
-            info("The following requests have been successfully mocked:\n${interceptedRequests}")
-        }
+            "\n----\nRequest not mocked:\n${request}\nWith headers:\n${request.headers}With body:\n${recordedRequestBody}" +
+                    "\n\nThe following requests and responses were expected:\n${allowedMocks}" +
+                    "\n\nThe following requests have been successfully mocked:\n${interceptedRequests}" +
+                    "\n----"
+        logError(errorMessage)
         return mapResponse(NetMockResponse(code = 400, body = errorMessage))
+    }
+
+    private fun logError(errorMessage: String) {
+        Napier.base(DebugAntilog())
+        Napier.e(
+            message = errorMessage,
+            tag = "NetMock"
+        )
+        Napier.takeLogarithm()
     }
 }
