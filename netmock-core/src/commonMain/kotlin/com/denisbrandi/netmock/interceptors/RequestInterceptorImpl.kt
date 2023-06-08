@@ -19,7 +19,11 @@ class RequestInterceptorImpl<Request : Any, Response : Any>(
 
     override fun intercept(interceptedRequest: Request, interceptedRequestBody: String): Response? {
         val matchedResponse = allowedMocks.filter { requestResponse ->
-            requestMatcher.isMatchingTheRequest(interceptedRequest, interceptedRequestBody, requestResponse.request)
+            requestMatcher.isMatchingTheRequest(
+                interceptedRequest,
+                interceptedRequestBody,
+                requestResponse.request
+            )
         }.firstNotNullOfOrNull { requestResponse ->
             interceptedRequests.add(requestResponse.request)
             allowedMocks.remove(requestResponse)

@@ -5,7 +5,7 @@ data class NetMockRequest(
     val method: Method = Method.Custom(""),
     val containsHeaders: Map<String, String> = emptyMap(),
     val params: Map<String, String> = emptyMap(),
-    val body: String = "",
+    val body: String = ""
 )
 
 class NetMockRequestBuilder {

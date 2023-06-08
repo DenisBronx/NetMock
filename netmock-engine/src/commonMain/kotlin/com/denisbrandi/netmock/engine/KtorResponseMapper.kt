@@ -7,7 +7,6 @@ import io.ktor.http.*
 import io.ktor.util.date.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.*
-import kotlinx.serialization.json.Json
 
 internal object KtorResponseMapper : ResponseMapper<HttpResponseData> {
 
@@ -25,5 +24,4 @@ internal object KtorResponseMapper : ResponseMapper<HttpResponseData> {
             callContext = CoroutineScope(Dispatchers.Unconfined).coroutineContext
         )
     }
-
 }

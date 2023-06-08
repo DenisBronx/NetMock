@@ -163,6 +163,10 @@ class KtorMockTest {
         val EXPECTED_RESPONSE_HEADERS =
             mapOf("x" to "y", "Content-Type" to "application/json")
         val EXPECTED_RESPONSE =
-            NetMockResponse(code = 200, containsHeaders = EXPECTED_RESPONSE_HEADERS, body = RESPONSE_BODY_RAW)
+            NetMockResponse(
+                code = 200,
+                containsHeaders = EXPECTED_RESPONSE_HEADERS,
+                body = RESPONSE_BODY_RAW
+            )
     }
 }

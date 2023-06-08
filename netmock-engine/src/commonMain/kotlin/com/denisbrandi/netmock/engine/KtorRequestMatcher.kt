@@ -14,12 +14,18 @@ internal object KtorRequestMatcher : RequestMatcher<HttpRequestData> {
         expectedRequest: NetMockRequest
     ): Boolean {
         return recordedRequest.method.value == expectedRequest.method.name &&
-                RequestPathMatcher.isMatchingPathAndParams(recordedRequest.url.fullPath, expectedRequest) &&
-                RequestBodyMatcher.isMatchingTheBody(recordedRequestBody, expectedRequest.body) &&
-                isMatchingTheHeaders(recordedRequest, expectedRequest)
+            RequestPathMatcher.isMatchingPathAndParams(
+                recordedRequest.url.fullPath,
+                expectedRequest
+            ) &&
+            RequestBodyMatcher.isMatchingTheBody(recordedRequestBody, expectedRequest.body) &&
+            isMatchingTheHeaders(recordedRequest, expectedRequest)
     }
 
-    private fun isMatchingTheHeaders(recordedRequest: HttpRequestData, netMockRequest: NetMockRequest): Boolean {
+    private fun isMatchingTheHeaders(
+        recordedRequest: HttpRequestData,
+        netMockRequest: NetMockRequest
+    ): Boolean {
         for (header in netMockRequest.containsHeaders) {
             if (recordedRequest.headers[header.key] != header.value) {
                 return false

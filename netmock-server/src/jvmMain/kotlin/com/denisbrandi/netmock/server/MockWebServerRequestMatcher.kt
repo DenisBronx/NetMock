@@ -13,12 +13,15 @@ internal object MockWebServerRequestMatcher : RequestMatcher<RecordedRequest> {
         expectedRequest: NetMockRequest
     ): Boolean {
         return recordedRequest.method == expectedRequest.method.name &&
-                RequestPathMatcher.isMatchingPathAndParams(recordedRequest.path, expectedRequest) &&
-                RequestBodyMatcher.isMatchingTheBody(recordedRequestBody, expectedRequest.body) &&
-                isMatchingTheHeaders(recordedRequest, expectedRequest)
+            RequestPathMatcher.isMatchingPathAndParams(recordedRequest.path, expectedRequest) &&
+            RequestBodyMatcher.isMatchingTheBody(recordedRequestBody, expectedRequest.body) &&
+            isMatchingTheHeaders(recordedRequest, expectedRequest)
     }
 
-    private fun isMatchingTheHeaders(recordedRequest: RecordedRequest, netMockRequest: NetMockRequest): Boolean {
+    private fun isMatchingTheHeaders(
+        recordedRequest: RecordedRequest,
+        netMockRequest: NetMockRequest
+    ): Boolean {
         for (header in netMockRequest.containsHeaders) {
             if (recordedRequest.headers[header.key] != header.value) {
                 return false

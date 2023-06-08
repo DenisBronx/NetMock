@@ -42,7 +42,10 @@ class NetMockServerTest {
         val response1 = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
         val response2 = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
 
-        assertEquals(listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST), netMock.interceptedRequests)
+        assertEquals(
+            listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST),
+            netMock.interceptedRequests
+        )
         assertValidResponse(expectedResponse1, response1)
         assertValidResponse(expectedResponse2, response2)
         assertTrue(netMock.allowedMocks.isEmpty())
@@ -59,7 +62,10 @@ class NetMockServerTest {
         val response2 = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
         val response3 = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
 
-        assertEquals(listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST), netMock.interceptedRequests)
+        assertEquals(
+            listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST),
+            netMock.interceptedRequests
+        )
         assertValidResponse(expectedResponse1, response1)
         assertValidResponse(expectedResponse2, response2)
         assertEquals(400, response3.code)
@@ -124,7 +130,10 @@ class NetMockServerTest {
     fun `EXPECT valid response for custom method`() {
         testResponseForMethod(
             EXPECTED_COMPLETE_REQUEST.copy(method = Method.Custom("CUSTOM"), body = REQUEST_BODY),
-            getCompleteRequestBuilder(netMock.baseUrl).method("CUSTOM", REQUEST_BODY.toRequestBody()).build(),
+            getCompleteRequestBuilder(netMock.baseUrl).method(
+                "CUSTOM",
+                REQUEST_BODY.toRequestBody()
+            ).build(),
             EXPECTED_RESPONSE
         )
     }
@@ -225,7 +234,8 @@ class NetMockServerTest {
             containsHeaders = mapOf("x" to "y"),
             body = readFromJvmResources("response_body.json")
         )
-        val DEFAULT_RESPONSE = NetMockResponse(code = 201, containsHeaders = mapOf("a" to "b"), body = "default")
+        val DEFAULT_RESPONSE =
+            NetMockResponse(code = 201, containsHeaders = mapOf("a" to "b"), body = "default")
         private fun getCompleteRequest(baseUrl: String): Request {
             return getCompleteRequestBuilder(baseUrl).get().build()
         }
