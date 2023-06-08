@@ -37,8 +37,7 @@ kotlin {
                     api("io.ktor:ktor-client-core:$ktor_version")
                     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
                     api("io.ktor:ktor-client-mock:$ktor_version")
-                    implementation("io.ktor:ktor-client-logging:$ktor_version")
-                }
+                    implementation("io.github.aakira:napier:$napierVersion")                }
             }
         }
         commonTest {
