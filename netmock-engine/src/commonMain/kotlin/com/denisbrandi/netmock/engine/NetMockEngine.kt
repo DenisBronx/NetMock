@@ -6,6 +6,12 @@ import io.ktor.client.engine.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.request.*
 
+/**
+ * Wrapper of [MockEngine], used to intercept Ktor requests and responses.
+ * Example:
+    private val netMock = NetMockEngine()
+    private val httpClient = HttpClient(netMock)
+ */
 class NetMockEngine private constructor(
     mockEngine: MockEngine,
     private val mockRequestHandler: NetMockRequestHandler
