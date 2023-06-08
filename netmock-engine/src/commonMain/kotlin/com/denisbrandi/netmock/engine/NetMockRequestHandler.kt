@@ -1,10 +1,12 @@
 package com.denisbrandi.netmock.engine
 
+import co.touchlab.kermit.CommonWriter
+import co.touchlab.kermit.Logger
+import co.touchlab.kermit.Severity
+import co.touchlab.kermit.loggerConfigInit
 import com.denisbrandi.netmock.NetMockResponse
 import com.denisbrandi.netmock.engine.KtorResponseMapper.mapResponse
 import com.denisbrandi.netmock.interceptors.RequestInterceptor
-import io.github.aakira.napier.DebugAntilog
-import io.github.aakira.napier.Napier
 import io.ktor.client.engine.mock.*
 import io.ktor.client.request.*
 import io.ktor.http.content.*
@@ -38,11 +40,7 @@ internal class NetMockRequestHandler(
     }
 
     private fun logError(errorMessage: String) {
-        Napier.base(DebugAntilog())
-        Napier.e(
-            message = errorMessage,
-            tag = "NetMock"
-        )
-        Napier.takeLogarithm()
+        val logger = Logger(loggerConfigInit(CommonWriter()))
+        logger.e(messageString = errorMessage, tag = "NetMock")
     }
 }
