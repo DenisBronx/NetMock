@@ -33,6 +33,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${serialization_version}")
+                implementation("co.touchlab:kermit:$kermit_version")
             }
         }
         commonTest {
