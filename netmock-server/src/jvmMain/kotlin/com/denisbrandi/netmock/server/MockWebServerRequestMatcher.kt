@@ -20,7 +20,7 @@ internal object MockWebServerRequestMatcher : RequestMatcher<RecordedRequest> {
             recordedRequest.requestUrl?.toString()
         }
         return recordedRequest.method == expectedRequest.method.name &&
-            RequestUrlMatcher.isMatchingUrl(requestUrl, expectedRequest) &&
+            RequestUrlMatcher.isMatchingUrl(requestUrl, expectedRequest.requestUrl) &&
             RequestBodyMatcher.isMatchingTheBody(recordedRequestBody, expectedRequest.body) &&
             isMatchingTheHeaders(recordedRequest, expectedRequest)
     }

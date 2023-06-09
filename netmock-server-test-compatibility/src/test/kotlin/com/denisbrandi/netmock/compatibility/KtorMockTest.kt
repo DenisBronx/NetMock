@@ -7,6 +7,7 @@ import com.denisbrandi.netmock.resources.readFromResources
 import com.denisbrandi.netmock.server.NetMockServerRule
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -28,6 +29,23 @@ class KtorMockTest {
         install(ContentNegotiation) {
             json()
         }
+    }
+
+    @Test
+    fun `EXPECT GET response WHEN localhost`() = runTest {
+        val sut = HttpClient(CIO.create()) {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.server.baseUrl}somePath?1=2&3=4")
+        netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
+
+        val response = sut.get(getUrl(netMock.server.baseUrl), withHeaders())
+
+        assertEquals(200, response.status.value)
+        assertHeaders(EXPECTED_RESPONSE_HEADERS, response.headers)
+        assertEquals(RESPONSE_OBJECT, response.body<ResponseObject>())
     }
 
     @Test
@@ -126,7 +144,7 @@ class KtorMockTest {
         assertEquals(RESPONSE_OBJECT, response.body<ResponseObject>())
     }
 
-    private fun getUrl() = "${BASE_URL}somePath?1=2&3=4"
+    private fun getUrl(baseUrl: String = BASE_URL) = "${baseUrl}somePath?1=2&3=4"
 
     private fun withHeaders(): HttpRequestBuilder.() -> Unit = {
         addHeaders()
@@ -159,10 +177,9 @@ class KtorMockTest {
         val RESPONSE_BODY_RAW = readFromResources("response_body.json")
         val RESPONSE_OBJECT = ResponseObject(200, "some message", "some text")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
-            requestUrl = "https://google.com/somePath",
+            requestUrl = "https://google.com/somePath?1=2&3=4",
             method = Method.Get,
-            containsHeaders = mapOf("a" to "b", "c" to "d", "Content-Type" to "application/json"),
-            params = mapOf("1" to "2", "3" to "4")
+            containsHeaders = mapOf("a" to "b", "c" to "d", "Content-Type" to "application/json")
         )
         val EXPECTED_RESPONSE_HEADERS =
             mapOf("x" to "y", "Content-Type" to "application/json")
