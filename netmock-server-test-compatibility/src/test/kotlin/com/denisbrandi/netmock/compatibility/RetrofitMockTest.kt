@@ -20,13 +20,34 @@ class RetrofitMockTest {
     @get:Rule
     val netMock = NetMockServerRule()
 
-    private val sut = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(OkHttpClient.Builder().addInterceptor(netMock.server.interceptor).build())
-        .addConverterFactory(ScalarsConverterFactory.create())
-        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-        .build()
-        .create(RetrofitApi::class.java)
+    private val sut = createSut(
+        BASE_URL,
+        OkHttpClient.Builder().addInterceptor(netMock.server.interceptor).build()
+    )
+
+    private fun createSut(baseUrl: String, okHttpClient: OkHttpClient): RetrofitApi {
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(okHttpClient)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+            .build()
+            .create(RetrofitApi::class.java)
+    }
+
+    @Test
+    fun `EXPECT GET response WHEN localhost`() = runTest {
+        val sut = createSut(netMock.server.baseUrl, OkHttpClient())
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.server.baseUrl}somePath?1=2&3=4")
+        netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
+
+        val response = sut.get(
+            headers = mapOf("a" to "b", "c" to "d"),
+            params = mapOf("1" to "2", "3" to "4")
+        )
+
+        assertEquals(RESPONSE_OBJECT, response)
+    }
 
     @Test
     fun `EXPECT GET response`() = runTest {
@@ -188,10 +209,9 @@ class RetrofitMockTest {
         val REQUEST_BODY_RAW = readFromResources("request_body.json")
         val REQUEST_BODY = RequestObject("some body id", "some body message", "some body text")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
-            requestUrl = "https://google.com/somePath",
+            requestUrl = "https://google.com/somePath?1=2&3=4",
             method = Method.Get,
-            containsHeaders = mapOf("a" to "b", "c" to "d"),
-            params = mapOf("1" to "2", "3" to "4")
+            containsHeaders = mapOf("a" to "b", "c" to "d")
         )
         val EXPECTED_RESPONSE =
             NetMockResponse(code = 201, containsHeaders = mapOf("x" to "y"), body = RESPONSE_BODY)

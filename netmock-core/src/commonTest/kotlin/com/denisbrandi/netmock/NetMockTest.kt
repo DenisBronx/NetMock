@@ -13,10 +13,9 @@ class NetMockTest {
     fun `EXPECT interface method properly called with all fields`() {
         sut.addMock(
             request = {
-                requestUrl = "http://google.com/somePath"
+                requestUrl = "http://google.com/somePath?1=2&3=4"
                 method = Method.Post
                 containsHeaders = mapOf("a" to "b", "c" to "d")
-                params = mapOf("1" to "2", "3" to "4")
                 body = "body"
             },
             response = {
@@ -90,17 +89,15 @@ class NetMockTest {
 
     private companion object {
         val EXPECTED_REQUEST = NetMockRequest(
-            requestUrl = "http://google.com/somePath",
+            requestUrl = "http://google.com/somePath?1=2&3=4",
             method = Method.Post,
             containsHeaders = mapOf("a" to "b", "c" to "d"),
-            params = mapOf("1" to "2", "3" to "4"),
             body = "body"
         )
         val EXPECTED_REQUEST_BUILDER = NetMockRequestBuilder().apply {
-            requestUrl = "http://google.com/somePath"
+            requestUrl = "http://google.com/somePath?1=2&3=4"
             method = Method.Post
             containsHeaders = mapOf("a" to "b", "c" to "d")
-            params = mapOf("1" to "2", "3" to "4")
             body = "body"
         }
         val EXPECTED_RESPONSE = NetMockResponse(
