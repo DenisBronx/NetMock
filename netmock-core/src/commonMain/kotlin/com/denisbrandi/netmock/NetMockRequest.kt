@@ -1,7 +1,7 @@
 package com.denisbrandi.netmock
 
 data class NetMockRequest(
-    val path: String = "/",
+    val requestUrl: String = "",
     val method: Method = Method.Custom(""),
     val containsHeaders: Map<String, String> = emptyMap(),
     val params: Map<String, String> = emptyMap(),
@@ -9,7 +9,7 @@ data class NetMockRequest(
 )
 
 class NetMockRequestBuilder {
-    lateinit var path: String
+    lateinit var requestUrl: String
     lateinit var method: Method
     lateinit var containsHeaders: Map<String, String>
     lateinit var params: Map<String, String>
@@ -20,7 +20,7 @@ class NetMockRequestBuilder {
     }
 
     fun fromRequest(request: NetMockRequest) {
-        path = request.path
+        requestUrl = request.requestUrl
         method = request.method
         containsHeaders = request.containsHeaders
         params = request.params
@@ -28,7 +28,7 @@ class NetMockRequestBuilder {
     }
 
     fun fromBuilder(builder: NetMockRequestBuilder) {
-        path = builder.path
+        requestUrl = builder.requestUrl
         method = builder.method
         containsHeaders = builder.containsHeaders
         params = builder.params
@@ -37,7 +37,7 @@ class NetMockRequestBuilder {
 
     fun build(): NetMockRequest {
         return NetMockRequest(
-            path = path,
+            requestUrl = requestUrl,
             method = method,
             containsHeaders = containsHeaders,
             params = params,

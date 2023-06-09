@@ -13,7 +13,7 @@ class NetMockTest {
     fun `EXPECT interface method properly called with all fields`() {
         sut.addMock(
             request = {
-                path = "/somePath"
+                requestUrl = "http://google.com/somePath"
                 method = Method.Post
                 containsHeaders = mapOf("a" to "b", "c" to "d")
                 params = mapOf("1" to "2", "3" to "4")
@@ -80,7 +80,6 @@ class NetMockTest {
     }
 
     private class SpyNetMock : NetMock {
-        override val baseUrl: String = ""
         override val interceptedRequests: List<NetMockRequest> = emptyList()
         override val allowedMocks = mutableListOf<NetMockRequestResponse>()
         override var defaultResponse: NetMockResponse? = null
@@ -91,14 +90,14 @@ class NetMockTest {
 
     private companion object {
         val EXPECTED_REQUEST = NetMockRequest(
-            path = "/somePath",
+            requestUrl = "http://google.com/somePath",
             method = Method.Post,
             containsHeaders = mapOf("a" to "b", "c" to "d"),
             params = mapOf("1" to "2", "3" to "4"),
             body = "body"
         )
         val EXPECTED_REQUEST_BUILDER = NetMockRequestBuilder().apply {
-            path = "/somePath"
+            requestUrl = "http://google.com/somePath"
             method = Method.Post
             containsHeaders = mapOf("a" to "b", "c" to "d")
             params = mapOf("1" to "2", "3" to "4")

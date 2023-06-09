@@ -3,7 +3,7 @@ package com.denisbrandi.netmock.engine
 import com.denisbrandi.netmock.NetMockRequest
 import com.denisbrandi.netmock.matchers.RequestBodyMatcher
 import com.denisbrandi.netmock.matchers.RequestMatcher
-import com.denisbrandi.netmock.matchers.RequestPathMatcher
+import com.denisbrandi.netmock.matchers.RequestUrlMatcher
 import io.ktor.client.request.*
 import io.ktor.http.*
 
@@ -14,8 +14,8 @@ internal object KtorRequestMatcher : RequestMatcher<HttpRequestData> {
         expectedRequest: NetMockRequest
     ): Boolean {
         return recordedRequest.method.value == expectedRequest.method.name &&
-            RequestPathMatcher.isMatchingPathAndParams(
-                recordedRequest.url.fullPath,
+            RequestUrlMatcher.isMatchingUrl(
+                recordedRequest.url.toString(),
                 expectedRequest
             ) &&
             RequestBodyMatcher.isMatchingTheBody(recordedRequestBody, expectedRequest.body) &&
