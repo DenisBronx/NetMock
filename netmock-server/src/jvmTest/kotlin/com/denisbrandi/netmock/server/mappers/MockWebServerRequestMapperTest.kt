@@ -74,7 +74,7 @@ class MockWebServerRequestMapperTest {
         fun makeRecordedRequest(
             requestLine: String = "GET /somePath?1=2&3=4 HTTP/1.1",
             headers: Headers = RECORDED_HEADERS,
-            body: Buffer = Buffer().writeString("data", Charset.defaultCharset()),
+            body: Buffer = Buffer().writeString("data", Charset.defaultCharset())
         ): RecordedRequest {
             return RecordedRequest(
                 requestLine = requestLine,

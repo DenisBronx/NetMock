@@ -29,7 +29,7 @@ class DefaultInterceptor(
             requestResponse.response
         }
         return matchedResponse ?: defaultResponse
-        ?: returnDefaultErrorResponseAndLogError(interceptedRequest)
+            ?: returnDefaultErrorResponseAndLogError(interceptedRequest)
     }
 
     private fun returnDefaultErrorResponseAndLogError(request: InterceptedRequest): NetMockResponse {
