@@ -1,4 +1,4 @@
-package com.denisbrandi.netmock
+package com.denisbrandi.netmock.interceptors
 
 data class InterceptedRequest(
     val requestUrl: String?,

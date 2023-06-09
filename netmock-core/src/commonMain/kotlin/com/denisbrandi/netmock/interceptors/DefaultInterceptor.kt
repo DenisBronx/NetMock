@@ -3,7 +3,6 @@ package com.denisbrandi.netmock.interceptors
 import co.touchlab.kermit.CommonWriter
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.loggerConfigInit
-import com.denisbrandi.netmock.InterceptedRequest
 import com.denisbrandi.netmock.NetMockRequest
 import com.denisbrandi.netmock.NetMockRequestResponse
 import com.denisbrandi.netmock.NetMockResponse

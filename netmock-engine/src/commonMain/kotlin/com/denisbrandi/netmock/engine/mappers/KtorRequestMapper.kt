@@ -1,6 +1,6 @@
 package com.denisbrandi.netmock.engine.mappers
 
-import com.denisbrandi.netmock.InterceptedRequest
+import com.denisbrandi.netmock.interceptors.InterceptedRequest
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.content.*
