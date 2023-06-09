@@ -302,10 +302,9 @@ class NetMockEngineTest {
         val REQUEST_OBJECT = RequestObject("some body id", "some body message", "some body text")
         val RESPONSE_OBJECT = ResponseObject(200, "some message", "some text")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
-            requestUrl = "http://google.com/somePath",
+            requestUrl = "http://google.com/somePath?1=2&3=4",
             method = Method.Get,
-            containsHeaders = mapOf("a" to "b", "c" to "d"),
-            params = mapOf("1" to "2", "3" to "4")
+            containsHeaders = mapOf("a" to "b", "c" to "d")
         )
         val EXPECTED_MISSING_FIELDS_REQUEST = NetMockRequest(requestUrl = "http://google.com/", method = Method.Get)
         val EXPECTED_NOT_MATCHING_REQUEST = EXPECTED_COMPLETE_REQUEST.copy(

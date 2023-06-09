@@ -43,10 +43,8 @@ fun `my test`() {
         request = {
             //exact method
             method = Method.Post
-            //exact path with query parameters
+            //exact request url: scheme, base url, path, params...
             requestUrl = "https://google.com/somePath?paramKey1=paramValue1"
-            //exact query parameters" "?paramKey1=paramValue1&paramKey2=paramValue2"
-            params = mapOf("paramKey2" to "paramValue2", "paramKey3" to "paramValue3")
             //must-have headers, as some clients add extra headers you may not want to check them all
             //if you are using ktor and your response body is a json, you must have "Content-Type: application/json" as header
             containsHeaders = mapOf("a" to "b", "b" to "c")
@@ -78,7 +76,6 @@ Or if you want to define requests and responses outside the test function for re
 private val request = NetMockRequest(
     method = Method.Post,
     requestUrl = "https://google.com/somePath?paramKey1=paramValue1",
-    params = mapOf("paramKey1" to "paramValue1", "paramKey2" to "paramValue2"), 
     containsHeaders = mapOf("a" to "b", "b" to "c"),
     body = readFromResources("requests/request_body.json")
 )
@@ -102,7 +99,6 @@ You can also use templates and override the fields that need to change:
 private val templateRequest = NetMockRequest(
     method = Method.Post,
     requestUrl = "https://google.com/somePath?paramKey1=paramValue1",
-    params = mapOf("paramKey1" to "paramValue1", "paramKey2" to "paramValue2"), 
     containsHeaders = mapOf("a" to "b", "b" to "c"),
     body = readFromResources("requests/request_body.json")
 )
