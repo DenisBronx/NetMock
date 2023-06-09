@@ -1,18 +1,16 @@
 package com.denisbrandi.netmock
 
 data class NetMockRequest(
-    val path: String = "/",
+    val requestUrl: String = "",
     val method: Method = Method.Custom(""),
-    val containsHeaders: Map<String, String> = emptyMap(),
-    val params: Map<String, String> = emptyMap(),
-    val body: String = "",
+    val mandatoryHeaders: Map<String, String> = emptyMap(),
+    val body: String = ""
 )
 
 class NetMockRequestBuilder {
-    lateinit var path: String
+    lateinit var requestUrl: String
     lateinit var method: Method
-    lateinit var containsHeaders: Map<String, String>
-    lateinit var params: Map<String, String>
+    lateinit var mandatoryHeaders: Map<String, String>
     lateinit var body: String
 
     init {
@@ -20,27 +18,24 @@ class NetMockRequestBuilder {
     }
 
     fun fromRequest(request: NetMockRequest) {
-        path = request.path
+        requestUrl = request.requestUrl
         method = request.method
-        containsHeaders = request.containsHeaders
-        params = request.params
+        mandatoryHeaders = request.mandatoryHeaders
         body = request.body
     }
 
     fun fromBuilder(builder: NetMockRequestBuilder) {
-        path = builder.path
+        requestUrl = builder.requestUrl
         method = builder.method
-        containsHeaders = builder.containsHeaders
-        params = builder.params
+        mandatoryHeaders = builder.mandatoryHeaders
         body = builder.body
     }
 
     fun build(): NetMockRequest {
         return NetMockRequest(
-            path = path,
+            requestUrl = requestUrl,
             method = method,
-            containsHeaders = containsHeaders,
-            params = params,
+            mandatoryHeaders = mandatoryHeaders,
             body = body
         )
     }

@@ -37,7 +37,6 @@ kotlin {
                     api("io.ktor:ktor-client-core:$ktor_version")
                     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
                     api("io.ktor:ktor-client-mock:$ktor_version")
-                    implementation("co.touchlab:kermit:$kermit_version")
                 }
             }
         }

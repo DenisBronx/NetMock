@@ -23,54 +23,17 @@ For Gradle users, add the following to your module’s `build.gradle`
 ```groovy
 dependencies {
     //compatible with all libraries
-    testImplementation "io.github.denisbronx.netmock:netmock-server:0.2.0" 
+    testImplementation "io.github.denisbronx.netmock:netmock-server:0.3.0" 
     //lighter weight option for ktor only library users
-    testImplementation "io.github.benisbronx.netmock:netmock-engine:0.2.0"
+    testImplementation "io.github.benisbronx.netmock:netmock-engine:0.3.0"
 }
 ```
 
 # Examples
-#### `NetMockServer` initialization
+## Initialization
+[netmock-server initialization](netmock-server/README.md)
 
-```kotlin
-//the rule will start the server when the test starts and will shutdown the server when the test is finished (@After)
-@get:Rule 
-val netMock = NetMockServerRule()
-```
-
-#### `NetMockEngine` initialization
-
-```kotlin
-private val netMock = NetMockEngine()
-//pass the netMock instance instead of MockEngine 
-private val ktorClient = HttpClient(netMock) { 
-    install(ContentNegotiation) {
-        json()
-    }
-}
-```
-
-Once initialized, NetMock will generate a baseUrl that you’ll need to use for your requests:
-
-```kotlin
-private val baseUrl = netMock.baseUrl
-
-//OkHttp, somewhere in your code
-private val okHttp = OkHttpClient.Builder().build()
-okHttp.newCall(Request.Builder().get().url("${baseUrl}requestPath").build())
-
-//Retrofit, somewhere in your code
-private val retrofitApi = Retrofit.Builder().baseUrl(baseUrl).build().create(RetrofitApi::class.java)
-
-//Ktor, somewhere in your code
-private val ktorClient = HttpClient(CIO.create()) /*or HttpClient(netMock) if you use NetMockEngine*/ {
-    install(ContentNegotiation) {
-        json()
-    }
-}
-ktorClient.get("${baseUrl}requestPath")
-```
-
+[netmock-engine initialization](netmock-engine/README.md)
 ## Mock requests and responses
 
 ```kotlin
@@ -80,13 +43,11 @@ fun `my test`() {
         request = {
             //exact method
             method = Method.Post
-            //exact path excluding query parameters
-            path = "/somePath"
-            //exact query parameters" "?paramKey1=paramValue1&paramKey2=paramValue2"
-            params = mapOf("paramKey1" to "paramValue1", "paramKey2" to "paramValue2")
+            //exact request url: scheme, base url, path, params...
+            requestUrl = "https://google.com/somePath?paramKey1=paramValue1"
             //must-have headers, as some clients add extra headers you may not want to check them all
             //if you are using ktor and your response body is a json, you must have "Content-Type: application/json" as header
-            containsHeaders = mapOf("a" to "b", "b" to "c")
+            mandatoryHeaders = mapOf("a" to "b", "b" to "c")
             //request body, must be a String (this allows you to test your parsing)
             body = """{"id": "2"}"""
             //or, you can read a file in "test/resources"
@@ -97,7 +58,7 @@ fun `my test`() {
             code = 200
             //must-have headers
             //if you are using ktor and your response body is a json, you must have "Content-Type: application/json" as header
-            containsHeaders = mapOf("a" to "b", "b" to "c")
+            mandatoryHeaders = mapOf("a" to "b", "b" to "c")
             //response body, must be a String (this allows you to test your parsing)
             body = """{"data": "text"}"""
             //or, you can read a file in "test/resources"
@@ -113,15 +74,14 @@ Or if you want to define requests and responses outside the test function for re
 
 ```kotlin
 private val request = NetMockRequest(
-    method = Method.Post, 
-    path = "/somePath",
-    params = mapOf("paramKey1" to "paramValue1", "paramKey2" to "paramValue2"), 
-    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    method = Method.Post,
+    requestUrl = "https://google.com/somePath?paramKey1=paramValue1",
+    mandatoryHeaders = mapOf("a" to "b", "b" to "c"),
     body = readFromResources("requests/request_body.json")
 )
 private val response = NetMockResponse(
     code = 200,
-    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    mandatoryHeaders = mapOf("a" to "b", "b" to "c"),
     body = readFromResources("responses/response_body.json")
 )
 
@@ -137,15 +97,14 @@ You can also use templates and override the fields that need to change:
 
 ```kotlin
 private val templateRequest = NetMockRequest(
-    method = Method.Post, 
-    path = "/somePath",
-    params = mapOf("paramKey1" to "paramValue1", "paramKey2" to "paramValue2"), 
-    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    method = Method.Post,
+    requestUrl = "https://google.com/somePath?paramKey1=paramValue1",
+    mandatoryHeaders = mapOf("a" to "b", "b" to "c"),
     body = readFromResources("requests/request_body.json")
 )
 private val templateResponse = NetMockResponse(
     code = 200,
-    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    mandatoryHeaders = mapOf("a" to "b", "b" to "c"),
     body = readFromResources("responses/response_body.json")
 )
 
@@ -207,7 +166,7 @@ You can override this behaviour by setting a default response:
 ```kotlin
 netMock.defaultResponse = NetMockResponse(
     code = 200,
-    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    mandatoryHeaders = mapOf("a" to "b", "b" to "c"),
     body = readFromResources("responses/response_body.json")
 )
 ```

@@ -1,11 +1,8 @@
 package com.denisbrandi.netmock.matchers
 
 import com.denisbrandi.netmock.NetMockRequest
+import com.denisbrandi.netmock.interceptors.InterceptedRequest
 
-interface RequestMatcher<Request : Any> {
-    fun isMatchingTheRequest(
-        recordedRequest: Request,
-        recordedRequestBody: String,
-        expectedRequest: NetMockRequest
-    ): Boolean
+interface RequestMatcher {
+    fun isMatchingTheRequest(interceptedRequest: InterceptedRequest, expectedRequest: NetMockRequest): Boolean
 }

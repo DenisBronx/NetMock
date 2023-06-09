@@ -7,15 +7,15 @@ import org.junit.rules.ExternalResource
  * JUnit rule that starts and shuts down a [NetMockServer] for you
  */
 class NetMockServerRule(
-    private val netMock: NetMockServer = NetMockServer()
-) : ExternalResource(), NetMock by netMock {
+    val server: NetMockServer = NetMockServer()
+) : ExternalResource(), NetMock by server {
 
     init {
-        netMock.start()
+        server.start()
     }
 
     override fun after() {
-        netMock.shutDown()
+        server.shutDown()
         super.after()
     }
 }
