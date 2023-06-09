@@ -16,7 +16,7 @@ internal object KtorRequestMatcher : RequestMatcher<HttpRequestData> {
         return recordedRequest.method.value == expectedRequest.method.name &&
             RequestUrlMatcher.isMatchingUrl(
                 recordedRequest.url.toString(),
-                expectedRequest
+                expectedRequest.requestUrl
             ) &&
             RequestBodyMatcher.isMatchingTheBody(recordedRequestBody, expectedRequest.body) &&
             isMatchingTheHeaders(recordedRequest, expectedRequest)

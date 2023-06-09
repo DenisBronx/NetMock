@@ -25,6 +25,7 @@ dependencies {
     //ktor
     testImplementation("io.ktor:ktor-client-core:$ktor_version")
     testImplementation("io.ktor:ktor-client-okhttp:$ktor_version")
+    testImplementation("io.ktor:ktor-client-cio:$ktor_version")
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     testImplementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 }

@@ -26,7 +26,7 @@ class NetMockServerTest {
     @Test
     fun `EXPECT mapped response WHEN directed to localhost`() {
         val sut = OkHttpClient.Builder().build()
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.server.baseUrl}somePath")
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.server.baseUrl}somePath?1=2&3=4")
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
 
         val response = sut.newCall(getCompleteRequest(netMock.server.baseUrl)).execute()
@@ -171,7 +171,7 @@ class NetMockServerTest {
     fun `EXPECT mapped response WHEN request has missing fields`() {
         netMock.addMock(EXPECTED_MISSING_FIELDS_REQUEST, EXPECTED_RESPONSE)
 
-        val response = sut.newCall(getRequestWithMissingFields(BASE_URL)).execute()
+        val response = sut.newCall(getRequestWithMissingFields()).execute()
 
         assertEquals(listOf(EXPECTED_MISSING_FIELDS_REQUEST), netMock.interceptedRequests)
         assertValidResponse(EXPECTED_RESPONSE, response)
@@ -236,10 +236,9 @@ class NetMockServerTest {
         const val BASE_URL = "https://google.com/"
         val REQUEST_BODY = readFromJvmResources("request_body.json")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
-            requestUrl = "https://google.com/somePath",
+            requestUrl = "https://google.com/somePath?1=2&3=4",
             method = Method.Get,
-            containsHeaders = mapOf("a" to "b", "c" to "d"),
-            params = mapOf("1" to "2", "3" to "4")
+            containsHeaders = mapOf("a" to "b", "c" to "d")
         )
         val EXPECTED_MISSING_FIELDS_REQUEST = NetMockRequest(requestUrl = "https://google.com/", method = Method.Get)
         val EXPECTED_NOT_MATCHING_REQUEST = EXPECTED_COMPLETE_REQUEST.copy(
@@ -257,10 +256,10 @@ class NetMockServerTest {
             return getCompleteRequestBuilder(baseUrl).get().build()
         }
 
-        private fun getRequestWithMissingFields(baseUrl: String): Request {
+        private fun getRequestWithMissingFields(): Request {
             return Request.Builder()
                 .get()
-                .url(baseUrl)
+                .url(BASE_URL)
                 .build()
         }
 
