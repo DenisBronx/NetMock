@@ -15,7 +15,7 @@ class NetMockTest {
             request = {
                 requestUrl = "http://google.com/somePath?1=2&3=4"
                 method = Method.Post
-                containsHeaders = mapOf("a" to "b", "c" to "d")
+                mandatoryHeaders = mapOf("a" to "b", "c" to "d")
                 body = "body"
             },
             response = {
@@ -91,13 +91,13 @@ class NetMockTest {
         val EXPECTED_REQUEST = NetMockRequest(
             requestUrl = "http://google.com/somePath?1=2&3=4",
             method = Method.Post,
-            containsHeaders = mapOf("a" to "b", "c" to "d"),
+            mandatoryHeaders = mapOf("a" to "b", "c" to "d"),
             body = "body"
         )
         val EXPECTED_REQUEST_BUILDER = NetMockRequestBuilder().apply {
             requestUrl = "http://google.com/somePath?1=2&3=4"
             method = Method.Post
-            containsHeaders = mapOf("a" to "b", "c" to "d")
+            mandatoryHeaders = mapOf("a" to "b", "c" to "d")
             body = "body"
         }
         val EXPECTED_RESPONSE = NetMockResponse(
