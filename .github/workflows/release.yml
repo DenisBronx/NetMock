@@ -18,6 +18,9 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: Install Ktlint
+        run: ./scripts/installKtlint.sh
+
       - name: Release
         run: ./scripts/publishAndRelease.sh
         env:

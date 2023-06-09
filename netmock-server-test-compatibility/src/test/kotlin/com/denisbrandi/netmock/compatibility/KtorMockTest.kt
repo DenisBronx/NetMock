@@ -179,7 +179,7 @@ class KtorMockTest {
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
             requestUrl = "https://google.com/somePath?1=2&3=4",
             method = Method.Get,
-            containsHeaders = mapOf("a" to "b", "c" to "d", "Content-Type" to "application/json")
+            mandatoryHeaders = mapOf("a" to "b", "c" to "d", "Content-Type" to "application/json")
         )
         val EXPECTED_RESPONSE_HEADERS =
             mapOf("x" to "y", "Content-Type" to "application/json")
