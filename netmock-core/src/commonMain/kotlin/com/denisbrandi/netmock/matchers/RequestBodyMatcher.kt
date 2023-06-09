@@ -1,17 +1,20 @@
 package com.denisbrandi.netmock.matchers
 
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
 
-object RequestBodyMatcher {
-    fun isMatchingTheBody(recordedRequestBody: String, netMockRequestBody: String): Boolean {
-        return if (recordedRequestBody == netMockRequestBody) {
+internal object RequestBodyMatcher {
+    fun isMatchingTheBody(recordedRequestBody: String?, netMockRequestBody: String): Boolean {
+        val sanitizedRecordedRequestBody = recordedRequestBody.orEmpty()
+        return if (sanitizedRecordedRequestBody == netMockRequestBody) {
             true
         } else {
-            val recordedJsonObject = asJsonObject(recordedRequestBody)
+            val recordedJsonObject = asJsonObject(sanitizedRecordedRequestBody)
             if (recordedJsonObject != null) {
                 recordedJsonObject == asJsonObject(netMockRequestBody)
             } else {
-                val recordedJsonArray = asJsonArray(recordedRequestBody)
+                val recordedJsonArray = asJsonArray(sanitizedRecordedRequestBody)
                 if (recordedJsonArray != null) {
                     recordedJsonArray == asJsonArray(netMockRequestBody)
                 } else {

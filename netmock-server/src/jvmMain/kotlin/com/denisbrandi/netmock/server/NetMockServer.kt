@@ -1,12 +1,11 @@
 package com.denisbrandi.netmock.server
 
 import com.denisbrandi.netmock.NetMock
+import com.denisbrandi.netmock.interceptors.DefaultInterceptor
 import com.denisbrandi.netmock.interceptors.RequestInterceptor
-import com.denisbrandi.netmock.interceptors.RequestInterceptorImpl
+import com.denisbrandi.netmock.matchers.DefaultRequestMatcher
 import okhttp3.Interceptor
-import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.RecordedRequest
 
 /**
  * Wrapper of [MockWebServer], used to intercept requests and responses directed to localhost.
@@ -27,7 +26,7 @@ netMock.shutDown()
  */
 class NetMockServer private constructor(
     private val dispatcher: MockDispatcher
-) : NetMock, RequestInterceptor<RecordedRequest, MockResponse> by dispatcher {
+) : NetMock, RequestInterceptor by dispatcher {
     private val server = MockWebServer()
     val baseUrl: String
         get() = server.url("").toString()
@@ -50,7 +49,7 @@ class NetMockServer private constructor(
         operator fun invoke(): NetMockServer {
             return NetMockServer(
                 MockDispatcher(
-                    RequestInterceptorImpl(MockWebServerRequestMatcher, MockWebServerResponseMapper)
+                    DefaultInterceptor(DefaultRequestMatcher)
                 )
             )
         }

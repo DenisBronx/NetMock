@@ -12,6 +12,18 @@ class RequestBodyMatcherTest {
 
     private val sut = RequestBodyMatcher
 
+    @JsName("true_null")
+    @Test
+    fun `EXPECT true WHEN null and empty`() {
+        assertTrue(sut.isMatchingTheBody(null, ""))
+    }
+
+    @JsName("true_empty")
+    @Test
+    fun `EXPECT true WHEN empty and empty`() {
+        assertTrue(sut.isMatchingTheBody("", ""))
+    }
+
     @JsName("true_equal")
     @Test
     fun `EXPECT true WHEN body values are equal`() {

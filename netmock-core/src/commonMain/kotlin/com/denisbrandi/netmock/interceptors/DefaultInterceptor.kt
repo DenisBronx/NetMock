@@ -3,16 +3,15 @@ package com.denisbrandi.netmock.interceptors
 import co.touchlab.kermit.CommonWriter
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.loggerConfigInit
+import com.denisbrandi.netmock.InterceptedRequest
 import com.denisbrandi.netmock.NetMockRequest
 import com.denisbrandi.netmock.NetMockRequestResponse
 import com.denisbrandi.netmock.NetMockResponse
-import com.denisbrandi.netmock.mappers.ResponseMapper
 import com.denisbrandi.netmock.matchers.RequestMatcher
 
-class RequestInterceptorImpl<Request : Any, Response : Any>(
-    private val requestMatcher: RequestMatcher<Request>,
-    private val responseMapper: ResponseMapper<Response>
-) : RequestInterceptor<Request, Response> {
+class DefaultInterceptor(
+    private val requestMatcher: RequestMatcher
+) : RequestInterceptor {
     override val allowedMocks = mutableListOf<NetMockRequestResponse>()
     override val interceptedRequests = mutableListOf<NetMockRequest>()
 
@@ -22,35 +21,26 @@ class RequestInterceptorImpl<Request : Any, Response : Any>(
         allowedMocks.add(NetMockRequestResponse(request, response))
     }
 
-    override fun intercept(interceptedRequest: Request, headers: Any, interceptedRequestBody: String): Response {
+    override fun intercept(interceptedRequest: InterceptedRequest): NetMockResponse {
         val matchedResponse = allowedMocks.filter { requestResponse ->
-            requestMatcher.isMatchingTheRequest(
-                interceptedRequest,
-                interceptedRequestBody,
-                requestResponse.request
-            )
+            requestMatcher.isMatchingTheRequest(interceptedRequest, requestResponse.request)
         }.firstNotNullOfOrNull { requestResponse ->
             interceptedRequests.add(requestResponse.request)
             allowedMocks.remove(requestResponse)
-            responseMapper.mapResponse(requestResponse.response)
+            requestResponse.response
         }
-        return matchedResponse
-            ?: defaultResponse?.let { responseMapper.mapResponse(it) }
-            ?: returnDefaultErrorResponseAndLogError(interceptedRequest, headers, interceptedRequestBody)
+        return matchedResponse ?: defaultResponse
+            ?: returnDefaultErrorResponseAndLogError(interceptedRequest)
     }
 
-    private fun returnDefaultErrorResponseAndLogError(
-        request: Request,
-        headers: Any,
-        recordedRequestBody: String
-    ): Response {
+    private fun returnDefaultErrorResponseAndLogError(request: InterceptedRequest): NetMockResponse {
         val errorMessage =
-            "\n----\nRequest not mocked:\n${request}\nWith headers:\n${headers}With body:\n$recordedRequestBody" +
+            "\n----\nRequest not mocked:\n${request.method} ${request.requestUrl}\nWith headers:\n${request.headers}\nWith body:\n${request.body}" +
                 "\n\nThe following requests and responses were expected:\n$allowedMocks" +
                 "\n\nThe following requests have been successfully mocked:\n$interceptedRequests" +
                 "\n----"
         logError(errorMessage)
-        return responseMapper.mapResponse(NetMockResponse(code = 400, body = errorMessage))
+        return NetMockResponse(code = 400, body = errorMessage)
     }
 
     private fun logError(errorMessage: String) {
