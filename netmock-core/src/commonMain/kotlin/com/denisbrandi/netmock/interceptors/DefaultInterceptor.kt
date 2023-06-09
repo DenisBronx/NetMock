@@ -21,15 +21,15 @@ class DefaultInterceptor(
     }
 
     override fun intercept(interceptedRequest: InterceptedRequest): NetMockResponse {
-        val matchedResponse = allowedMocks.filter { requestResponse ->
+        val matchedResponse = allowedMocks.firstOrNull { requestResponse ->
             requestMatcher.isMatchingTheRequest(interceptedRequest, requestResponse.request)
-        }.firstNotNullOfOrNull { requestResponse ->
+        }?.let { requestResponse ->
             interceptedRequests.add(requestResponse.request)
             allowedMocks.remove(requestResponse)
             requestResponse.response
         }
         return matchedResponse ?: defaultResponse
-            ?: returnDefaultErrorResponseAndLogError(interceptedRequest)
+        ?: returnDefaultErrorResponseAndLogError(interceptedRequest)
     }
 
     private fun returnDefaultErrorResponseAndLogError(request: InterceptedRequest): NetMockResponse {
