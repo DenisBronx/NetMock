@@ -47,7 +47,7 @@ fun `my test`() {
             requestUrl = "https://google.com/somePath?paramKey1=paramValue1"
             //must-have headers, as some clients add extra headers you may not want to check them all
             //if you are using ktor and your response body is a json, you must have "Content-Type: application/json" as header
-            containsHeaders = mapOf("a" to "b", "b" to "c")
+            mandatoryHeaders = mapOf("a" to "b", "b" to "c")
             //request body, must be a String (this allows you to test your parsing)
             body = """{"id": "2"}"""
             //or, you can read a file in "test/resources"
@@ -58,7 +58,7 @@ fun `my test`() {
             code = 200
             //must-have headers
             //if you are using ktor and your response body is a json, you must have "Content-Type: application/json" as header
-            containsHeaders = mapOf("a" to "b", "b" to "c")
+            mandatoryHeaders = mapOf("a" to "b", "b" to "c")
             //response body, must be a String (this allows you to test your parsing)
             body = """{"data": "text"}"""
             //or, you can read a file in "test/resources"
@@ -76,12 +76,12 @@ Or if you want to define requests and responses outside the test function for re
 private val request = NetMockRequest(
     method = Method.Post,
     requestUrl = "https://google.com/somePath?paramKey1=paramValue1",
-    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    mandatoryHeaders = mapOf("a" to "b", "b" to "c"),
     body = readFromResources("requests/request_body.json")
 )
 private val response = NetMockResponse(
     code = 200,
-    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    mandatoryHeaders = mapOf("a" to "b", "b" to "c"),
     body = readFromResources("responses/response_body.json")
 )
 
@@ -99,12 +99,12 @@ You can also use templates and override the fields that need to change:
 private val templateRequest = NetMockRequest(
     method = Method.Post,
     requestUrl = "https://google.com/somePath?paramKey1=paramValue1",
-    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    mandatoryHeaders = mapOf("a" to "b", "b" to "c"),
     body = readFromResources("requests/request_body.json")
 )
 private val templateResponse = NetMockResponse(
     code = 200,
-    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    mandatoryHeaders = mapOf("a" to "b", "b" to "c"),
     body = readFromResources("responses/response_body.json")
 )
 
@@ -166,7 +166,7 @@ You can override this behaviour by setting a default response:
 ```kotlin
 netMock.defaultResponse = NetMockResponse(
     code = 200,
-    containsHeaders = mapOf("a" to "b", "b" to "c"),
+    mandatoryHeaders = mapOf("a" to "b", "b" to "c"),
     body = readFromResources("responses/response_body.json")
 )
 ```
