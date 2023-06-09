@@ -9,7 +9,6 @@ package com.denisbrandi.netmock
  * @property [defaultResponse]: response returned for requests that do not match the [allowedMocks], when `null` a 400 Bad Request response is returned.
  */
 interface NetMock {
-    val baseUrl: String
     val interceptedRequests: List<NetMockRequest>
     val allowedMocks: List<NetMockRequestResponse>
     var defaultResponse: NetMockResponse?

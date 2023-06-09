@@ -8,6 +8,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
 import org.junit.*
 import org.junit.Assert.*
 import retrofit2.*
@@ -20,7 +21,8 @@ class RetrofitMockTest {
     val netMock = NetMockServerRule()
 
     private val sut = Retrofit.Builder()
-        .baseUrl(netMock.baseUrl)
+        .baseUrl(BASE_URL)
+        .client(OkHttpClient.Builder().addInterceptor(netMock.server.interceptor).build())
         .addConverterFactory(ScalarsConverterFactory.create())
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .build()
@@ -180,12 +182,13 @@ class RetrofitMockTest {
     private data class ResponseObject(val code: Int, val message: String, val data: String)
 
     private companion object {
+        const val BASE_URL = "https://google.com/"
         val RESPONSE_BODY = readFromResources("response_body.json")
         val RESPONSE_OBJECT = ResponseObject(200, "some message", "some text")
         val REQUEST_BODY_RAW = readFromResources("request_body.json")
         val REQUEST_BODY = RequestObject("some body id", "some body message", "some body text")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
-            path = "/somePath",
+            requestUrl = "https://google.com/somePath",
             method = Method.Get,
             containsHeaders = mapOf("a" to "b", "c" to "d"),
             params = mapOf("1" to "2", "3" to "4")
