@@ -23,9 +23,9 @@ For Gradle users, add the following to your module’s `build.gradle`
 ```groovy
 dependencies {
     //compatible with all libraries
-    testImplementation "io.github.denisbronx.netmock:netmock-server:0.2.0" 
+    testImplementation "io.github.denisbronx.netmock:netmock-server:0.3.0" 
     //lighter weight option for ktor only library users
-    testImplementation "io.github.benisbronx.netmock:netmock-engine:0.2.0"
+    testImplementation "io.github.benisbronx.netmock:netmock-engine:0.3.0"
 }
 ```
 
