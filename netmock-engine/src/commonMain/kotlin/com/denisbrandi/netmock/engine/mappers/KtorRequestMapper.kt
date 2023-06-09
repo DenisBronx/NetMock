@@ -17,8 +17,8 @@ internal object KtorRequestMapper {
 
     private fun mapHeaders(headers: Headers): Map<String, String> {
         return buildMap {
-            headers.forEach { key, _ ->
-                put(key, headers[key].orEmpty())
+            headers.entries().forEach {
+                put(it.key, it.value.first())
             }
         }
     }
