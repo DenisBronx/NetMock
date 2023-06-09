@@ -1,2 +1,2 @@
 ./scripts/build.sh
-./gradlew publishAllPublicationsToSonatypeRepository
+./gradlew publishAllPublicationsToSonatypeRepository --max-workers 1

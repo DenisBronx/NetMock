@@ -69,7 +69,7 @@ class DefaultRequestMatcherTest {
         val EXPECTED_REQUEST = NetMockRequest(
             requestUrl = "https://google.com/somePath?paramKey1=paramValue1&paramKey2=paramValue2",
             method = Method.Get,
-            containsHeaders = mapOf("headerKey1" to "headerValue1", "headerKey2" to "headerValue2"),
+            mandatoryHeaders = mapOf("headerKey1" to "headerValue1", "headerKey2" to "headerValue2"),
             body = "body"
         )
     }
