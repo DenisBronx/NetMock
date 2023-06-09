@@ -1,2 +1,4 @@
+#!/bin/sh
+set -e
 ./scripts/publish.sh
-./gradlew closeAndReleaseStagingRepository
+./gradlew closeAndReleaseStagingRepository --max-workers 1

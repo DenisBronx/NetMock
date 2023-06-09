@@ -211,7 +211,7 @@ class RetrofitMockTest {
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
             requestUrl = "https://google.com/somePath?1=2&3=4",
             method = Method.Get,
-            containsHeaders = mapOf("a" to "b", "c" to "d")
+            mandatoryHeaders = mapOf("a" to "b", "c" to "d")
         )
         val EXPECTED_RESPONSE =
             NetMockResponse(code = 201, containsHeaders = mapOf("x" to "y"), body = RESPONSE_BODY)

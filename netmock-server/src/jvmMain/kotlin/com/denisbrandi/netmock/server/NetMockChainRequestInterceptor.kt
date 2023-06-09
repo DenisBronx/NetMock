@@ -8,7 +8,7 @@ object NetMockChainRequestInterceptor {
         val interceptedRequestUrl = chain.request().url
         val interceptedBaseUrl = "${interceptedRequestUrl.scheme}://${interceptedRequestUrl.host}/"
         val headers = chain.request().headers.newBuilder()
-            .add(MockWebServerRequestMatcher.INTERCEPTED_REQUEST_URL_HEADER, interceptedRequestUrl.toString())
+            .add(INTERCEPTED_REQUEST_URL_HEADER, interceptedRequestUrl.toString())
             .build()
         val redirectedRequest = chain.request().newBuilder()
             .headers(headers)
