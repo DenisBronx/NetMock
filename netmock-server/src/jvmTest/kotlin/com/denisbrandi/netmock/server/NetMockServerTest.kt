@@ -19,13 +19,28 @@ class NetMockServerTest {
     @get:Rule
     val netMock = NetMockServerRule()
 
-    private val sut = OkHttpClient.Builder().build()
+    private val sut = OkHttpClient.Builder()
+        .addInterceptor(netMock.server.interceptor)
+        .build()
+
+    @Test
+    fun `EXPECT mapped response WHEN directed to localhost`() {
+        val sut = OkHttpClient.Builder().build()
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.server.baseUrl}somePath")
+        netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
+
+        val response = sut.newCall(getCompleteRequest(netMock.server.baseUrl)).execute()
+
+        assertEquals(listOf(expectedRequest), netMock.interceptedRequests)
+        assertValidResponse(EXPECTED_RESPONSE, response)
+        assertTrue(netMock.allowedMocks.isEmpty())
+    }
 
     @Test
     fun `EXPECT mapped response`() {
         netMock.addMock(EXPECTED_COMPLETE_REQUEST, EXPECTED_RESPONSE)
 
-        val response = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
+        val response = sut.newCall(getCompleteRequest(BASE_URL)).execute()
 
         assertEquals(listOf(EXPECTED_COMPLETE_REQUEST), netMock.interceptedRequests)
         assertValidResponse(EXPECTED_RESPONSE, response)
@@ -39,8 +54,8 @@ class NetMockServerTest {
         netMock.addMock(EXPECTED_COMPLETE_REQUEST, expectedResponse1)
         netMock.addMock(EXPECTED_COMPLETE_REQUEST, expectedResponse2)
 
-        val response1 = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
-        val response2 = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
+        val response1 = sut.newCall(getCompleteRequest(BASE_URL)).execute()
+        val response2 = sut.newCall(getCompleteRequest(BASE_URL)).execute()
 
         assertEquals(
             listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST),
@@ -58,9 +73,9 @@ class NetMockServerTest {
         netMock.addMock(EXPECTED_COMPLETE_REQUEST, expectedResponse1)
         netMock.addMock(EXPECTED_COMPLETE_REQUEST, expectedResponse2)
 
-        val response1 = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
-        val response2 = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
-        val response3 = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
+        val response1 = sut.newCall(getCompleteRequest(BASE_URL)).execute()
+        val response2 = sut.newCall(getCompleteRequest(BASE_URL)).execute()
+        val response3 = sut.newCall(getCompleteRequest(BASE_URL)).execute()
 
         assertEquals(
             listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST),
@@ -76,7 +91,7 @@ class NetMockServerTest {
     fun `EXPECT valid response for GET`() {
         testResponseForMethod(
             EXPECTED_COMPLETE_REQUEST.copy(method = Method.Get),
-            getCompleteRequestBuilder(netMock.baseUrl).get().build(),
+            getCompleteRequestBuilder(BASE_URL).get().build(),
             EXPECTED_RESPONSE
         )
     }
@@ -85,7 +100,7 @@ class NetMockServerTest {
     fun `EXPECT valid response for HEAD`() {
         testResponseForMethod(
             EXPECTED_COMPLETE_REQUEST.copy(method = Method.Head),
-            getCompleteRequestBuilder(netMock.baseUrl).head().build(),
+            getCompleteRequestBuilder(BASE_URL).head().build(),
             EXPECTED_RESPONSE.copy(body = "") // body is empty in head responses
         )
     }
@@ -94,7 +109,7 @@ class NetMockServerTest {
     fun `EXPECT valid response for POST`() {
         testResponseForMethod(
             EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY),
-            getCompleteRequestBuilder(netMock.baseUrl).post(REQUEST_BODY.toRequestBody()).build(),
+            getCompleteRequestBuilder(BASE_URL).post(REQUEST_BODY.toRequestBody()).build(),
             EXPECTED_RESPONSE
         )
     }
@@ -103,7 +118,7 @@ class NetMockServerTest {
     fun `EXPECT valid response for PUT`() {
         testResponseForMethod(
             EXPECTED_COMPLETE_REQUEST.copy(method = Method.Put, body = REQUEST_BODY),
-            getCompleteRequestBuilder(netMock.baseUrl).put(REQUEST_BODY.toRequestBody()).build(),
+            getCompleteRequestBuilder(BASE_URL).put(REQUEST_BODY.toRequestBody()).build(),
             EXPECTED_RESPONSE
         )
     }
@@ -112,7 +127,7 @@ class NetMockServerTest {
     fun `EXPECT valid response for DELETE`() {
         testResponseForMethod(
             EXPECTED_COMPLETE_REQUEST.copy(method = Method.Delete, body = REQUEST_BODY),
-            getCompleteRequestBuilder(netMock.baseUrl).delete(REQUEST_BODY.toRequestBody()).build(),
+            getCompleteRequestBuilder(BASE_URL).delete(REQUEST_BODY.toRequestBody()).build(),
             EXPECTED_RESPONSE
         )
     }
@@ -121,7 +136,7 @@ class NetMockServerTest {
     fun `EXPECT valid response for PATCH`() {
         testResponseForMethod(
             EXPECTED_COMPLETE_REQUEST.copy(method = Method.Patch, body = REQUEST_BODY),
-            getCompleteRequestBuilder(netMock.baseUrl).patch(REQUEST_BODY.toRequestBody()).build(),
+            getCompleteRequestBuilder(BASE_URL).patch(REQUEST_BODY.toRequestBody()).build(),
             EXPECTED_RESPONSE
         )
     }
@@ -130,7 +145,7 @@ class NetMockServerTest {
     fun `EXPECT valid response for custom method`() {
         testResponseForMethod(
             EXPECTED_COMPLETE_REQUEST.copy(method = Method.Custom("CUSTOM"), body = REQUEST_BODY),
-            getCompleteRequestBuilder(netMock.baseUrl).method(
+            getCompleteRequestBuilder(BASE_URL).method(
                 "CUSTOM",
                 REQUEST_BODY.toRequestBody()
             ).build(),
@@ -156,7 +171,7 @@ class NetMockServerTest {
     fun `EXPECT mapped response WHEN request has missing fields`() {
         netMock.addMock(EXPECTED_MISSING_FIELDS_REQUEST, EXPECTED_RESPONSE)
 
-        val response = sut.newCall(getRequestWithMissingFields(netMock.baseUrl)).execute()
+        val response = sut.newCall(getRequestWithMissingFields(BASE_URL)).execute()
 
         assertEquals(listOf(EXPECTED_MISSING_FIELDS_REQUEST), netMock.interceptedRequests)
         assertValidResponse(EXPECTED_RESPONSE, response)
@@ -167,7 +182,7 @@ class NetMockServerTest {
     fun `EXPECT default response WHEN request is not matching`() {
         netMock.addMock(EXPECTED_NOT_MATCHING_REQUEST, EXPECTED_RESPONSE)
 
-        val response = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
+        val response = sut.newCall(getCompleteRequest(BASE_URL)).execute()
 
         assertTrue(netMock.interceptedRequests.isEmpty())
         assertEquals(400, response.code)
@@ -183,7 +198,7 @@ class NetMockServerTest {
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
 
         val response = sut.newCall(
-            getCompleteRequestBuilder(netMock.baseUrl).post("not matching body".toRequestBody()).build()
+            getCompleteRequestBuilder(BASE_URL).post("not matching body".toRequestBody()).build()
         ).execute()
 
         assertTrue(netMock.interceptedRequests.isEmpty())
@@ -199,7 +214,7 @@ class NetMockServerTest {
         netMock.addMock(EXPECTED_NOT_MATCHING_REQUEST, EXPECTED_RESPONSE)
         netMock.defaultResponse = DEFAULT_RESPONSE
 
-        val response = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
+        val response = sut.newCall(getCompleteRequest(BASE_URL)).execute()
 
         assertTrue(netMock.interceptedRequests.isEmpty())
         assertValidResponse(DEFAULT_RESPONSE, response)
@@ -218,14 +233,15 @@ class NetMockServerTest {
     }
 
     private companion object {
+        const val BASE_URL = "https://google.com/"
         val REQUEST_BODY = readFromJvmResources("request_body.json")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
-            path = "/somePath",
+            requestUrl = "https://google.com/somePath",
             method = Method.Get,
             containsHeaders = mapOf("a" to "b", "c" to "d"),
             params = mapOf("1" to "2", "3" to "4")
         )
-        val EXPECTED_MISSING_FIELDS_REQUEST = NetMockRequest(method = Method.Get)
+        val EXPECTED_MISSING_FIELDS_REQUEST = NetMockRequest(requestUrl = "https://google.com/", method = Method.Get)
         val EXPECTED_NOT_MATCHING_REQUEST = EXPECTED_COMPLETE_REQUEST.copy(
             containsHeaders = mapOf("a" to "b", "c" to "d", "e" to "f")
         )
@@ -236,6 +252,7 @@ class NetMockServerTest {
         )
         val DEFAULT_RESPONSE =
             NetMockResponse(code = 201, containsHeaders = mapOf("a" to "b"), body = "default")
+
         private fun getCompleteRequest(baseUrl: String): Request {
             return getCompleteRequestBuilder(baseUrl).get().build()
         }

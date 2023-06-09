@@ -3,17 +3,24 @@ package com.denisbrandi.netmock.server
 import com.denisbrandi.netmock.NetMockRequest
 import com.denisbrandi.netmock.matchers.RequestBodyMatcher
 import com.denisbrandi.netmock.matchers.RequestMatcher
-import com.denisbrandi.netmock.matchers.RequestPathMatcher
+import com.denisbrandi.netmock.matchers.RequestUrlMatcher
 import okhttp3.mockwebserver.RecordedRequest
 
 internal object MockWebServerRequestMatcher : RequestMatcher<RecordedRequest> {
+
+    const val INTERCEPTED_REQUEST_URL_HEADER = "NET_MOCK_RESERVED_HEADER/interceptedRequestUrl"
     override fun isMatchingTheRequest(
         recordedRequest: RecordedRequest,
         recordedRequestBody: String,
         expectedRequest: NetMockRequest
     ): Boolean {
+        val requestUrl = if (recordedRequest.headers[INTERCEPTED_REQUEST_URL_HEADER] != null) {
+            recordedRequest.headers[INTERCEPTED_REQUEST_URL_HEADER]
+        } else {
+            recordedRequest.requestUrl?.toString()
+        }
         return recordedRequest.method == expectedRequest.method.name &&
-            RequestPathMatcher.isMatchingPathAndParams(recordedRequest.path, expectedRequest) &&
+            RequestUrlMatcher.isMatchingUrl(requestUrl, expectedRequest) &&
             RequestBodyMatcher.isMatchingTheBody(recordedRequestBody, expectedRequest.body) &&
             isMatchingTheHeaders(recordedRequest, expectedRequest)
     }
