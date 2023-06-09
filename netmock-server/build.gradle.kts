@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform") version "1.8.21"
     id("maven-publish")
     id("convention.publication")
+    id("org.jetbrains.kotlinx.kover") version kover_version
 }
 
 publishing {
