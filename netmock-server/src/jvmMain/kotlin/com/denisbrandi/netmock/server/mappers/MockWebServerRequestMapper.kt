@@ -1,6 +1,6 @@
 package com.denisbrandi.netmock.server.mappers
 
-import com.denisbrandi.netmock.InterceptedRequest
+import com.denisbrandi.netmock.interceptors.InterceptedRequest
 import com.denisbrandi.netmock.server.INTERCEPTED_REQUEST_URL_HEADER
 import okhttp3.mockwebserver.RecordedRequest
 

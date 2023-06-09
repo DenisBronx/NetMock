@@ -1,6 +1,5 @@
 package com.denisbrandi.netmock.interceptors
 
-import com.denisbrandi.netmock.InterceptedRequest
 import com.denisbrandi.netmock.NetMockRequest
 import com.denisbrandi.netmock.NetMockRequestResponse
 import com.denisbrandi.netmock.NetMockResponse

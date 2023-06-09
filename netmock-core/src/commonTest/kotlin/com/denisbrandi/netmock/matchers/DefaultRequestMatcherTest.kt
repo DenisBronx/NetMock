@@ -1,8 +1,8 @@
 package com.denisbrandi.netmock.matchers
 
-import com.denisbrandi.netmock.InterceptedRequest
 import com.denisbrandi.netmock.Method
 import com.denisbrandi.netmock.NetMockRequest
+import com.denisbrandi.netmock.interceptors.InterceptedRequest
 import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertFalse
