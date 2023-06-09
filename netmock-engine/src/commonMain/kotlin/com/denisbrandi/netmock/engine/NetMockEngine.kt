@@ -1,7 +1,8 @@
 package com.denisbrandi.netmock.engine
 
 import com.denisbrandi.netmock.NetMock
-import com.denisbrandi.netmock.interceptors.*
+import com.denisbrandi.netmock.interceptors.RequestInterceptor
+import com.denisbrandi.netmock.interceptors.RequestInterceptorImpl
 import io.ktor.client.engine.*
 import io.ktor.client.engine.mock.*
 import io.ktor.client.request.*
@@ -9,8 +10,8 @@ import io.ktor.client.request.*
 /**
  * Wrapper of [MockEngine], used to intercept Ktor requests and responses.
  * Example:
- private val netMock = NetMockEngine()
- private val httpClient = HttpClient(netMock)
+private val netMock = NetMockEngine()
+private val httpClient = HttpClient(netMock)
  */
 class NetMockEngine private constructor(
     mockEngine: MockEngine,
@@ -18,9 +19,6 @@ class NetMockEngine private constructor(
 ) : NetMock,
     RequestInterceptor<HttpRequestData, HttpResponseData> by mockRequestHandler,
     HttpClientEngine by mockEngine {
-
-    override val baseUrl: String
-        get() = "http://localhost:58259/"
 
     companion object {
         operator fun invoke(config: MockEngineConfig = MockEngineConfig()): NetMockEngine {
