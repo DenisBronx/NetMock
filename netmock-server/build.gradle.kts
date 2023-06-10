@@ -26,6 +26,7 @@ kotlin {
             sourceSets {
                 dependencies {
                     api(project(":netmock-core"))
+                    api(project(":netmock-resources"))
                     implementation(platform("com.squareup.okhttp3:okhttp-bom:$okhttp_version"))
                     implementation("com.squareup.okhttp3:okhttp")
                     implementation("com.squareup.okhttp3:mockwebserver")

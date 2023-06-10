@@ -35,6 +35,7 @@ kotlin {
             sourceSets {
                 dependencies {
                     api(project(":netmock-core"))
+                    api(project(":netmock-resources"))
                     api("io.ktor:ktor-client-core:$ktor_version")
                     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
                     api("io.ktor:ktor-client-mock:$ktor_version")
