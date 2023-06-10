@@ -31,6 +31,7 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
     js(IR) {
+        nodejs()
         binaries.executable()
         browser {
             commonWebpackConfig {
