@@ -19,6 +19,7 @@ class NativeResourceTest {
     @Test
     fun `EXPECT false WHEN file does not exists`() {
         val sut = Resource(NATIVE_RESOURCES_PATH, "a")
+
         assertFalse(sut.exists())
     }
 

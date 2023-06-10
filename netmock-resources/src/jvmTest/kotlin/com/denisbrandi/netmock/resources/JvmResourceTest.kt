@@ -19,6 +19,7 @@ class JvmResourceTest {
     @Test
     fun `EXPECT false WHEN file does not exists`() {
         val sut = Resource(JVM_RESOURCES_PATH, "a")
+
         assertFalse(sut.exists())
     }
 

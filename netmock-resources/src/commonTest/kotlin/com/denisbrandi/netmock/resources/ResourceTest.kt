@@ -7,18 +7,19 @@ import kotlin.test.assertTrue
 
 class ResourceTest {
 
-    private val sut = Resource(JVM_RESOURCES_PATH, FILE_PATH)
+    private val sut = Resource(COMMON_RESOURCES_PATH, FILE_PATH)
 
     @Test
     fun `EXPECT text and exists WHEN file exists`() {
         assertTrue(sut.exists())
         assertEquals(EXPECTED_TEXT, sut.readText())
-        assertEquals(EXPECTED_TEXT, readFromJvmResources(FILE_PATH))
+        assertEquals(EXPECTED_TEXT, readFromCommonResources(FILE_PATH))
     }
 
     @Test
     fun `EXPECT false WHEN file does not exists`() {
-        val sut = Resource(JVM_RESOURCES_PATH, "a")
+        val sut = Resource(COMMON_RESOURCES_PATH, "a")
+
         assertFalse(sut.exists())
     }
 
