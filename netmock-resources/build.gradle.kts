@@ -1,15 +1,13 @@
 plugins {
     kotlin("multiplatform") version "1.8.21"
-    id("org.jetbrains.kotlin.plugin.serialization")
     id("maven-publish")
     id("convention.publication")
-    id("org.jetbrains.kotlinx.kover") version kover_version
 }
 
 publishing {
     publications.withType<MavenPublication> {
         groupId = "io.github.denisbronx.netmock"
-        artifactId = "netmock-core"
+        artifactId = "netmock-resources"
         version = netmock_version
     }
 }
@@ -31,12 +29,6 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
     sourceSets {
-        commonMain {
-            dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${serialization_version}")
-                implementation("co.touchlab:kermit:$kermit_version")
-            }
-        }
         commonTest {
             dependencies {
                 implementation("org.jetbrains.kotlin:kotlin-test")

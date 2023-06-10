@@ -2,6 +2,7 @@ plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("org.jetbrains.kotlinx.kover") version kover_version
 }
 
 java {
@@ -11,6 +12,10 @@ java {
 
 dependencies {
     testImplementation(project(":netmock-server"))
+    testImplementation(project(":netmock-engine"))
+    kover(project(":netmock-core"))
+    kover(project(":netmock-engine"))
+    kover(project(":netmock-server"))
     testImplementation("junit:junit:$junit_version")
     testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version")
