@@ -16,5 +16,6 @@ rootProject.name = "NetMock"
 include(":netmock-core")
 include(":netmock-engine")
 include(":netmock-server")
-include(":netmock-server-test-compatibility")
+include(":netmock-integration-test")
 includeBuild("convention-plugins")
+include(":netmock-resources")

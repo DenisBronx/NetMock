@@ -15,7 +15,7 @@ internal object KtorResponseMapper {
             statusCode = HttpStatusCode(netMockResponse.code, ""),
             requestTime = GMTDate(null),
             headers = HeadersBuilder().apply {
-                netMockResponse.containsHeaders.forEach {
+                netMockResponse.mandatoryHeaders.forEach {
                     append(it.key, it.value)
                 }
             }.build(),

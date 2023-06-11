@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
     id("maven-publish")
     id("convention.publication")
+    id("org.jetbrains.kotlinx.kover") version kover_version
 }
 
 publishing {
@@ -28,6 +29,17 @@ kotlin {
         hostOs == "Linux" -> linuxX64("native")
         isMingwX64 -> mingwX64("native")
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
+    }
+    js(IR) {
+        nodejs()
+        binaries.executable()
+        browser {
+            commonWebpackConfig {
+                cssSupport {
+                    enabled.set(true)
+                }
+            }
+        }
     }
     sourceSets {
         commonMain {

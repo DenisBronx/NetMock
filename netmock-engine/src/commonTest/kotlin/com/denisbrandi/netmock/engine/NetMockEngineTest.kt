@@ -269,7 +269,7 @@ class NetMockEngineTest {
 
         assertEquals(listOf(expectedCompleteRequest), netMock.interceptedRequests)
         assertEquals(expectedResponse.code, response.status.value)
-        assertHeaders(expectedResponse.containsHeaders, response.headers)
+        assertHeaders(expectedResponse.mandatoryHeaders, response.headers)
         assertEquals(RESPONSE_OBJECT, response.body<ResponseObject>())
         assertTrue(netMock.allowedMocks.isEmpty())
     }
@@ -279,7 +279,7 @@ class NetMockEngineTest {
         actualResponse: HttpResponse
     ) {
         assertEquals(expectedResponse.code, actualResponse.status.value)
-        assertHeaders(expectedResponse.containsHeaders, actualResponse.headers)
+        assertHeaders(expectedResponse.mandatoryHeaders, actualResponse.headers)
         assertEquals(expectedResponse.body, actualResponse.body<String>())
     }
 
@@ -312,16 +312,16 @@ class NetMockEngineTest {
         )
         val EXPECTED_RESPONSE = NetMockResponse(
             code = 200,
-            containsHeaders = mapOf("x" to "y"),
+            mandatoryHeaders = mapOf("x" to "y"),
             body = RESPONSE_BODY
         )
         val EXPECTED_JSON_RESPONSE = NetMockResponse(
             code = 200,
-            containsHeaders = mapOf("x" to "y", "Content-Type" to "application/json"),
+            mandatoryHeaders = mapOf("x" to "y", "Content-Type" to "application/json"),
             body = RESPONSE_BODY
         )
         val DEFAULT_RESPONSE =
-            NetMockResponse(code = 201, containsHeaders = mapOf("a" to "b"), body = "default")
+            NetMockResponse(code = 201, mandatoryHeaders = mapOf("a" to "b"), body = "default")
         private fun getCompleteRequest(baseUrl: String): HttpRequestBuilder {
             return getCompleteRequestBuilder(baseUrl).apply {
                 method = HttpMethod.Get
