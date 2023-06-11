@@ -3,7 +3,7 @@ package com.denisbrandi.netmock.server
 import okhttp3.Interceptor
 import okhttp3.Response
 
-object NetMockChainRequestInterceptor {
+internal object NetMockChainRequestInterceptor {
     fun intercept(chain: Interceptor.Chain, baseUrl: String): Response {
         val interceptedRequestUrl = chain.request().url
         val interceptedBaseUrl = "${interceptedRequestUrl.scheme}://${interceptedRequestUrl.host}/"

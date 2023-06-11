@@ -17,4 +17,4 @@ internal class MockDispatcher(
     }
 }
 
-const val INTERCEPTED_REQUEST_URL_HEADER = "NET_MOCK_RESERVED_HEADER/interceptedRequestUrl"
+internal const val INTERCEPTED_REQUEST_URL_HEADER = "NET_MOCK_RESERVED_HEADER/interceptedRequestUrl"

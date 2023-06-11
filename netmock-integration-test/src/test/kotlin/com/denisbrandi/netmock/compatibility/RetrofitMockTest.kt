@@ -22,7 +22,7 @@ class RetrofitMockTest {
 
     private val sut = createSut(
         BASE_URL,
-        OkHttpClient.Builder().addInterceptor(netMock.server.interceptor).build()
+        OkHttpClient.Builder().addInterceptor(netMock.interceptor).build()
     )
 
     private fun createSut(baseUrl: String, okHttpClient: OkHttpClient): RetrofitApi {
@@ -37,8 +37,8 @@ class RetrofitMockTest {
 
     @Test
     fun `EXPECT GET response WHEN localhost`() = runTest {
-        val sut = createSut(netMock.server.baseUrl, OkHttpClient())
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.server.baseUrl}somePath?1=2&3=4")
+        val sut = createSut(netMock.baseUrl, OkHttpClient())
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.baseUrl}somePath?1=2&3=4")
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
 
         val response = sut.get(
@@ -73,7 +73,7 @@ class RetrofitMockTest {
 
         assertEquals(listOf(expectedRequest), netMock.interceptedRequests)
         assertEquals(EXPECTED_RESPONSE.code, response.code())
-        EXPECTED_RESPONSE.containsHeaders.forEach {
+        EXPECTED_RESPONSE.mandatoryHeaders.forEach {
             assertTrue(response.headers().contains(it.key to it.value))
         }
     }
@@ -214,6 +214,6 @@ class RetrofitMockTest {
             mandatoryHeaders = mapOf("a" to "b", "c" to "d")
         )
         val EXPECTED_RESPONSE =
-            NetMockResponse(code = 201, containsHeaders = mapOf("x" to "y"), body = RESPONSE_BODY)
+            NetMockResponse(code = 201, mandatoryHeaders = mapOf("x" to "y"), body = RESPONSE_BODY)
     }
 }

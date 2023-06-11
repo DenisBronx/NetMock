@@ -20,7 +20,7 @@ class NetMockTest {
             },
             response = {
                 code = 200
-                containsHeaders = mapOf("x" to "y")
+                mandatoryHeaders = mapOf("x" to "y")
                 body = "responseBody"
             }
         )
@@ -102,12 +102,12 @@ class NetMockTest {
         }
         val EXPECTED_RESPONSE = NetMockResponse(
             code = 200,
-            containsHeaders = mapOf("x" to "y"),
+            mandatoryHeaders = mapOf("x" to "y"),
             body = "responseBody"
         )
         val EXPECTED_RESPONSE_BUILDER = NetMockResponseBuilder().apply {
             code = 200
-            containsHeaders = mapOf("x" to "y")
+            mandatoryHeaders = mapOf("x" to "y")
             body = "responseBody"
         }
     }

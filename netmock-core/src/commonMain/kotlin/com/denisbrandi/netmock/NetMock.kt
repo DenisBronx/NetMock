@@ -3,7 +3,6 @@ package com.denisbrandi.netmock
 /**
  * NetMock
  *
- * @property [baseUrl]: generated base url that needs to be used as base url for your production code requests.
  * @property [interceptedRequests]: list of the mocked requests that have been successfully intercepted.
  * @property [allowedMocks]: list of the mocked requests/responses that have not been intercepted yet.
  * @property [defaultResponse]: response returned for requests that do not match the [allowedMocks], when `null` a 400 Bad Request response is returned.

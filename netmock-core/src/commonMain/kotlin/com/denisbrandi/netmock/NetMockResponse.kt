@@ -1,14 +1,19 @@
 package com.denisbrandi.netmock
 
+/**
+ * @property code: response status code
+ * @property mandatoryHeaders: headers that must be contained in the response
+ * @property body: string value of the response body
+ */
 data class NetMockResponse(
     val code: Int = 200,
-    val containsHeaders: Map<String, String> = emptyMap(),
+    val mandatoryHeaders: Map<String, String> = emptyMap(),
     val body: String = ""
 )
 
 class NetMockResponseBuilder {
     var code: Int = 0
-    lateinit var containsHeaders: Map<String, String>
+    lateinit var mandatoryHeaders: Map<String, String>
     lateinit var body: String
 
     init {
@@ -17,20 +22,20 @@ class NetMockResponseBuilder {
 
     fun fromBuilder(builder: NetMockResponseBuilder) {
         code = builder.code
-        containsHeaders = builder.containsHeaders
+        mandatoryHeaders = builder.mandatoryHeaders
         body = builder.body
     }
 
     fun fromResponse(response: NetMockResponse) {
         code = response.code
-        containsHeaders = response.containsHeaders
+        mandatoryHeaders = response.mandatoryHeaders
         body = response.body
     }
 
     fun build(): NetMockResponse {
         return NetMockResponse(
             code = code,
-            containsHeaders = containsHeaders,
+            mandatoryHeaders = mandatoryHeaders,
             body = body
         )
     }
