@@ -24,7 +24,7 @@ class KtorMockTest {
     val netMock = NetMockServerRule()
     private val sut = HttpClient(OkHttp) {
         engine {
-            addInterceptor(netMock.server.interceptor)
+            addInterceptor(netMock.interceptor)
         }
         install(ContentNegotiation) {
             json()
@@ -38,10 +38,10 @@ class KtorMockTest {
                 json()
             }
         }
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.server.baseUrl}somePath?1=2&3=4")
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.baseUrl}somePath?1=2&3=4")
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
 
-        val response = sut.get(getUrl(netMock.server.baseUrl), withHeaders())
+        val response = sut.get(getUrl(netMock.baseUrl), withHeaders())
 
         assertEquals(200, response.status.value)
         assertHeaders(EXPECTED_RESPONSE_HEADERS, response.headers)
@@ -186,7 +186,7 @@ class KtorMockTest {
         val EXPECTED_RESPONSE =
             NetMockResponse(
                 code = 200,
-                containsHeaders = EXPECTED_RESPONSE_HEADERS,
+                mandatoryHeaders = EXPECTED_RESPONSE_HEADERS,
                 body = RESPONSE_BODY_RAW
             )
     }

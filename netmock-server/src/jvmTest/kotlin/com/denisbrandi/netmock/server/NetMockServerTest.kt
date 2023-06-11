@@ -20,16 +20,16 @@ class NetMockServerTest {
     val netMock = NetMockServerRule()
 
     private val sut = OkHttpClient.Builder()
-        .addInterceptor(netMock.server.interceptor)
+        .addInterceptor(netMock.interceptor)
         .build()
 
     @Test
     fun `EXPECT mapped response WHEN directed to localhost`() {
         val sut = OkHttpClient.Builder().build()
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.server.baseUrl}somePath?1=2&3=4")
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.baseUrl}somePath?1=2&3=4")
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
 
-        val response = sut.newCall(getCompleteRequest(netMock.server.baseUrl)).execute()
+        val response = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
 
         assertEquals(listOf(expectedRequest), netMock.interceptedRequests)
         assertValidResponse(EXPECTED_RESPONSE, response)
@@ -226,7 +226,7 @@ class NetMockServerTest {
 
     private fun assertValidResponse(expectedResponse: NetMockResponse, actualResponse: Response) {
         assertEquals(expectedResponse.code, actualResponse.code)
-        expectedResponse.containsHeaders.forEach {
+        expectedResponse.mandatoryHeaders.forEach {
             assertTrue(actualResponse.networkResponse!!.headers.contains(it.key to it.value))
         }
         assertEquals(expectedResponse.body, actualResponse.body!!.string())
@@ -246,11 +246,11 @@ class NetMockServerTest {
         )
         val EXPECTED_RESPONSE = NetMockResponse(
             code = 200,
-            containsHeaders = mapOf("x" to "y"),
+            mandatoryHeaders = mapOf("x" to "y"),
             body = readFromJvmResources("response_body.json")
         )
         val DEFAULT_RESPONSE =
-            NetMockResponse(code = 201, containsHeaders = mapOf("a" to "b"), body = "default")
+            NetMockResponse(code = 201, mandatoryHeaders = mapOf("a" to "b"), body = "default")
 
         private fun getCompleteRequest(baseUrl: String): Request {
             return getCompleteRequestBuilder(baseUrl).get().build()

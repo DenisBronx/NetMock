@@ -7,7 +7,7 @@ import okhttp3.mockwebserver.MockResponse
 internal object MockWebServerResponseMapper {
     fun mapResponse(netMockResponse: NetMockResponse): MockResponse {
         return MockResponse().setResponseCode(netMockResponse.code)
-            .setHeaders(netMockResponse.containsHeaders.toHeaders())
+            .setHeaders(netMockResponse.mandatoryHeaders.toHeaders())
             .setBody(netMockResponse.body)
     }
 }

@@ -11,9 +11,9 @@ The `netmock-server` flavor is compatible with `Java`, `Kotlin`, and `Android`, 
 This flavor is perfect for developers that work on non-Multiplatform projects and that want to test their network requests without having to worry about setting up a separate server.
 
 The `netmock-engine` flavor, on the other hand, is designed specifically for developers using `Ktor` or working with `Kotlin Multiplatform`. 
-It allows you to use `MockEngine` instead of a localhost server, making it a more lightweight and multiplatform option for those working with `Ktor`.
-If your project is not a Kotlin multiplatform project, and you are using a variety of libraries, and you don't want to import both flavors, just use `netmock-server` as it is compatible with all the libraries including `Ktor`.
+It allows you to use `MockEngine` instead of a localhost server, making it a more lightweight and multiplatform option for those working with `Ktor`. 
 
+If your project is not a Kotlin multiplatform project, and you are using a variety of libraries, and you don't want to import both flavors, just use `netmock-server` as it is compatible with all the libraries including `Ktor`.
 
 # Install
 `Netmock` is available on Maven Central.
@@ -24,7 +24,7 @@ For Gradle users, add the following to your module’s `build.gradle`
 dependencies {
     //compatible with all libraries
     testImplementation "io.github.denisbronx.netmock:netmock-server:0.3.0" 
-    //lighter weight option for ktor only library users
+    //mutliplatform and lighter weight option for ktor only library users
     testImplementation "io.github.benisbronx.netmock:netmock-engine:0.3.0"
 }
 ```
@@ -35,7 +35,6 @@ dependencies {
 
 [netmock-engine initialization](netmock-engine/README.md)
 ## Mock requests and responses
-
 ```kotlin
 @Test
 fun `my test`() {
@@ -69,9 +68,7 @@ fun `my test`() {
     //...
 }
 ```
-
-Or if you want to define requests and responses outside the test function for reusability:
-
+### Reuse requests and responses
 ```kotlin
 private val request = NetMockRequest(
     method = Method.Post,
@@ -92,9 +89,7 @@ fun `my test`() {
     //...
 }
 ```
-
-You can also use templates and override the fields that need to change:
-
+### Templates
 ```kotlin
 private val templateRequest = NetMockRequest(
     method = Method.Post,
@@ -124,14 +119,14 @@ fun `my test`() {
     //...
 }
 ```
-
-Each mock will intercept only 1 request, once a request is intercepted `NetMock` will remove the mock from the queue.
-This allows you test what your code exactly does.
+### Mock the same request multiple times
+Each mock intercepts only 1 request, once a request is intercepted `NetMock` will remove the mock from the queue.
+This allows you to test what your code exactly does.
 If your code is making the same request multiple times (i.e polling) you would need to add a mock for each expected request:
 
 ```kotlin
 @Test
-fun `your test`() {
+fun `my test`() {
     netMock.addMock(request, response)
     netMock.addMock(request, response)
     netMock.addMock(request, response)
@@ -139,12 +134,11 @@ fun `your test`() {
     //...
 }
 ```
-
+## Verify intercepted requests
 If you want to verify that a request has been intercepted you can use `netMock.interceptedRequests`, which will return a list of all the interceptedRequests by `NetMock`:
-
 ```kotlin
 @Test
-fun `your test`() {
+fun `my test`() {
     netMock.addMock(request, response)
     
     //...
@@ -154,14 +148,13 @@ fun `your test`() {
 ```
 
 You can also check the requests that have not been intercepted yet with:
-
 ```kotlin
 netMock.allowedMocks
 ```
 This will return a `NetMockRequestResponse` which is the pair of the `NetMockRequest:NetMockResponse` you previously mocked.
 
 ## Not mocked requests
-By default requests that are not mocked will produce a `400 Bad Request` response and will be logged as errors in the JUnit console.
+By default, requests that are not mocked will produce a `400 Bad Request` response and will be logged as errors in the console.
 You can override this behaviour by setting a default response:
 ```kotlin
 netMock.defaultResponse = NetMockResponse(
@@ -170,4 +163,22 @@ netMock.defaultResponse = NetMockResponse(
     body = readFromResources("responses/response_body.json")
 )
 ```
-by doing so, all the not mocked requests will return the specified response and no logs will be printed in the JUnit console.
+by doing so, all the not mocked requests will return the specified response and no logs will be printed in the console.
+
+## Resources
+When working with request and response bodies, it may not be ideal to create string constants in your tests (i.e. long JSONs that compromise tests readability, sharing bodies between test classes...).
+You can use instead read from a local file in your test `resources` folder:
+```kotlin
+//Reads the text from the module's "src/test/resources/responses/products_response_body.json" file
+val responseBody = readFromResources("responses/products_response_body.json")
+```
+By doing so, the IDE will properly format the file for you and you can even copy/paste HTTP request and response bodies from your real web server to create representative test cases.
+### Multiplatform Resources
+If you are working on a multiplatform project, your `resources` folder will be located in a different path.
+Use the following methods for reading the correct files:
+
+| Method                    | Resolved path              |
+|---------------------------|----------------------------|
+| `readFromCommonResources` | `src/commonTest/resources` |
+| `readFromJvmResources`    | `src/jvmTest/resources`    |
+| `readFromNativeResources` | `src/nativeTest/resources` |

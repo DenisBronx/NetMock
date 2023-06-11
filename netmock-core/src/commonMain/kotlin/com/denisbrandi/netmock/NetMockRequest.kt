@@ -1,5 +1,15 @@
 package com.denisbrandi.netmock
 
+/**
+ * @property requestUrl: full url with scheme, host, path and query params
+ * Example:
+ * ```
+ * https://google.com/somePath?1=2&3=4
+ * ```
+ * @property method: method used for the request, see [Method]
+ * @property mandatoryHeaders: headers that must be contained in the request
+ * @property body: string value of the request body
+ */
 data class NetMockRequest(
     val requestUrl: String = "",
     val method: Method = Method.Custom(""),
