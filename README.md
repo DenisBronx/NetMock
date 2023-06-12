@@ -25,7 +25,7 @@ dependencies {
     //compatible with all libraries
     testImplementation "io.github.denisbronx.netmock:netmock-server:0.4.0" 
     //mutliplatform and lighter weight option for ktor only library users
-    testImplementation "io.github.benisbronx.netmock:netmock-engine:0.4.0"
+    testImplementation "io.github.denisbronx.netmock:netmock-engine:0.4.0"
 }
 ```
 
