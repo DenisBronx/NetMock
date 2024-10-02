@@ -25,6 +25,22 @@ interface NetMock {
      * See [NetMock.addMock]
      * Alternative way of adding request/response to the queue using builders.
      *
+     * @param [request] The request that has to match with the intercepted HTTP request
+     * @param [response] Function that allows you to create a [NetMockResponse] using a builder.
+     */
+    fun addMock(
+        request: NetMockRequest,
+        response: NetMockResponseBuilder.() -> Unit
+    ) {
+        val responseBuilder = NetMockResponseBuilder()
+        response(responseBuilder)
+        addMock(request, responseBuilder.build())
+    }
+
+    /**
+     * See [NetMock.addMock]
+     * Alternative way of adding request/response to the queue using builders.
+     *
      * @param [request] Function that allows you to create a [NetMockRequest] using a builder.
      * @param [response] Function that allows you to create a [NetMockResponse] using a builder.
      */

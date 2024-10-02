@@ -52,12 +52,21 @@ class NetMockTest {
     @JsName("call_withRequest")
     @Test
     fun `EXPECT interface method properly called with all fields WHEN passing requests and responses`() {
+        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE)
+
+        assertEquals(
+            listOf(NetMockRequestResponse(EXPECTED_REQUEST, EXPECTED_RESPONSE)),
+            sut.allowedMocks
+        )
+    }
+
+    @JsName("call_withRequestAndBuilder")
+    @Test
+    fun `EXPECT interface method properly called with all fields WHEN passing requests and response builder`() {
         sut.addMock(
-            request = {
-                fromRequest(EXPECTED_REQUEST)
-            },
+            request = EXPECTED_REQUEST,
             response = {
-                fromResponse(EXPECTED_RESPONSE)
+                fromBuilder(EXPECTED_RESPONSE_BUILDER)
             }
         )
 
