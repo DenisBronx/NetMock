@@ -1,1 +1,1 @@
-ktlint "**/*.kt" "!**/generated/**" "!**/build/**" --code-style=android_studio --color --color-name=RED
+ktlint "**/*.kt" "!**/generated/**" "!**/build/**" --color --color-name=RED

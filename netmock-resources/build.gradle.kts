@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") version "1.8.21"
+    alias(libs.plugins.kotlin.multiplatform)
     id("maven-publish")
     id("convention.publication")
 }
@@ -8,13 +8,12 @@ publishing {
     publications.withType<MavenPublication> {
         groupId = "io.github.denisbronx.netmock"
         artifactId = "netmock-resources"
-        version = netmock_version
+        version = libs.versions.netmock.get()
     }
 }
 
 kotlin {
     jvm {
-        jvmToolchain(11)
         withJava()
         testRuns["test"].executionTask.configure {
             useJUnit()

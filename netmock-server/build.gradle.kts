@@ -1,21 +1,20 @@
 plugins {
-    kotlin("multiplatform") version "1.8.21"
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kover)
     id("maven-publish")
     id("convention.publication")
-    id("org.jetbrains.kotlinx.kover") version kover_version
 }
 
 publishing {
     publications.withType<MavenPublication> {
         groupId = "io.github.denisbronx.netmock"
         artifactId = "netmock-server"
-        version = netmock_version
+        version = libs.versions.netmock.get()
     }
 }
 
 kotlin {
     jvm {
-        jvmToolchain(11)
         withJava()
         testRuns["test"].executionTask.configure {
             useJUnit()
@@ -27,7 +26,7 @@ kotlin {
                 dependencies {
                     api(project(":netmock-core"))
                     api(project(":netmock-resources"))
-                    implementation(platform("com.squareup.okhttp3:okhttp-bom:$okhttp_version"))
+                    implementation(platform("com.squareup.okhttp3:okhttp-bom:${libs.versions.okhttp.get()}"))
                     implementation("com.squareup.okhttp3:okhttp")
                     implementation("com.squareup.okhttp3:mockwebserver")
                 }

@@ -1,8 +1,8 @@
 plugins {
     id("java-library")
-    id("org.jetbrains.kotlin.jvm")
-    id("org.jetbrains.kotlin.plugin.serialization")
-    id("org.jetbrains.kotlinx.kover") version kover_version
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kover)
 }
 
 java {
@@ -16,21 +16,21 @@ dependencies {
     kover(project(":netmock-core"))
     kover(project(":netmock-engine"))
     kover(project(":netmock-server"))
-    testImplementation("junit:junit:$junit_version")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version")
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlin.serialization)
+    testImplementation(libs.coroutines.test)
 
     //retrofit
-    testImplementation(platform("com.squareup.okhttp3:okhttp-bom:$okhttp_version"))
+    testImplementation(platform("com.squareup.okhttp3:okhttp-bom:${libs.versions.okhttp.get()}"))
     testImplementation("com.squareup.okhttp3:okhttp")
-    testImplementation("com.squareup.retrofit2:retrofit:$retrofit_version")
-    testImplementation("com.squareup.retrofit2:converter-scalars:$retrofit_version")
-    testImplementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$retrofit_serialization_version")
+    testImplementation(libs.retrofit)
+    testImplementation(libs.retrofit.converter.scalars)
+    testImplementation(libs.retrofit.serialization)
 
     //ktor
-    testImplementation("io.ktor:ktor-client-core:$ktor_version")
-    testImplementation("io.ktor:ktor-client-okhttp:$ktor_version")
-    testImplementation("io.ktor:ktor-client-cio:$ktor_version")
-    testImplementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-    testImplementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+    testImplementation(libs.ktor)
+    testImplementation(libs.ktor.okhttp)
+    testImplementation(libs.ktor.cio)
+    testImplementation(libs.ktor.content.negotiation)
+    testImplementation(libs.ktor.serialization)
 }

@@ -1,22 +1,21 @@
 plugins {
-    kotlin("multiplatform") version "1.8.21"
-    id("org.jetbrains.kotlin.plugin.serialization")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kover)
     id("maven-publish")
     id("convention.publication")
-    id("org.jetbrains.kotlinx.kover") version kover_version
 }
 
 publishing {
     publications.withType<MavenPublication> {
         groupId = "io.github.denisbronx.netmock"
         artifactId = "netmock-engine"
-        version = netmock_version
+        version = libs.versions.netmock.get()
     }
 }
 
 kotlin {
     jvm {
-        jvmToolchain(11)
         withJava()
         testRuns["test"].executionTask.configure {
             useJUnit()
@@ -36,18 +35,18 @@ kotlin {
                 dependencies {
                     api(project(":netmock-core"))
                     api(project(":netmock-resources"))
-                    api("io.ktor:ktor-client-core:$ktor_version")
-                    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
-                    api("io.ktor:ktor-client-mock:$ktor_version")
+                    api(libs.ktor)
+                    implementation(libs.ktor.serialization)
+                    api(libs.ktor.mock)
                 }
             }
         }
         commonTest {
             sourceSets {
                 dependencies {
-                    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+                    implementation(libs.ktor.content.negotiation)
                     implementation("org.jetbrains.kotlin:kotlin-test")
-                    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_test_version")
+                    implementation(libs.coroutines.test)
                 }
             }
         }
