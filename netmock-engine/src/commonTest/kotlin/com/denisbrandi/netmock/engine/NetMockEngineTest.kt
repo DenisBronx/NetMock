@@ -1,27 +1,15 @@
 package com.denisbrandi.netmock.engine
 
-import com.denisbrandi.netmock.Method
-import com.denisbrandi.netmock.NetMockRequest
-import com.denisbrandi.netmock.NetMockRequestResponse
-import com.denisbrandi.netmock.NetMockResponse
+import com.denisbrandi.netmock.*
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.headers
-import io.ktor.client.request.request
-import io.ktor.client.request.setBody
-import io.ktor.client.request.url
+import io.ktor.client.request.*
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.ContentType
-import io.ktor.http.Headers
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.*
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.Serializable
 

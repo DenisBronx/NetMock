@@ -1,12 +1,10 @@
 package com.denisbrandi.netmock.engine
 
 import com.denisbrandi.netmock.NetMock
-import com.denisbrandi.netmock.interceptors.DefaultInterceptor
-import com.denisbrandi.netmock.interceptors.RequestInterceptor
+import com.denisbrandi.netmock.interceptors.*
 import com.denisbrandi.netmock.matchers.DefaultRequestMatcher
 import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.MockEngineConfig
+import io.ktor.client.engine.mock.*
 
 /**
  * Wrapper of [MockEngine], used to intercept Ktor requests and responses.

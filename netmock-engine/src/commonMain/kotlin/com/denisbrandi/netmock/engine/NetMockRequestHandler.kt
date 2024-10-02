@@ -1,10 +1,8 @@
 package com.denisbrandi.netmock.engine
 
-import com.denisbrandi.netmock.engine.mappers.KtorRequestMapper
-import com.denisbrandi.netmock.engine.mappers.KtorResponseMapper
+import com.denisbrandi.netmock.engine.mappers.*
 import com.denisbrandi.netmock.interceptors.RequestInterceptor
-import io.ktor.client.request.HttpRequestData
-import io.ktor.client.request.HttpResponseData
+import io.ktor.client.request.*
 
 internal class NetMockRequestHandler(
     ktorInterceptor: RequestInterceptor
