@@ -52,7 +52,7 @@ kotlin {
         }
         commonTest {
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-test")
+                implementation(libs.kotlin.test)
             }
         }
     }
