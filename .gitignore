@@ -11,3 +11,4 @@ local.properties
 /kotlin-js-store
 secrets.properties
 private.pgp
+/.kotlin
