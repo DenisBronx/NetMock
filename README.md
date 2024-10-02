@@ -23,9 +23,11 @@ For Gradle users, add the following to your module’s `build.gradle`
 ```groovy
 dependencies {
     //compatible with all libraries
-    testImplementation "io.github.denisbronx.netmock:netmock-server:0.3.0" 
+    testImplementation "io.github.denisbronx.netmock:netmock-server:0.5.0" 
     //mutliplatform and lighter weight option for ktor only library users
-    testImplementation "io.github.benisbronx.netmock:netmock-engine:0.3.0"
+    testImplementation "io.github.denisbronx.netmock:netmock-engine:0.5.0"
+    //library for accessing local json files in the test folder
+    testImplementation "io.github.denisbronx.netmock:netmock-resources:0.5.0"
 }
 ```
 
@@ -167,7 +169,7 @@ by doing so, all the not mocked requests will return the specified response and 
 
 ## Resources
 When working with request and response bodies, it may not be ideal to create string constants in your tests (i.e. long JSONs that compromise tests readability, sharing bodies between test classes...).
-You can use instead read from a local file in your test `resources` folder:
+You can instead read from a local file in your test `resources` folder:
 ```kotlin
 //Reads the text from the module's "src/test/resources/responses/products_response_body.json" file
 val responseBody = readFromResources("responses/products_response_body.json")

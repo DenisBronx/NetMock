@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") version "1.8.21"
+    alias(libs.plugins.kotlin.multiplatform)
     id("maven-publish")
     id("convention.publication")
 }
@@ -8,13 +8,13 @@ publishing {
     publications.withType<MavenPublication> {
         groupId = "io.github.denisbronx.netmock"
         artifactId = "netmock-resources"
-        version = netmock_version
+        version = libs.versions.netmock.get()
     }
 }
 
 kotlin {
+    jvmToolchain(17)
     jvm {
-        jvmToolchain(11)
         withJava()
         testRuns["test"].executionTask.configure {
             useJUnit()
@@ -22,7 +22,7 @@ kotlin {
     }
     val hostOs = System.getProperty("os.name")
     val isMingwX64 = hostOs.startsWith("Windows")
-    val nativeTarget = when {
+    when {
         hostOs == "Mac OS X" -> macosX64("native")
         hostOs == "Linux" -> linuxX64("native")
         isMingwX64 -> mingwX64("native")
@@ -31,7 +31,7 @@ kotlin {
     sourceSets {
         commonTest {
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-test")
+                implementation(libs.kotlin.test)
             }
         }
     }

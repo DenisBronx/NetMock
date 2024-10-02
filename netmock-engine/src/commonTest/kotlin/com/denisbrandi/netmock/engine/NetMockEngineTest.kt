@@ -1,21 +1,15 @@
 package com.denisbrandi.netmock.engine
 
-import com.denisbrandi.netmock.Method
-import com.denisbrandi.netmock.NetMockRequest
-import com.denisbrandi.netmock.NetMockRequestResponse
-import com.denisbrandi.netmock.NetMockResponse
-import com.denisbrandi.netmock.resources.readFromCommonResources
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.plugins.contentnegotiation.*
+import com.denisbrandi.netmock.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.serialization.kotlinx.json.json
 import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.*
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.Serializable
 
@@ -62,25 +56,26 @@ class NetMockEngineTest {
 
     @JsName("mappedResponseAndDefaultResponse_noMoreMocks")
     @Test
-    fun `EXPECT mapped responses and default response WHEN dispatcher runs out of mocks`() = runTest {
-        val expectedResponse1 = EXPECTED_RESPONSE.copy(body = "body1")
-        val expectedResponse2 = EXPECTED_RESPONSE.copy(body = "body2")
-        netMock.addMock(EXPECTED_COMPLETE_REQUEST, expectedResponse1)
-        netMock.addMock(EXPECTED_COMPLETE_REQUEST, expectedResponse2)
+    fun `EXPECT mapped responses and default response WHEN dispatcher runs out of mocks`() =
+        runTest {
+            val expectedResponse1 = EXPECTED_RESPONSE.copy(body = "body1")
+            val expectedResponse2 = EXPECTED_RESPONSE.copy(body = "body2")
+            netMock.addMock(EXPECTED_COMPLETE_REQUEST, expectedResponse1)
+            netMock.addMock(EXPECTED_COMPLETE_REQUEST, expectedResponse2)
 
-        val response1 = sut.request(getCompleteRequest(BASE_URL))
-        val response2 = sut.request(getCompleteRequest(BASE_URL))
-        val response3 = sut.request(getCompleteRequest(BASE_URL))
+            val response1 = sut.request(getCompleteRequest(BASE_URL))
+            val response2 = sut.request(getCompleteRequest(BASE_URL))
+            val response3 = sut.request(getCompleteRequest(BASE_URL))
 
-        assertEquals(
-            listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST),
-            netMock.interceptedRequests
-        )
-        assertValidResponse(expectedResponse1, response1)
-        assertValidResponse(expectedResponse2, response2)
-        assertEquals(400, response3.status.value)
-        assertTrue(netMock.allowedMocks.isEmpty())
-    }
+            assertEquals(
+                listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST),
+                netMock.interceptedRequests
+            )
+            assertValidResponse(expectedResponse1, response1)
+            assertValidResponse(expectedResponse2, response2)
+            assertEquals(400, response3.status.value)
+            assertTrue(netMock.allowedMocks.isEmpty())
+        }
 
     @JsName("validGET")
     @Test
@@ -297,8 +292,6 @@ class NetMockEngineTest {
 
     private companion object {
         const val BASE_URL = "http://google.com"
-        val REQUEST_BODY = readFromCommonResources("request_body.json")
-        val RESPONSE_BODY = readFromCommonResources("response_body.json")
         val REQUEST_OBJECT = RequestObject("some body id", "some body message", "some body text")
         val RESPONSE_OBJECT = ResponseObject(200, "some message", "some text")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
@@ -306,7 +299,8 @@ class NetMockEngineTest {
             method = Method.Get,
             mandatoryHeaders = mapOf("a" to "b", "c" to "d")
         )
-        val EXPECTED_MISSING_FIELDS_REQUEST = NetMockRequest(requestUrl = "http://google.com/", method = Method.Get)
+        val EXPECTED_MISSING_FIELDS_REQUEST =
+            NetMockRequest(requestUrl = "http://google.com/", method = Method.Get)
         val EXPECTED_NOT_MATCHING_REQUEST = EXPECTED_COMPLETE_REQUEST.copy(
             mandatoryHeaders = mapOf("a" to "b", "c" to "d", "e" to "f")
         )
@@ -322,6 +316,7 @@ class NetMockEngineTest {
         )
         val DEFAULT_RESPONSE =
             NetMockResponse(code = 201, mandatoryHeaders = mapOf("a" to "b"), body = "default")
+
         private fun getCompleteRequest(baseUrl: String): HttpRequestBuilder {
             return getCompleteRequestBuilder(baseUrl).apply {
                 method = HttpMethod.Get
