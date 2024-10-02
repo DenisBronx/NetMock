@@ -13,6 +13,7 @@ publishing {
 }
 
 kotlin {
+    jvmToolchain(17)
     jvm {
         withJava()
         testRuns["test"].executionTask.configure {
