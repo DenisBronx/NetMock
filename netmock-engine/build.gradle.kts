@@ -23,18 +23,20 @@ kotlin {
     }
     val hostOs = System.getProperty("os.name")
     val isMingwX64 = hostOs.startsWith("Windows")
-    val nativeTarget = when {
+    when {
         hostOs == "Mac OS X" -> macosX64("native")
         hostOs == "Linux" -> linuxX64("native")
         isMingwX64 -> mingwX64("native")
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
     sourceSets {
         commonMain {
             sourceSets {
                 dependencies {
                     api(project(":netmock-core"))
-                    api(project(":netmock-resources"))
                     api(libs.ktor)
                     implementation(libs.ktor.serialization)
                     api(libs.ktor.mock)
@@ -45,7 +47,7 @@ kotlin {
             sourceSets {
                 dependencies {
                     implementation(libs.ktor.content.negotiation)
-                    implementation("org.jetbrains.kotlin:kotlin-test")
+                    implementation(libs.kotlin.test)
                     implementation(libs.coroutines.test)
                 }
             }

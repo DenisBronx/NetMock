@@ -14,6 +14,7 @@ serialization-version = "1.7.3"
 kermit = "2.0.0-RC4"
 
 [libraries]
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
 ktor = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
