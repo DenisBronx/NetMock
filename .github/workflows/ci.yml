@@ -21,6 +21,9 @@ jobs:
       - name: Install Ktlint
         run: ./scripts/installKtlint.sh
 
+      - name: Install XmlStarlet
+        run: ./scripts/installXmlStarlet.sh
+
       - name: Build
         run: ./scripts/build.sh
         env:

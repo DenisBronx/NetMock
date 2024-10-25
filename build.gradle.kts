@@ -5,7 +5,13 @@ plugins {
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.multiplatform) apply false
-    alias(libs.plugins.kover) apply false
+    alias(libs.plugins.kover)
     id("maven-publish")
     alias(libs.plugins.nexus.publish)
+}
+
+dependencies {
+    kover(project(":netmock-core"))
+    kover(project(":netmock-engine"))
+    kover(project(":netmock-server"))
 }
