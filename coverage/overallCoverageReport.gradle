@@ -1,0 +1,15 @@
+apply plugin: 'org.jetbrains.kotlinx.kover'
+
+kover {
+    currentProject {
+        createVariant("custom") {
+            add(["jvm"], false)
+        }
+    }
+}
+
+dependencies {
+    kover(project(":netmock-core"))
+    kover(project(":netmock-engine"))
+    kover(project(":netmock-server"))
+}

@@ -47,7 +47,7 @@ while getopts ":c:m:b:l:i:" opt; do
 done
 shift $((OPTIND - 1))
 
-COVERAGE_REPORT="build/reports/kover/report.xml"
+COVERAGE_REPORT="netmock-integration-test/build/reports/kover/reportCustom.xml"
 
 get_overall_report_tag() {
   echo "//report[1]"
