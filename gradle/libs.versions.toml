@@ -11,7 +11,7 @@ okhttp = "4.12.0"
 retrofit = "2.11.0"
 retrofit-serialization = "1.0.0"
 serialization-version = "1.7.3"
-kermit = "2.0.0-RC4"
+kermit = "2.0.4"
 
 [libraries]
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin"}
