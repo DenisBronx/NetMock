@@ -13,9 +13,6 @@ java {
 dependencies {
     testImplementation(project(":netmock-server"))
     testImplementation(project(":netmock-engine"))
-    kover(project(":netmock-core"))
-    kover(project(":netmock-engine"))
-    kover(project(":netmock-server"))
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.serialization)
     testImplementation(libs.coroutines.test)
