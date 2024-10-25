@@ -1,9 +1,10 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kover)
     id("maven-publish")
     id("convention.publication")
 }
+
+apply(from = "../coverage/coverageReport.gradle")
 
 publishing {
     publications.withType<MavenPublication> {

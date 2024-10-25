@@ -2,8 +2,9 @@ plugins {
     id("java-library")
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kover)
 }
+
+apply(from = "../coverage/overallCoverageReport.gradle")
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17

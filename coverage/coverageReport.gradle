@@ -1,0 +1,9 @@
+apply plugin: 'org.jetbrains.kotlinx.kover'
+
+kover {
+    currentProject {
+        createVariant("custom") {
+            add(["jvm"], false)
+        }
+    }
+}
