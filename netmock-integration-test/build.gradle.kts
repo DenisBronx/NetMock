@@ -2,8 +2,9 @@ plugins {
     id("java-library")
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kover)
 }
+
+apply(from = "../coverage/overallCoverageReport.gradle")
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -13,9 +14,6 @@ java {
 dependencies {
     testImplementation(project(":netmock-server"))
     testImplementation(project(":netmock-engine"))
-    kover(project(":netmock-core"))
-    kover(project(":netmock-engine"))
-    kover(project(":netmock-server"))
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.serialization)
     testImplementation(libs.coroutines.test)

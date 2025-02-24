@@ -4,6 +4,8 @@ plugins {
     id("convention.publication")
 }
 
+apply(from = "../coverage/coverageReport.gradle")
+
 publishing {
     publications.withType<MavenPublication> {
         groupId = "io.github.denisbronx.netmock"
