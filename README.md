@@ -23,11 +23,11 @@ For Gradle users, add the following to your module’s `build.gradle`
 ```groovy
 dependencies {
     //compatible with all libraries
-    testImplementation "io.github.denisbronx.netmock:netmock-server:0.5.0" 
+    testImplementation "io.github.denisbronx.netmock:netmock-server:0.6.0" 
     //mutliplatform and lighter weight option for ktor only library users
-    testImplementation "io.github.denisbronx.netmock:netmock-engine:0.5.0"
+    testImplementation "io.github.denisbronx.netmock:netmock-engine:0.6.0"
     //library for accessing local json files in the test folder
-    testImplementation "io.github.denisbronx.netmock:netmock-resources:0.5.0"
+    testImplementation "io.github.denisbronx.netmock:netmock-resources:0.6.0"
 }
 ```
 
