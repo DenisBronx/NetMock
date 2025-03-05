@@ -54,4 +54,31 @@ interface NetMock {
         response(responseBuilder)
         addMock(requestBuilder.build(), responseBuilder.build())
     }
+
+    /**
+     * When a real request matches the provided [requestMatcher] criteria, the provided [response] is returned.
+     * Custom matchers are not removed, so you can make multiple requests and return the same response n times.
+     * @param [requestMatcher] The custom match function that matches a specific intercepted HTTP request.
+     * @param [response] The response that will be mapped to HTTP response if the request matched an intercepted HTTP request.
+     */
+    fun addMockWithCustomMatcher(
+        requestMatcher: (interceptedRequest: NetMockRequest) -> Boolean,
+        response: NetMockResponse
+    )
+
+    /**
+     * See [NetMock.addMockWithCustomMatcher]
+     * Alternative way of adding request/response to the queue using builders.
+     *
+     * @param [requestMatcher] The custom match function that matches a specific intercepted HTTP request.
+     * @param [response] Function that allows you to create a [NetMockResponse] using a builder.
+     */
+    fun addMockWithCustomMatcher(
+        requestMatcher: (interceptedRequest: NetMockRequest) -> Boolean,
+        response: NetMockResponseBuilder.() -> Unit
+    ) {
+        val responseBuilder = NetMockResponseBuilder()
+        response(responseBuilder)
+        addMockWithCustomMatcher(requestMatcher, responseBuilder.build())
+    }
 }
