@@ -15,23 +15,28 @@ class MockWebServerRequestMapperTest {
 
     @Test
     fun `EXPECT mapped request WHEN has all fields`() {
-        val result = sut.mapRequest(makeRecordedRequest())
+        val recordedRequest = makeRecordedRequest(
+            requestLine = "GET /somePath?1=2&3=4 HTTP/1.1",
+            headers = RECORDED_HEADERS,
+            body = Buffer().writeString("data", Charset.defaultCharset())
+        )
+
+        val result = sut.mapRequest(recordedRequest)
 
         assertEquals(EXPECTED_REQUEST, result)
     }
 
     @Test
-    fun `EXPECT mapped request WHEN null request url`() {
-        val result = sut.mapRequest(makeRecordedRequest(headers = RECORDER_HEADERS_NO_REDIRECT))
+    fun `EXPECT mapped request WHEN there are missing fields`() {
+        val recordedRequest = makeRecordedRequest(
+            requestLine = "",
+            headers = Headers.headersOf(),
+            body = Buffer()
+        )
 
-        assertEquals(EXPECTED_REQUEST.copy(requestUrl = null, headers = EXPECTED_HEADERS_NO_REDIRECT), result)
-    }
+        val result = sut.mapRequest(recordedRequest)
 
-    @Test
-    fun `EXPECT mapped request WHEN empty body`() {
-        val result = sut.mapRequest(makeRecordedRequest(body = Buffer()))
-
-        assertEquals(EXPECTED_REQUEST.copy(body = ""), result)
+        assertEquals(EXPECTED_REQUEST_ALL_FIELDS_MISSING, result)
     }
 
     private companion object {
@@ -45,21 +50,8 @@ class MockWebServerRequestMapperTest {
             "Host",
             "localhost:60000"
         )
-        val RECORDER_HEADERS_NO_REDIRECT = Headers.headersOf(
-            "a",
-            "b",
-            "c",
-            "d",
-            "Host",
-            "localhost:60000"
-        )
         val EXPECTED_HEADERS = mapOf(
             INTERCEPTED_REQUEST_URL_HEADER to "https://google.com/somePath?1=2&3=4",
-            "a" to "b",
-            "c" to "d",
-            "Host" to "localhost:60000"
-        )
-        val EXPECTED_HEADERS_NO_REDIRECT = mapOf(
             "a" to "b",
             "c" to "d",
             "Host" to "localhost:60000"
@@ -71,10 +63,17 @@ class MockWebServerRequestMapperTest {
             body = "data"
         )
 
+        val EXPECTED_REQUEST_ALL_FIELDS_MISSING = InterceptedRequest(
+            requestUrl = "",
+            headers = emptyMap(),
+            method = "",
+            body = ""
+        )
+
         fun makeRecordedRequest(
-            requestLine: String = "GET /somePath?1=2&3=4 HTTP/1.1",
-            headers: Headers = RECORDED_HEADERS,
-            body: Buffer = Buffer().writeString("data", Charset.defaultCharset())
+            requestLine: String,
+            headers: Headers,
+            body: Buffer
         ): RecordedRequest {
             return RecordedRequest(
                 requestLine = requestLine,

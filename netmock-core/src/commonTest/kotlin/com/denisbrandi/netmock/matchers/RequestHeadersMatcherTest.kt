@@ -1,18 +1,10 @@
 package com.denisbrandi.netmock.matchers
 
 import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class RequestHeadersMatcherTest {
     private val sut = RequestHeadersMatcher
-
-    @JsName("true_null")
-    @Test
-    fun `EXPECT true WHEN null and empty`() {
-        assertTrue(sut.isMatchingTheHeaders(null, emptyMap()))
-    }
 
     @JsName("true_empty")
     @Test
@@ -23,13 +15,23 @@ class RequestHeadersMatcherTest {
     @JsName("true_sameHeaders")
     @Test
     fun `EXPECT true WHEN headers are identical`() {
-        assertTrue(sut.isMatchingTheHeaders(mapOf("a" to "b", "c" to "d"), mapOf("a" to "b", "c" to "d")))
+        assertTrue(
+            sut.isMatchingTheHeaders(
+                mapOf("a" to "b", "c" to "d"),
+                mapOf("a" to "b", "c" to "d")
+            )
+        )
     }
 
     @JsName("true_containsMandatoryHeaders")
     @Test
     fun `EXPECT true WHEN mandatory headers are matching`() {
-        assertTrue(sut.isMatchingTheHeaders(mapOf("a" to "b", "c" to "d", "e" to "f"), mapOf("a" to "b", "c" to "d")))
+        assertTrue(
+            sut.isMatchingTheHeaders(
+                mapOf("a" to "b", "c" to "d", "e" to "f"),
+                mapOf("a" to "b", "c" to "d")
+            )
+        )
     }
 
     @JsName("false_doesNotContainMandatoryHeaders")
