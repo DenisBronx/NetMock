@@ -1,11 +1,7 @@
 package com.denisbrandi.netmock.interceptors
 
-import co.touchlab.kermit.CommonWriter
-import co.touchlab.kermit.Logger
-import co.touchlab.kermit.loggerConfigInit
-import com.denisbrandi.netmock.NetMockRequest
-import com.denisbrandi.netmock.NetMockRequestResponse
-import com.denisbrandi.netmock.NetMockResponse
+import co.touchlab.kermit.*
+import com.denisbrandi.netmock.*
 import com.denisbrandi.netmock.matchers.RequestMatcher
 
 class DefaultInterceptor(
@@ -13,6 +9,7 @@ class DefaultInterceptor(
 ) : RequestInterceptor {
     override val allowedMocks = mutableListOf<NetMockRequestResponse>()
     override val interceptedRequests = mutableListOf<NetMockRequest>()
+    private var customInterceptors = mutableListOf<CustomInterceptor>()
 
     override var defaultResponse: NetMockResponse? = null
 
@@ -20,16 +17,47 @@ class DefaultInterceptor(
         allowedMocks.add(NetMockRequestResponse(request, response))
     }
 
+    override fun addMockWithCustomMatcher(
+        requestMatcher: (interceptedRequest: NetMockRequest) -> Boolean,
+        response: NetMockResponse
+    ) {
+        customInterceptors.add(CustomInterceptor(requestMatcher, response))
+    }
+
     override fun intercept(interceptedRequest: InterceptedRequest): NetMockResponse {
-        val matchedResponse = allowedMocks.firstOrNull { requestResponse ->
+        return getMatchedResponseFromCustomInterceptors(interceptedRequest)
+            ?: getMatchedResponseFromMocks(interceptedRequest)
+            ?: defaultResponse
+            ?: returnDefaultErrorResponseAndLogError(interceptedRequest)
+    }
+
+    private fun getMatchedResponseFromCustomInterceptors(interceptedRequest: InterceptedRequest): NetMockResponse? {
+        val interceptedNetMockRequest = interceptedRequest.toNetMockRequest()
+        return customInterceptors.firstOrNull { customInterceptor ->
+            customInterceptor.requestMatcher(interceptedNetMockRequest)
+        }?.let { customInterceptor ->
+            interceptedRequests.add(interceptedNetMockRequest)
+            customInterceptor.response
+        }
+    }
+
+    private fun InterceptedRequest.toNetMockRequest(): NetMockRequest {
+        return NetMockRequest(
+            requestUrl = requestUrl,
+            method = Method.from(method),
+            mandatoryHeaders = headers,
+            body = body
+        )
+    }
+
+    private fun getMatchedResponseFromMocks(interceptedRequest: InterceptedRequest): NetMockResponse? {
+        return allowedMocks.firstOrNull { requestResponse ->
             requestMatcher.isMatchingTheRequest(interceptedRequest, requestResponse.request)
         }?.let { requestResponse ->
             interceptedRequests.add(requestResponse.request)
             allowedMocks.remove(requestResponse)
             requestResponse.response
         }
-        return matchedResponse ?: defaultResponse
-            ?: returnDefaultErrorResponseAndLogError(interceptedRequest)
     }
 
     private fun returnDefaultErrorResponseAndLogError(request: InterceptedRequest): NetMockResponse {
@@ -46,4 +74,9 @@ class DefaultInterceptor(
         val logger = Logger(loggerConfigInit(CommonWriter()))
         logger.e(messageString = errorMessage, tag = "NetMock")
     }
+
+    private class CustomInterceptor(
+        val requestMatcher: (interceptedRequest: NetMockRequest) -> Boolean,
+        val response: NetMockResponse
+    )
 }
