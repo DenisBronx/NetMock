@@ -86,6 +86,51 @@ class NetMockEngineTest {
         assertTrue(netMock.allowedMocks.isEmpty())
     }
 
+    @JsName("mappedResponses_withRetainMock")
+    @Test
+    fun `EXPECT mapped responses WHEN retaining mocks`() = runTest {
+        netMock.addMock(EXPECTED_COMPLETE_REQUEST, EXPECTED_RESPONSE, retainMock = true)
+
+        val response1 = sut.request(getCompleteRequest(BASE_URL))
+        val response2 = sut.request(getCompleteRequest(BASE_URL))
+
+        assertEquals(
+            listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST),
+            netMock.interceptedRequests
+        )
+        assertValidResponse(EXPECTED_RESPONSE, response1)
+        assertValidResponse(EXPECTED_RESPONSE, response2)
+        assertEquals(
+            listOf(NetMockRequestResponse(EXPECTED_COMPLETE_REQUEST, EXPECTED_RESPONSE, true)),
+            netMock.allowedMocks
+        )
+    }
+
+    @JsName("mappedResponses_withRetainMockAndCustomMatcher")
+    @Test
+    fun `EXPECT mapped responses WHEN retaining mocks and using custom matcher`() = runTest {
+        netMock.addMockWithCustomMatcher(
+            requestMatcher = { it.requestUrl == EXPECTED_COMPLETE_REQUEST.requestUrl },
+            response = EXPECTED_RESPONSE,
+            retainMock = true
+        )
+
+        val response1 = sut.request(getCompleteRequest(BASE_URL))
+        val response2 = sut.request(getCompleteRequest(BASE_URL))
+
+        assertEquals(2, netMock.interceptedRequests.size)
+        assertInterceptedRequestWithCustomMatcher(
+            EXPECTED_COMPLETE_REQUEST,
+            netMock.interceptedRequests.first()
+        )
+        assertInterceptedRequestWithCustomMatcher(
+            EXPECTED_COMPLETE_REQUEST,
+            netMock.interceptedRequests[1]
+        )
+        assertValidResponse(EXPECTED_RESPONSE, response1)
+        assertValidResponse(EXPECTED_RESPONSE, response2)
+    }
+
     @JsName("mappedResponseAndDefaultResponse_noMoreMocks")
     @Test
     fun `EXPECT mapped responses and default response WHEN dispatcher runs out of mocks`() =
