@@ -171,22 +171,42 @@ fun `my test`() {
 
 ### Mock the same request multiple times
 
-Each mock intercepts only 1 request, once a request is intercepted `NetMock` will remove the mock
-from the queue.
-This allows you to test what your code exactly does.
-If your code is making the same request multiple times (i.e polling) you would need to add a mock
-for each expected request:
+By default, each mock in `NetMock` intercepts only **one request**. After a request is intercepted,
+the mock is automatically removed from the queue. This behavior ensures precise control over your
+tests, allowing you to verify exactly how your code handles each request.
+
+However, if your code makes the same request multiple times (e.g., polling or retries), you can add
+multiple mocks for each expected request:
 
 ```kotlin
 @Test
 fun `my test`() {
-    netMock.addMock(request, response)
-    netMock.addMock(request, response)
-    netMock.addMock(request, response)
+    netMock.addMock(request, response) // Mock for the first request
+    netMock.addMock(request, response) // Mock for the second request
+    netMock.addMock(request, response) // Mock for the third request
 
-    //...
+    // ...
 }
 ```
+
+Alternatively, if the exact number of requests is not a concern in your test scenario, you can use
+the `retainMock = true` flag to create a persistent mock. This mock will remain in the queue and
+intercept all matching requests, even after the first interception:
+
+```kotlin
+@Test
+fun `my test`() {
+    netMock.addMock(request, response, retainMock = true) // Persistent mock
+    // or
+    // netMock.addMockWithCustomMatcher(requestMatcher, response, retainMock = true)
+
+    // ...
+}
+```
+This approach is particularly useful when:
+* Testing polling mechanisms or retry logic.
+* The number of requests is dynamic or unknown.
+* You want to simplify test setup by avoiding repetitive mock definitions.
 
 ## Verify intercepted requests
 
