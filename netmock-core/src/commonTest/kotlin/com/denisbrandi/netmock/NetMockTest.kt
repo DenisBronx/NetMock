@@ -1,16 +1,15 @@
 package com.denisbrandi.netmock
 
 import kotlin.js.JsName
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlin.test.*
 
 class NetMockTest {
 
     private val sut = SpyNetMock()
 
-    @JsName("call_allFields")
+    @JsName("addMock_allFields")
     @Test
-    fun `EXPECT interface method properly called with all fields`() {
+    fun `EXPECT addMock properly called with all fields`() {
         sut.addMock(
             request = {
                 requestUrl = "http://google.com/somePath?1=2&3=4"
@@ -31,9 +30,9 @@ class NetMockTest {
         )
     }
 
-    @JsName("call_withBuilders")
+    @JsName("addMock_withBuilders")
     @Test
-    fun `EXPECT interface method properly called with all fields WHEN passing builders`() {
+    fun `EXPECT addMock properly called with all fields WHEN passing builders`() {
         sut.addMock(
             request = {
                 fromBuilder(EXPECTED_REQUEST_BUILDER)
@@ -49,9 +48,9 @@ class NetMockTest {
         )
     }
 
-    @JsName("call_withRequest")
+    @JsName("addMock_withRequest")
     @Test
-    fun `EXPECT interface method properly called with all fields WHEN passing requests and responses`() {
+    fun `EXPECT addMock properly called with all fields WHEN passing requests and responses`() {
         sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE)
 
         assertEquals(
@@ -60,9 +59,9 @@ class NetMockTest {
         )
     }
 
-    @JsName("call_withRequestAndBuilder")
+    @JsName("addMock_withRequestAndBuilder")
     @Test
-    fun `EXPECT interface method properly called with all fields WHEN passing requests and response builder`() {
+    fun `EXPECT addMock properly called with all fields WHEN passing requests and response builder`() {
         sut.addMock(
             request = EXPECTED_REQUEST,
             response = {
@@ -76,9 +75,9 @@ class NetMockTest {
         )
     }
 
-    @JsName("call_noFields")
+    @JsName("addMock_noFields")
     @Test
-    fun `EXPECT interface method properly called with no fields`() {
+    fun `EXPECT addMock properly called with no fields`() {
         sut.addMock(request = {}, response = {})
 
         assertEquals(
@@ -87,13 +86,88 @@ class NetMockTest {
         )
     }
 
+    @JsName("addMockWithCustomMatcher_allFields")
+    @Test
+    fun `EXPECT addMockWithCustomMatcher properly called with all fields`() {
+        sut.addMockWithCustomMatcher(
+            requestMatcher = CUSTOM_REQUEST_MATCHER,
+            response = {
+                code = 200
+                mandatoryHeaders = mapOf("x" to "y")
+                body = "responseBody"
+            }
+        )
+
+        assertEquals(
+            listOf(SpyNetMock.CustomInterceptor(CUSTOM_REQUEST_MATCHER, EXPECTED_RESPONSE)),
+            sut.customInterceptors
+        )
+    }
+
+    @JsName("addMockWithCustomMatcher_withBuilder")
+    @Test
+    fun `EXPECT addMockWithCustomMatcher properly called with all fields WHEN passing builders`() {
+        sut.addMockWithCustomMatcher(
+            requestMatcher = CUSTOM_REQUEST_MATCHER,
+            response = {
+                fromBuilder(EXPECTED_RESPONSE_BUILDER)
+            }
+        )
+
+        assertEquals(
+            listOf(SpyNetMock.CustomInterceptor(CUSTOM_REQUEST_MATCHER, EXPECTED_RESPONSE)),
+            sut.customInterceptors
+        )
+    }
+
+    @JsName("addMockWithCustomMatcher_withRequest")
+    @Test
+    fun `EXPECT addMockWithCustomMatcher properly called with all fields WHEN passing requests and responses`() {
+        sut.addMockWithCustomMatcher(
+            requestMatcher = CUSTOM_REQUEST_MATCHER,
+            response = EXPECTED_RESPONSE
+        )
+
+        assertEquals(
+            listOf(SpyNetMock.CustomInterceptor(CUSTOM_REQUEST_MATCHER, EXPECTED_RESPONSE)),
+            sut.customInterceptors
+        )
+    }
+
+    @JsName("addMockWithCustomMatcher_noResponseField")
+    @Test
+    fun `EXPECT addMockWithCustomMatcher properly called with no response field`() {
+        sut.addMockWithCustomMatcher(
+            requestMatcher = CUSTOM_REQUEST_MATCHER,
+            response = {}
+        )
+
+        assertEquals(
+            listOf(SpyNetMock.CustomInterceptor(CUSTOM_REQUEST_MATCHER, NetMockResponse())),
+            sut.customInterceptors
+        )
+    }
+
     private class SpyNetMock : NetMock {
         override val interceptedRequests: List<NetMockRequest> = emptyList()
         override val allowedMocks = mutableListOf<NetMockRequestResponse>()
         override var defaultResponse: NetMockResponse? = null
+        val customInterceptors = mutableListOf<CustomInterceptor>()
         override fun addMock(request: NetMockRequest, response: NetMockResponse) {
             allowedMocks.add(NetMockRequestResponse(request, response))
         }
+
+        override fun addMockWithCustomMatcher(
+            requestMatcher: (interceptedRequest: NetMockRequest) -> Boolean,
+            response: NetMockResponse
+        ) {
+            customInterceptors.add(CustomInterceptor(requestMatcher, response))
+        }
+
+        data class CustomInterceptor(
+            val requestMatcher: (interceptedRequest: NetMockRequest) -> Boolean,
+            val response: NetMockResponse
+        )
     }
 
     private companion object {
@@ -119,5 +193,9 @@ class NetMockTest {
             mandatoryHeaders = mapOf("x" to "y")
             body = "responseBody"
         }
+        val CUSTOM_REQUEST_MATCHER: (interceptedRequest: NetMockRequest) -> Boolean =
+            { interceptedRequest ->
+                interceptedRequest == EXPECTED_REQUEST
+            }
     }
 }

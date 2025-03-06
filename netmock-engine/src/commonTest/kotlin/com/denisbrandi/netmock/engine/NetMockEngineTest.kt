@@ -34,6 +34,38 @@ class NetMockEngineTest {
         assertTrue(netMock.allowedMocks.isEmpty())
     }
 
+    @JsName("mappedResponse_withCustomMatcher")
+    @Test
+    fun `EXPECT mapped response WHEN using custom matcher`() = runTest {
+        netMock.addMockWithCustomMatcher(
+            requestMatcher = { it.requestUrl == EXPECTED_COMPLETE_REQUEST.requestUrl },
+            response = EXPECTED_RESPONSE
+        )
+
+        val response = sut.request(getCompleteRequest(BASE_URL))
+
+        assertEquals(1, netMock.interceptedRequests.size)
+        assertInterceptedRequestWithCustomMatcher(
+            EXPECTED_COMPLETE_REQUEST,
+            netMock.interceptedRequests.first()
+        )
+        assertValidResponse(EXPECTED_RESPONSE, response)
+        assertTrue(netMock.allowedMocks.isEmpty())
+    }
+
+    private fun assertInterceptedRequestWithCustomMatcher(
+        expectedRequest: NetMockRequest,
+        interceptedRequest: NetMockRequest
+    ) {
+        assertEquals(expectedRequest.requestUrl, interceptedRequest.requestUrl)
+        assertEquals(expectedRequest.method, interceptedRequest.method)
+        assertEquals(expectedRequest.body, interceptedRequest.body)
+        assertTrue(
+            interceptedRequest.mandatoryHeaders.toList()
+                .containsAll(expectedRequest.mandatoryHeaders.toList())
+        )
+    }
+
     @JsName("mappedResponses")
     @Test
     fun `EXPECT mapped responses`() = runTest {

@@ -14,7 +14,7 @@ class DefaultRequestMatcherTest {
     @JsName("false_badUrl")
     @Test
     fun `EXPECT false WHEN url doesn't match`() {
-        val notMatchingRequest = VALID_INTERCEPTED_REQUEST.copy(requestUrl = null)
+        val notMatchingRequest = VALID_INTERCEPTED_REQUEST.copy(requestUrl = "")
 
         val result = sut.isMatchingTheRequest(notMatchingRequest, EXPECTED_REQUEST)
 
@@ -24,7 +24,7 @@ class DefaultRequestMatcherTest {
     @JsName("false_badMethod")
     @Test
     fun `EXPECT false WHEN method doesn't match`() {
-        val notMatchingRequest = VALID_INTERCEPTED_REQUEST.copy(method = null)
+        val notMatchingRequest = VALID_INTERCEPTED_REQUEST.copy(method = "")
 
         val result = sut.isMatchingTheRequest(notMatchingRequest, EXPECTED_REQUEST)
 
@@ -34,7 +34,7 @@ class DefaultRequestMatcherTest {
     @JsName("false_badHeaders")
     @Test
     fun `EXPECT false WHEN headers don't match`() {
-        val notMatchingRequest = VALID_INTERCEPTED_REQUEST.copy(headers = null)
+        val notMatchingRequest = VALID_INTERCEPTED_REQUEST.copy(headers = emptyMap())
 
         val result = sut.isMatchingTheRequest(notMatchingRequest, EXPECTED_REQUEST)
 
@@ -44,7 +44,7 @@ class DefaultRequestMatcherTest {
     @JsName("false_badBody")
     @Test
     fun `EXPECT false WHEN body doesn't match`() {
-        val notMatchingRequest = VALID_INTERCEPTED_REQUEST.copy(body = null)
+        val notMatchingRequest = VALID_INTERCEPTED_REQUEST.copy(body = "")
 
         val result = sut.isMatchingTheRequest(notMatchingRequest, EXPECTED_REQUEST)
 
