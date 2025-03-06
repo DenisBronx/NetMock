@@ -1,19 +1,11 @@
 package com.denisbrandi.netmock.server
 
-import com.denisbrandi.netmock.Method
-import com.denisbrandi.netmock.NetMockRequest
-import com.denisbrandi.netmock.NetMockRequestResponse
-import com.denisbrandi.netmock.NetMockResponse
+import com.denisbrandi.netmock.*
 import com.denisbrandi.netmock.resources.readFromJvmResources
-import okhttp3.Headers
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
+import org.junit.Assert.*
 
 class NetMockServerTest {
     @get:Rule
@@ -26,7 +18,8 @@ class NetMockServerTest {
     @Test
     fun `EXPECT mapped response WHEN directed to localhost`() {
         val sut = OkHttpClient.Builder().build()
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.baseUrl}somePath?1=2&3=4")
+        val expectedRequest =
+            EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.baseUrl}somePath?1=2&3=4")
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
 
         val response = sut.newCall(getCompleteRequest(netMock.baseUrl)).execute()
@@ -45,6 +38,37 @@ class NetMockServerTest {
         assertEquals(listOf(EXPECTED_COMPLETE_REQUEST), netMock.interceptedRequests)
         assertValidResponse(EXPECTED_RESPONSE, response)
         assertTrue(netMock.allowedMocks.isEmpty())
+    }
+
+    @Test
+    fun `EXPECT mapped response WHEN using custom matcher`() {
+        netMock.addMockWithCustomMatcher(
+            requestMatcher = { it.requestUrl == EXPECTED_COMPLETE_REQUEST.requestUrl },
+            response = EXPECTED_RESPONSE
+        )
+
+        val response = sut.newCall(getCompleteRequest(BASE_URL)).execute()
+
+        assertEquals(1, netMock.interceptedRequests.size)
+        assertInterceptedRequestWithCustomMatcher(
+            EXPECTED_COMPLETE_REQUEST,
+            netMock.interceptedRequests.first()
+        )
+        assertValidResponse(EXPECTED_RESPONSE, response)
+        assertTrue(netMock.allowedMocks.isEmpty())
+    }
+
+    private fun assertInterceptedRequestWithCustomMatcher(
+        expectedRequest: NetMockRequest,
+        interceptedRequest: NetMockRequest
+    ) {
+        assertEquals(expectedRequest.requestUrl, interceptedRequest.requestUrl)
+        assertEquals(expectedRequest.method, interceptedRequest.method)
+        assertEquals(expectedRequest.body, interceptedRequest.body)
+        assertTrue(
+            interceptedRequest.mandatoryHeaders.toList()
+                .containsAll(expectedRequest.mandatoryHeaders.toList())
+        )
     }
 
     @Test
@@ -240,7 +264,8 @@ class NetMockServerTest {
             method = Method.Get,
             mandatoryHeaders = mapOf("a" to "b", "c" to "d")
         )
-        val EXPECTED_MISSING_FIELDS_REQUEST = NetMockRequest(requestUrl = "https://google.com/", method = Method.Get)
+        val EXPECTED_MISSING_FIELDS_REQUEST =
+            NetMockRequest(requestUrl = "https://google.com/", method = Method.Get)
         val EXPECTED_NOT_MATCHING_REQUEST = EXPECTED_COMPLETE_REQUEST.copy(
             mandatoryHeaders = mapOf("a" to "b", "c" to "d", "e" to "f")
         )

@@ -1,23 +1,20 @@
 package com.denisbrandi.netmock.compatibility
 
-import com.denisbrandi.netmock.Method
-import com.denisbrandi.netmock.NetMockRequest
-import com.denisbrandi.netmock.NetMockResponse
+import com.denisbrandi.netmock.*
 import com.denisbrandi.netmock.resources.readFromResources
 import com.denisbrandi.netmock.server.NetMockServerRule
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.engine.okhttp.*
-import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.Serializable
+import org.junit.*
 import org.junit.Assert.assertEquals
-import org.junit.Rule
-import org.junit.Test
 
 class KtorMockTest {
     @get:Rule
@@ -38,10 +35,25 @@ class KtorMockTest {
                 json()
             }
         }
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.baseUrl}somePath?1=2&3=4")
+        val expectedRequest =
+            EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.baseUrl}somePath?1=2&3=4")
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
 
         val response = sut.get(getUrl(netMock.baseUrl), withHeaders())
+
+        assertEquals(200, response.status.value)
+        assertHeaders(EXPECTED_RESPONSE_HEADERS, response.headers)
+        assertEquals(RESPONSE_OBJECT, response.body<ResponseObject>())
+    }
+
+    @Test
+    fun `EXPECT GET response WHEN using custom matcher`() = runTest {
+        netMock.addMockWithCustomMatcher(
+            requestMatcher = { it.requestUrl == EXPECTED_COMPLETE_REQUEST.requestUrl },
+            response = EXPECTED_RESPONSE
+        )
+
+        val response = sut.get(getUrl(), withHeaders())
 
         assertEquals(200, response.status.value)
         assertHeaders(EXPECTED_RESPONSE_HEADERS, response.headers)

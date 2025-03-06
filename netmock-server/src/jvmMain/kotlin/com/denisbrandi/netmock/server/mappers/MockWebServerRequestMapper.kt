@@ -6,16 +6,13 @@ import okhttp3.mockwebserver.RecordedRequest
 
 internal object MockWebServerRequestMapper {
     fun mapRequest(request: RecordedRequest): InterceptedRequest {
-        val requestUrl = if (request.headers[INTERCEPTED_REQUEST_URL_HEADER] != null) {
-            request.headers[INTERCEPTED_REQUEST_URL_HEADER]
-        } else {
-            request.requestUrl?.toString()
-        }
+        val requestUrl =
+            request.headers[INTERCEPTED_REQUEST_URL_HEADER] ?: request.requestUrl?.toString()
         // Body can be read only once
         val recordedRequestBody = request.body.readUtf8()
         return InterceptedRequest(
-            requestUrl = requestUrl,
-            method = request.method,
+            requestUrl = requestUrl.orEmpty(),
+            method = request.method.orEmpty(),
             headers = request.headers.toMap(),
             body = recordedRequestBody
         )

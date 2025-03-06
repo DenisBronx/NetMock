@@ -5,7 +5,7 @@ import com.denisbrandi.netmock.resources.readFromResources
 import com.denisbrandi.netmock.server.NetMockServerRule
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.*
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -38,8 +38,24 @@ class RetrofitMockTest {
     @Test
     fun `EXPECT GET response WHEN localhost`() = runTest {
         val sut = createSut(netMock.baseUrl, OkHttpClient())
-        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.baseUrl}somePath?1=2&3=4")
+        val expectedRequest =
+            EXPECTED_COMPLETE_REQUEST.copy(requestUrl = "${netMock.baseUrl}somePath?1=2&3=4")
         netMock.addMock(expectedRequest, EXPECTED_RESPONSE)
+
+        val response = sut.get(
+            headers = mapOf("a" to "b", "c" to "d"),
+            params = mapOf("1" to "2", "3" to "4")
+        )
+
+        assertEquals(RESPONSE_OBJECT, response)
+    }
+
+    @Test
+    fun `EXPECT GET response WHEN using custom matcher`() = runTest {
+        netMock.addMockWithCustomMatcher(
+            requestMatcher = { it.requestUrl == EXPECTED_COMPLETE_REQUEST.requestUrl },
+            response = EXPECTED_RESPONSE
+        )
 
         val response = sut.get(
             headers = mapOf("a" to "b", "c" to "d"),
