@@ -21,11 +21,12 @@ class NetMockTest {
                 code = 200
                 mandatoryHeaders = mapOf("x" to "y")
                 body = "responseBody"
-            }
+            },
+            retainMock = true
         )
 
         assertEquals(
-            listOf(NetMockRequestResponse(EXPECTED_REQUEST, EXPECTED_RESPONSE)),
+            listOf(NetMockRequestResponse(EXPECTED_REQUEST, EXPECTED_RESPONSE, true)),
             sut.allowedMocks
         )
     }
@@ -95,11 +96,12 @@ class NetMockTest {
                 code = 200
                 mandatoryHeaders = mapOf("x" to "y")
                 body = "responseBody"
-            }
+            },
+            retainMock = true
         )
 
         assertEquals(
-            listOf(SpyNetMock.CustomInterceptor(CUSTOM_REQUEST_MATCHER, EXPECTED_RESPONSE)),
+            listOf(SpyNetMock.CustomInterceptor(CUSTOM_REQUEST_MATCHER, EXPECTED_RESPONSE, true)),
             sut.customInterceptors
         )
     }
@@ -153,20 +155,26 @@ class NetMockTest {
         override val allowedMocks = mutableListOf<NetMockRequestResponse>()
         override var defaultResponse: NetMockResponse? = null
         val customInterceptors = mutableListOf<CustomInterceptor>()
-        override fun addMock(request: NetMockRequest, response: NetMockResponse) {
-            allowedMocks.add(NetMockRequestResponse(request, response))
+        override fun addMock(
+            request: NetMockRequest,
+            response: NetMockResponse,
+            retainMock: Boolean
+        ) {
+            allowedMocks.add(NetMockRequestResponse(request, response, retainMock))
         }
 
         override fun addMockWithCustomMatcher(
             requestMatcher: (interceptedRequest: NetMockRequest) -> Boolean,
-            response: NetMockResponse
+            response: NetMockResponse,
+            retainMock: Boolean
         ) {
-            customInterceptors.add(CustomInterceptor(requestMatcher, response))
+            customInterceptors.add(CustomInterceptor(requestMatcher, response, retainMock))
         }
 
         data class CustomInterceptor(
             val requestMatcher: (interceptedRequest: NetMockRequest) -> Boolean,
-            val response: NetMockResponse
+            val response: NetMockResponse,
+            val retainMock: Boolean = false
         )
     }
 

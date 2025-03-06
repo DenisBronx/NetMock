@@ -25,7 +25,7 @@ class DefaultInterceptorTest {
     @Test
     fun `EXPECT default response WHEN request does not match and there is no default response`() {
         fakeRequestMatcher.isMatching = false
-        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE)
+        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE, false)
 
         val result = sut.intercept(INTERCEPTED_REQUEST)
 
@@ -39,7 +39,7 @@ class DefaultInterceptorTest {
     fun `EXPECT default response WHEN request does not match and there is default response`() {
         fakeRequestMatcher.isMatching = false
         sut.defaultResponse = EXPECTED_RESPONSE
-        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE)
+        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE, false)
 
         val result = sut.intercept(INTERCEPTED_REQUEST)
 
@@ -52,7 +52,7 @@ class DefaultInterceptorTest {
     @Test
     fun `EXPECT mapped response WHEN request matches`() {
         fakeRequestMatcher.isMatching = true
-        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE)
+        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE, false)
 
         val result = sut.intercept(INTERCEPTED_REQUEST)
 
@@ -65,7 +65,7 @@ class DefaultInterceptorTest {
     @Test
     fun `EXPECT default response WHEN request was mocked only once`() {
         fakeRequestMatcher.isMatching = true
-        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE)
+        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE, false)
 
         sut.intercept(INTERCEPTED_REQUEST)
         val result = sut.intercept(INTERCEPTED_REQUEST)
@@ -75,17 +75,36 @@ class DefaultInterceptorTest {
         assertEquals(listOf(EXPECTED_REQUEST), sut.interceptedRequests)
     }
 
+    @JsName("mappedResponse_multipleCallsAndMockRetained")
+    @Test
+    fun `EXPECT mapped response WHEN request was mocked and retained`() {
+        fakeRequestMatcher.isMatching = true
+        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE, true)
+
+        val result1 = sut.intercept(INTERCEPTED_REQUEST)
+        val result2 = sut.intercept(INTERCEPTED_REQUEST)
+
+        assertEquals(EXPECTED_RESPONSE, result1)
+        assertEquals(EXPECTED_RESPONSE, result2)
+        assertEquals(
+            listOf(NetMockRequestResponse(EXPECTED_REQUEST, EXPECTED_RESPONSE, true)),
+            sut.allowedMocks
+        )
+        assertEquals(listOf(EXPECTED_REQUEST, EXPECTED_REQUEST), sut.interceptedRequests)
+    }
+
     @JsName("mappedResponse_matchCustomMock")
     @Test
     fun `EXPECT mapped response WHEN request matches the custom matcher`() {
         fakeRequestMatcher.isMatching = true
-        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE)
+        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE, false)
         val expectedCustomResponse = NetMockResponse(code = 200)
         sut.addMockWithCustomMatcher(
             requestMatcher = { interceptedRequest ->
                 interceptedRequest.requestUrl.contains("request")
             },
-            response = expectedCustomResponse
+            response = expectedCustomResponse,
+            retainMock = false
         )
 
         val result = sut.intercept(INTERCEPTED_REQUEST)
@@ -99,13 +118,14 @@ class DefaultInterceptorTest {
     @Test
     fun `EXPECT mapped response WHEN request matches only the mocks`() {
         fakeRequestMatcher.isMatching = true
-        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE)
+        sut.addMock(EXPECTED_REQUEST, EXPECTED_RESPONSE, false)
         val expectedCustomResponse = NetMockResponse(code = 200)
         sut.addMockWithCustomMatcher(
             requestMatcher = { interceptedRequest ->
                 interceptedRequest.requestUrl.contains("google.com")
             },
-            response = expectedCustomResponse
+            response = expectedCustomResponse,
+            retainMock = false
         )
 
         val result = sut.intercept(INTERCEPTED_REQUEST)
@@ -117,13 +137,14 @@ class DefaultInterceptorTest {
 
     @JsName("default_multipleCallsOnCustomMatcher")
     @Test
-    fun `EXPECT mapped responses WHEN requests match the custom matchers multiple times`() {
+    fun `EXPECT default response WHEN request was mocked only once with custom matcher`() {
         val expectedCustomResponse = NetMockResponse(code = 200, body = "response")
         sut.addMockWithCustomMatcher(
             requestMatcher = { interceptedRequest ->
                 interceptedRequest.requestUrl.contains("customRequest")
             },
-            response = expectedCustomResponse
+            response = expectedCustomResponse,
+            retainMock = false
         )
 
         val result1 = sut.intercept(INTERCEPTED_REQUEST.copy(requestUrl = "customRequest"))
@@ -138,6 +159,28 @@ class DefaultInterceptorTest {
         )
         assertEquals(
             listOf(EXPECTED_REQUEST.copy(requestUrl = "customRequest")),
+            sut.interceptedRequests
+        )
+    }
+
+    @JsName("mappedResponse_multipleCallsOnCustomMatcherWithMockRetained")
+    @Test
+    fun `EXPECT mapped responses WHEN request was mocked only once but mock was retained`() {
+        sut.addMockWithCustomMatcher(
+            requestMatcher = { interceptedRequest ->
+                interceptedRequest.requestUrl.contains("request")
+            },
+            response = EXPECTED_RESPONSE,
+            retainMock = true
+        )
+
+        val result1 = sut.intercept(INTERCEPTED_REQUEST)
+        val result2 = sut.intercept(INTERCEPTED_REQUEST)
+
+        assertEquals(EXPECTED_RESPONSE, result1)
+        assertEquals(EXPECTED_RESPONSE, result2)
+        assertEquals(
+            listOf(EXPECTED_REQUEST, EXPECTED_REQUEST),
             sut.interceptedRequests
         )
     }

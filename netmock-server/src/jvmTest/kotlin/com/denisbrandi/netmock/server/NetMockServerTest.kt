@@ -91,6 +91,55 @@ class NetMockServerTest {
     }
 
     @Test
+    fun `EXPECT mapped responses WHEN retaining mocks`() {
+        netMock.addMock(EXPECTED_COMPLETE_REQUEST, EXPECTED_RESPONSE, retainMock = true)
+
+        val response1 = sut.newCall(getCompleteRequest(BASE_URL)).execute()
+        val response2 = sut.newCall(getCompleteRequest(BASE_URL)).execute()
+
+        assertEquals(
+            listOf(EXPECTED_COMPLETE_REQUEST, EXPECTED_COMPLETE_REQUEST),
+            netMock.interceptedRequests
+        )
+        assertValidResponse(EXPECTED_RESPONSE, response1)
+        assertValidResponse(EXPECTED_RESPONSE, response2)
+        assertEquals(
+            listOf(
+                NetMockRequestResponse(
+                    EXPECTED_COMPLETE_REQUEST,
+                    EXPECTED_RESPONSE,
+                    true
+                )
+            ), netMock.allowedMocks
+        )
+    }
+
+    @Test
+    fun `EXPECT mapped responses WHEN retaining mocks and using custom matcher`() {
+        netMock.addMockWithCustomMatcher(
+            requestMatcher = { it.requestUrl == EXPECTED_COMPLETE_REQUEST.requestUrl },
+            response = EXPECTED_RESPONSE,
+            retainMock = true
+        )
+
+        val response1 = sut.newCall(getCompleteRequest(BASE_URL)).execute()
+        val response2 = sut.newCall(getCompleteRequest(BASE_URL)).execute()
+
+        assertEquals(2, netMock.interceptedRequests.size)
+        assertInterceptedRequestWithCustomMatcher(
+            EXPECTED_COMPLETE_REQUEST,
+            netMock.interceptedRequests.first()
+        )
+        assertInterceptedRequestWithCustomMatcher(
+            EXPECTED_COMPLETE_REQUEST,
+            netMock.interceptedRequests[1]
+        )
+        assertValidResponse(EXPECTED_RESPONSE, response1)
+        assertValidResponse(EXPECTED_RESPONSE, response2)
+        assertTrue(netMock.allowedMocks.isEmpty())
+    }
+
+    @Test
     fun `EXPECT mapped responses and default response WHEN dispatcher runs out of mocks`() {
         val expectedResponse1 = EXPECTED_RESPONSE.copy(body = "body1")
         val expectedResponse2 = EXPECTED_RESPONSE.copy(body = "body2")
