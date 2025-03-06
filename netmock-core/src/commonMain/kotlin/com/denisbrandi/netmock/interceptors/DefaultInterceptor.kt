@@ -9,7 +9,7 @@ class DefaultInterceptor(
 ) : RequestInterceptor {
     override val allowedMocks = mutableListOf<NetMockRequestResponse>()
     override val interceptedRequests = mutableListOf<NetMockRequest>()
-    private var customInterceptors = mutableListOf<CustomInterceptor>()
+    private val customInterceptors = mutableListOf<CustomInterceptor>()
 
     override var defaultResponse: NetMockResponse? = null
 
@@ -37,6 +37,7 @@ class DefaultInterceptor(
             customInterceptor.requestMatcher(interceptedNetMockRequest)
         }?.let { customInterceptor ->
             interceptedRequests.add(interceptedNetMockRequest)
+            customInterceptors.remove(customInterceptor)
             customInterceptor.response
         }
     }

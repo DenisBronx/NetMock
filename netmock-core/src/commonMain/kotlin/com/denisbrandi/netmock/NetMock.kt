@@ -4,7 +4,7 @@ package com.denisbrandi.netmock
  * NetMock
  *
  * @property [interceptedRequests]: list of the mocked requests that have been successfully intercepted.
- * @property [allowedMocks]: list of the mocked requests/responses that have not been intercepted yet.
+ * @property [allowedMocks]: list of the mocked requests/responses that have not been intercepted yet, mocks with custom matchers excluded.
  * @property [defaultResponse]: response returned for requests that do not match the [allowedMocks], when `null` a 400 Bad Request response is returned.
  */
 interface NetMock {
@@ -57,8 +57,9 @@ interface NetMock {
 
     /**
      * When a real request matches the provided [requestMatcher] criteria, the provided [response] is returned.
-     * Custom matchers are not removed, so you can make multiple requests and return the same response n times.
-     * @param [requestMatcher] The custom match function that matches a specific intercepted HTTP request.
+     * Once a real request is successfully intercepted the provided [requestMatcher] and [response] are removed from the queue.
+     * If you want to make multiple identical requests and return the same response n times, just call this method n times with the same [requestMatcher] and [response].
+     * @param [requestMatcher] The custom match function that matches an intercepted HTTP request.
      * @param [response] The response that will be mapped to HTTP response if the request matched an intercepted HTTP request.
      */
     fun addMockWithCustomMatcher(
@@ -68,9 +69,9 @@ interface NetMock {
 
     /**
      * See [NetMock.addMockWithCustomMatcher]
-     * Alternative way of adding request/response to the queue using builders.
+     * Alternative way of adding requestMatcher/response to the queue using builders.
      *
-     * @param [requestMatcher] The custom match function that matches a specific intercepted HTTP request.
+     * @param [requestMatcher] The custom match function that matches an intercepted HTTP request.
      * @param [response] Function that allows you to create a [NetMockResponse] using a builder.
      */
     fun addMockWithCustomMatcher(
