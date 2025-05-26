@@ -162,80 +162,55 @@ class NetMockServerTest {
 
     @Test
     fun `EXPECT valid response for GET`() {
-        testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Get),
-            getCompleteRequestBuilder(BASE_URL).get().build(),
-            EXPECTED_RESPONSE
-        )
+        testResponseForMethod(Method.Get, null, EXPECTED_RESPONSE)
     }
 
     @Test
     fun `EXPECT valid response for HEAD`() {
-        testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Head),
-            getCompleteRequestBuilder(BASE_URL).head().build(),
-            EXPECTED_RESPONSE.copy(body = "") // body is empty in head responses
-        )
+        // body is empty in head responses
+        testResponseForMethod(Method.Head, null, EXPECTED_RESPONSE.copy(body = ""))
     }
 
     @Test
     fun `EXPECT valid response for POST`() {
-        testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY),
-            getCompleteRequestBuilder(BASE_URL).post(REQUEST_BODY.toRequestBody()).build(),
-            EXPECTED_RESPONSE
-        )
+        testResponseForMethod(Method.Post, REQUEST_BODY, EXPECTED_RESPONSE)
     }
 
     @Test
     fun `EXPECT valid response for PUT`() {
-        testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Put, body = REQUEST_BODY),
-            getCompleteRequestBuilder(BASE_URL).put(REQUEST_BODY.toRequestBody()).build(),
-            EXPECTED_RESPONSE
-        )
+        testResponseForMethod(Method.Put, REQUEST_BODY, EXPECTED_RESPONSE)
     }
 
     @Test
     fun `EXPECT valid response for DELETE`() {
-        testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Delete, body = REQUEST_BODY),
-            getCompleteRequestBuilder(BASE_URL).delete(REQUEST_BODY.toRequestBody()).build(),
-            EXPECTED_RESPONSE
-        )
+        testResponseForMethod(Method.Delete, REQUEST_BODY, EXPECTED_RESPONSE)
     }
 
     @Test
     fun `EXPECT valid response for PATCH`() {
-        testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Patch, body = REQUEST_BODY),
-            getCompleteRequestBuilder(BASE_URL).patch(REQUEST_BODY.toRequestBody()).build(),
-            EXPECTED_RESPONSE
-        )
+        testResponseForMethod(Method.Patch, REQUEST_BODY, EXPECTED_RESPONSE)
     }
 
     @Test
     fun `EXPECT valid response for custom method`() {
-        testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Custom("CUSTOM"), body = REQUEST_BODY),
-            getCompleteRequestBuilder(BASE_URL).method(
-                "CUSTOM",
-                REQUEST_BODY.toRequestBody()
-            ).build(),
-            EXPECTED_RESPONSE
-        )
+        testResponseForMethod(Method.Custom("CUSTOM"), REQUEST_BODY, EXPECTED_RESPONSE)
     }
 
     private fun testResponseForMethod(
-        expectedCompleteRequest: NetMockRequest,
-        request: Request,
+        method: Method,
+        body: String?,
         expectedResponse: NetMockResponse
     ) {
-        netMock.addMock(expectedCompleteRequest, expectedResponse)
+        val expectedRequest = EXPECTED_COMPLETE_REQUEST.copy(method = method, body = body.orEmpty())
+        netMock.addMock(expectedRequest, expectedResponse)
+        val request = getCompleteRequestBuilder(BASE_URL).method(
+            method.name,
+            body?.toRequestBody()
+        ).build()
 
         val response = sut.newCall(request).execute()
 
-        assertEquals(listOf(expectedCompleteRequest), netMock.interceptedRequests)
+        assertEquals(listOf(expectedRequest), netMock.interceptedRequests)
         assertValidResponse(expectedResponse, response)
         assertTrue(netMock.allowedMocks.isEmpty())
     }
