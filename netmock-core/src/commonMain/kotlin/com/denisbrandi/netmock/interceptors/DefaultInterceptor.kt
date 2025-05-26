@@ -13,15 +13,16 @@ class DefaultInterceptor(
 
     override var defaultResponse: NetMockResponse? = null
 
-    override fun addMock(request: NetMockRequest, response: NetMockResponse) {
-        allowedMocks.add(NetMockRequestResponse(request, response))
+    override fun addMock(request: NetMockRequest, response: NetMockResponse, retainMock: Boolean) {
+        allowedMocks.add(NetMockRequestResponse(request, response, retainMock))
     }
 
     override fun addMockWithCustomMatcher(
         requestMatcher: (interceptedRequest: NetMockRequest) -> Boolean,
-        response: NetMockResponse
+        response: NetMockResponse,
+        retainMock: Boolean
     ) {
-        customInterceptors.add(CustomInterceptor(requestMatcher, response))
+        customInterceptors.add(CustomInterceptor(requestMatcher, response, retainMock))
     }
 
     override fun intercept(interceptedRequest: InterceptedRequest): NetMockResponse {
@@ -37,7 +38,9 @@ class DefaultInterceptor(
             customInterceptor.requestMatcher(interceptedNetMockRequest)
         }?.let { customInterceptor ->
             interceptedRequests.add(interceptedNetMockRequest)
-            customInterceptors.remove(customInterceptor)
+            if (!customInterceptor.retainMock) {
+                customInterceptors.remove(customInterceptor)
+            }
             customInterceptor.response
         }
     }
@@ -56,7 +59,9 @@ class DefaultInterceptor(
             requestMatcher.isMatchingTheRequest(interceptedRequest, requestResponse.request)
         }?.let { requestResponse ->
             interceptedRequests.add(requestResponse.request)
-            allowedMocks.remove(requestResponse)
+            if (!requestResponse.retainMock) {
+                allowedMocks.remove(requestResponse)
+            }
             requestResponse.response
         }
     }
@@ -78,6 +83,7 @@ class DefaultInterceptor(
 
     private class CustomInterceptor(
         val requestMatcher: (interceptedRequest: NetMockRequest) -> Boolean,
-        val response: NetMockResponse
+        val response: NetMockResponse,
+        val retainMock: Boolean
     )
 }

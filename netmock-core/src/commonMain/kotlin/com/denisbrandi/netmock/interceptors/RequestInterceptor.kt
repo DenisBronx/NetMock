@@ -7,11 +7,12 @@ interface RequestInterceptor {
     val allowedMocks: List<NetMockRequestResponse>
     var defaultResponse: NetMockResponse?
 
-    fun addMock(request: NetMockRequest, response: NetMockResponse)
+    fun addMock(request: NetMockRequest, response: NetMockResponse, retainMock: Boolean)
 
     fun addMockWithCustomMatcher(
         requestMatcher: (interceptedRequest: NetMockRequest) -> Boolean,
-        response: NetMockResponse
+        response: NetMockResponse,
+        retainMock: Boolean
     )
 
     fun intercept(interceptedRequest: InterceptedRequest): NetMockResponse
