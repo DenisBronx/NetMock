@@ -5,6 +5,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
@@ -158,11 +159,11 @@ class NetMockEngineTest {
     @Test
     fun `EXPECT valid response for GET`() = runTest {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Get),
-            getCompleteRequestBuilder(BASE_URL).apply {
+            expectedCompleteRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.Get),
+            request = getCompleteRequestBuilder(BASE_URL).apply {
                 method = HttpMethod.Get
             },
-            EXPECTED_RESPONSE
+            expectedResponse = EXPECTED_RESPONSE
         )
     }
 
@@ -170,11 +171,11 @@ class NetMockEngineTest {
     @Test
     fun `EXPECT valid response for HEAD`() = runTest {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Head),
-            getCompleteRequestBuilder(BASE_URL).apply {
+            expectedCompleteRequest = EXPECTED_COMPLETE_REQUEST.copy(method = Method.Head),
+            request = getCompleteRequestBuilder(BASE_URL).apply {
                 method = HttpMethod.Head
             },
-            EXPECTED_RESPONSE.copy(body = "") // body is empty in head responses
+            expectedResponse = EXPECTED_RESPONSE.copy(body = "") // body is empty in head responses
         )
     }
 
@@ -182,12 +183,15 @@ class NetMockEngineTest {
     @Test
     fun `EXPECT valid response for POST`() = runTest {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = REQUEST_BODY),
-            getCompleteRequestBuilder(BASE_URL).apply {
+            expectedCompleteRequest = EXPECTED_COMPLETE_REQUEST.copy(
+                method = Method.Post,
+                body = REQUEST_BODY
+            ),
+            request = getCompleteRequestBuilder(BASE_URL).apply {
                 method = HttpMethod.Post
                 setBody(REQUEST_BODY)
             },
-            EXPECTED_RESPONSE
+            expectedResponse = EXPECTED_RESPONSE
         )
     }
 
@@ -195,12 +199,15 @@ class NetMockEngineTest {
     @Test
     fun `EXPECT valid response for PUT`() = runTest {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Put, body = REQUEST_BODY),
-            getCompleteRequestBuilder(BASE_URL).apply {
+            expectedCompleteRequest = EXPECTED_COMPLETE_REQUEST.copy(
+                method = Method.Put,
+                body = REQUEST_BODY
+            ),
+            request = getCompleteRequestBuilder(BASE_URL).apply {
                 method = HttpMethod.Put
                 setBody(REQUEST_BODY)
             },
-            EXPECTED_RESPONSE
+            expectedResponse = EXPECTED_RESPONSE
         )
     }
 
@@ -208,12 +215,15 @@ class NetMockEngineTest {
     @Test
     fun `EXPECT valid response for DELETE`() = runTest {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Delete, body = REQUEST_BODY),
-            getCompleteRequestBuilder(BASE_URL).apply {
+            expectedCompleteRequest = EXPECTED_COMPLETE_REQUEST.copy(
+                method = Method.Delete,
+                body = REQUEST_BODY
+            ),
+            request = getCompleteRequestBuilder(BASE_URL).apply {
                 method = HttpMethod.Delete
                 setBody(REQUEST_BODY)
             },
-            EXPECTED_RESPONSE
+            expectedResponse = EXPECTED_RESPONSE
         )
     }
 
@@ -221,12 +231,15 @@ class NetMockEngineTest {
     @Test
     fun `EXPECT valid response for PATCH`() = runTest {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Patch, body = REQUEST_BODY),
-            getCompleteRequestBuilder(BASE_URL).apply {
+            expectedCompleteRequest = EXPECTED_COMPLETE_REQUEST.copy(
+                method = Method.Patch,
+                body = REQUEST_BODY
+            ),
+            request = getCompleteRequestBuilder(BASE_URL).apply {
                 method = HttpMethod.Patch
                 setBody(REQUEST_BODY)
             },
-            EXPECTED_RESPONSE
+            expectedResponse = EXPECTED_RESPONSE
         )
     }
 
@@ -234,12 +247,15 @@ class NetMockEngineTest {
     @Test
     fun `EXPECT valid response for custom method`() = runTest {
         testResponseForMethod(
-            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Custom("CUSTOM"), body = REQUEST_BODY),
-            getCompleteRequestBuilder(BASE_URL).apply {
+            expectedCompleteRequest = EXPECTED_COMPLETE_REQUEST.copy(
+                method = Method.Custom("CUSTOM"),
+                body = REQUEST_BODY
+            ),
+            request = getCompleteRequestBuilder(BASE_URL).apply {
                 method = HttpMethod("CUSTOM")
                 setBody(REQUEST_BODY)
             },
-            EXPECTED_RESPONSE
+            expectedResponse = EXPECTED_RESPONSE
         )
     }
 
@@ -346,6 +362,30 @@ class NetMockEngineTest {
         assertTrue(netMock.allowedMocks.isEmpty())
     }
 
+    @JsName("formRequest")
+    @Test
+    fun `EXPECT valid response WHEN using form request`() = runTest {
+        val expectedCompleteRequest =
+            EXPECTED_COMPLETE_REQUEST.copy(method = Method.Post, body = FORM_REQUEST_BODY)
+        val request = getCompleteRequestBuilder(BASE_URL).apply {
+            method = HttpMethod.Post
+            setBody(FORM_REQUEST)
+            headers {
+                append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded)
+            }
+        }
+        val expectedResponse = EXPECTED_JSON_RESPONSE
+        netMock.addMock(expectedCompleteRequest, expectedResponse)
+
+        val response = sut.request(request)
+
+        assertEquals(listOf(expectedCompleteRequest), netMock.interceptedRequests)
+        assertEquals(expectedResponse.code, response.status.value)
+        assertHeaders(expectedResponse.mandatoryHeaders, response.headers)
+        assertEquals(RESPONSE_OBJECT, response.body<ResponseObject>())
+        assertTrue(netMock.allowedMocks.isEmpty())
+    }
+
     private suspend fun assertValidResponse(
         expectedResponse: NetMockResponse,
         actualResponse: HttpResponse
@@ -370,6 +410,13 @@ class NetMockEngineTest {
     private companion object {
         const val BASE_URL = "http://google.com"
         val REQUEST_OBJECT = RequestObject("some body id", "some body message", "some body text")
+        val FORM_REQUEST = FormDataContent(
+            Parameters.build {
+                append("form_key_1", "form_value_1")
+                append("form_key_2", "form_value_2")
+                append("form_key_2", "form value 3")
+            }
+        )
         val RESPONSE_OBJECT = ResponseObject(200, "some message", "some text")
         val EXPECTED_COMPLETE_REQUEST = NetMockRequest(
             requestUrl = "http://google.com/somePath?1=2&3=4",
