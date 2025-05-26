@@ -272,6 +272,17 @@ class NetMockServerTest {
         )
     }
 
+    @Test
+    fun `EXPECT mapped response WHEN request is form data`() {
+        netMock.addMock(EXPECTED_FORM_DATA_REQUEST, EXPECTED_RESPONSE)
+
+        val response = sut.newCall(postFormDataRequest()).execute()
+
+        assertEquals(listOf(EXPECTED_FORM_DATA_REQUEST), netMock.interceptedRequests)
+        assertValidResponse(EXPECTED_RESPONSE, response)
+        assertTrue(netMock.allowedMocks.isEmpty())
+    }
+
     private fun assertValidResponse(expectedResponse: NetMockResponse, actualResponse: Response) {
         assertEquals(expectedResponse.code, actualResponse.code)
         expectedResponse.mandatoryHeaders.forEach {
@@ -293,6 +304,13 @@ class NetMockServerTest {
         val EXPECTED_NOT_MATCHING_REQUEST = EXPECTED_COMPLETE_REQUEST.copy(
             mandatoryHeaders = mapOf("a" to "b", "c" to "d", "e" to "f")
         )
+        val EXPECTED_FORM_DATA_REQUEST =
+            NetMockRequest(
+                requestUrl = "https://google.com/",
+                method = Method.Post,
+                mandatoryHeaders = mapOf("Content-Type" to "application/x-www-form-urlencoded"),
+                body = "form_key_1=form_value_1&form_key_2=form_value_2&form_key_2=form+value+3"
+            )
         val EXPECTED_RESPONSE = NetMockResponse(
             code = 200,
             mandatoryHeaders = mapOf("x" to "y"),
@@ -316,6 +334,20 @@ class NetMockServerTest {
             return Request.Builder()
                 .headers(Headers.headersOf("a", "b", "c", "d"))
                 .url("${baseUrl}somePath?1=2&3=4")
+        }
+
+        private fun postFormDataRequest(): Request {
+            return Request.Builder()
+                .post(
+                    FormBody.Builder()
+                        .add("form_key_1", "form_value_1")
+                        .add("form_key_2", "form_value_2")
+                        .addEncoded("form_key_2", "form+value+3")
+                        .build()
+                )
+                .url(BASE_URL)
+                .headers(Headers.headersOf("Content-Type", "application/x-www-form-urlencoded"))
+                .build()
         }
     }
 }

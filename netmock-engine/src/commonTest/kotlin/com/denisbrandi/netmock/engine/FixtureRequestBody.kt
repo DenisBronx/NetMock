@@ -5,3 +5,5 @@ const val REQUEST_BODY = """{
   "message": "some body message",
   "data": "some body text"
 }"""
+
+const val FORM_REQUEST_BODY = "form_key_1=form_value_1&form_key_2=form_value_2&form_key_2=form+value+3"

@@ -9,7 +9,7 @@ internal object MockWebServerRequestMapper {
         val requestUrl =
             request.headers[INTERCEPTED_REQUEST_URL_HEADER] ?: request.requestUrl?.toString()
         // Body can be read only once
-        val recordedRequestBody = request.body.readUtf8()
+        val recordedRequestBody = request.body.clone().readUtf8()
         return InterceptedRequest(
             requestUrl = requestUrl.orEmpty(),
             method = request.method.orEmpty(),
