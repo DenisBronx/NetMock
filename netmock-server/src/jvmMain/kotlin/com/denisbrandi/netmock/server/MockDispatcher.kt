@@ -1,11 +1,8 @@
 package com.denisbrandi.netmock.server
 
 import com.denisbrandi.netmock.interceptors.RequestInterceptor
-import com.denisbrandi.netmock.server.mappers.MockWebServerRequestMapper
-import com.denisbrandi.netmock.server.mappers.MockWebServerResponseMapper
-import okhttp3.mockwebserver.Dispatcher
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.RecordedRequest
+import com.denisbrandi.netmock.server.mappers.*
+import mockwebserver3.*
 
 internal class MockDispatcher(
     okHttpMockInterceptor: RequestInterceptor

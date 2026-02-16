@@ -29,7 +29,8 @@ kotlin {
                     api(project(":netmock-resources"))
                     implementation(project.dependencies.platform("com.squareup.okhttp3:okhttp-bom:${libs.versions.okhttp.get()}"))
                     implementation("com.squareup.okhttp3:okhttp")
-                    implementation("com.squareup.okhttp3:mockwebserver")
+                    implementation("com.squareup.okhttp3:mockwebserver3")
+                    implementation(libs.junit)
                 }
             }
         }

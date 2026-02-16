@@ -1,11 +1,10 @@
 package com.denisbrandi.netmock.server
 
 import com.denisbrandi.netmock.NetMock
-import com.denisbrandi.netmock.interceptors.DefaultInterceptor
-import com.denisbrandi.netmock.interceptors.RequestInterceptor
+import com.denisbrandi.netmock.interceptors.*
 import com.denisbrandi.netmock.matchers.DefaultRequestMatcher
+import mockwebserver3.MockWebServer
 import okhttp3.Interceptor
-import okhttp3.mockwebserver.MockWebServer
 
 /**
  * Wrapper of [MockWebServer], used to intercept requests and responses directed to localhost.
@@ -45,7 +44,7 @@ class NetMockServer private constructor(
     }
 
     fun shutDown() {
-        server.shutdown()
+        server.close()
     }
 
     companion object {
