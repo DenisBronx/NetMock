@@ -17,7 +17,6 @@ publishing {
 kotlin {
     jvmToolchain(17)
     jvm {
-        withJava()
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
@@ -28,7 +27,7 @@ kotlin {
                 dependencies {
                     api(project(":netmock-core"))
                     api(project(":netmock-resources"))
-                    implementation(platform("com.squareup.okhttp3:okhttp-bom:${libs.versions.okhttp.get()}"))
+                    implementation(project.dependencies.platform("com.squareup.okhttp3:okhttp-bom:${libs.versions.okhttp.get()}"))
                     implementation("com.squareup.okhttp3:okhttp")
                     implementation("com.squareup.okhttp3:mockwebserver")
                 }

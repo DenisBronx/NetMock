@@ -1,8 +1,8 @@
 [versions]
-agp = "8.6.1"
-kotlin = "2.0.20"
+agp = "8.13.0"
+kotlin = "2.3.0"
 junit = "4.13.2"
-coroutines-test = "1.7.3"
+coroutines-test = "1.10.2"
 kover = "0.8.3"
 ktor = "3.0.3"
 netmock = "0.8.0"
@@ -11,7 +11,7 @@ okhttp = "4.12.0"
 retrofit = "2.11.0"
 retrofit-serialization = "1.0.0"
 serialization-version = "1.7.3"
-kermit = "2.0.4"
+kermit = "2.0.8"
 
 [libraries]
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin"}
