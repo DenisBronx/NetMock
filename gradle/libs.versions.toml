@@ -14,7 +14,7 @@ serialization-version = "1.10.0"
 kermit = "2.0.8"
 
 [libraries]
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin"}
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
 ktor = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
@@ -26,8 +26,11 @@ ktor-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor"
 kotlin-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-version" }
 kermit = { group = "co.touchlab", name = "kermit", version.ref = "kermit" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-converter-scalars= { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit" }
+retrofit-converter-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit" }
 retrofit-serialization = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofit-serialization" }
+okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
+mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

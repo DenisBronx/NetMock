@@ -19,8 +19,8 @@ dependencies {
     testImplementation(libs.coroutines.test)
 
     //retrofit
-    testImplementation(platform("com.squareup.okhttp3:okhttp-bom:${libs.versions.okhttp.get()}"))
-    testImplementation("com.squareup.okhttp3:okhttp")
+    testImplementation(platform(libs.okhttp.bom))
+    testImplementation(libs.okhttp)
     testImplementation(libs.retrofit)
     testImplementation(libs.retrofit.converter.scalars)
     testImplementation(libs.retrofit.serialization)
