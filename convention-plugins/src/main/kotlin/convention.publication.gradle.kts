@@ -11,6 +11,7 @@ ext["signing.keyId"] = null
 ext["signing.password"] = null
 ext["signing.secretKeyRingFile"] = null
 ext["signing.secretKey"] = null
+ext["signingInMemoryKeyId"] = null
 ext["signingInMemoryKey"] = null
 ext["signingInMemoryKeyPassword"] = null
 ext["mavenCentralUsername"] = null
@@ -29,7 +30,8 @@ if (secretPropsFile.exists()) {
     ext["signing.keyId"] = System.getenv("SIGNING_KEY_ID")
     ext["signing.password"] = System.getenv("SIGNING_PASSWORD")
     ext["signing.secretKey"] = System.getenv("SIGNING_SECRET_KEY")
-    ext["signingInMemoryKey"] = System.getenv("SIGNING_KEY_ID")
+    ext["signingInMemoryKeyId"] = System.getenv("SIGNING_KEY_ID")
+    ext["signingInMemoryKey"] = System.getenv("GPG_KEY_CONTENTS")
     ext["signingInMemoryKeyPassword"] = System.getenv("SIGNING_PASSWORD")
     ext["mavenCentralUsername"] = System.getenv("MAVEN_CENTRAL_USERNAME")
     ext["mavenCentralPassword"] = System.getenv("MAVEN_CENTRAL_PASSWORD")
