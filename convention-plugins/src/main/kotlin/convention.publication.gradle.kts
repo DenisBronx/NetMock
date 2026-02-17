@@ -1,12 +1,8 @@
-import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
-import org.gradle.api.tasks.bundling.Jar
-import org.gradle.kotlin.dsl.*
-import org.gradle.plugins.signing.Sign
 import java.util.*
+import org.gradle.kotlin.dsl.*
 
 plugins {
-    `maven-publish`
+    id("com.vanniktech.maven.publish")
     signing
 }
 
@@ -15,8 +11,11 @@ ext["signing.keyId"] = null
 ext["signing.password"] = null
 ext["signing.secretKeyRingFile"] = null
 ext["signing.secretKey"] = null
-ext["ossrhUsername"] = null
-ext["ossrhPassword"] = null
+ext["signingInMemoryKey"] = null
+ext["signingInMemoryKeyPassword"] = null
+ext["mavenCentralUsername"] = null
+ext["mavenCentralPassword"] = null
+ext["signing.secretKeyRingFile"] = null
 
 // Load secrets from secrets.properties or environment (CI)
 val secretPropsFile = project.rootProject.file("secrets.properties")
@@ -30,87 +29,45 @@ if (secretPropsFile.exists()) {
     ext["signing.keyId"] = System.getenv("SIGNING_KEY_ID")
     ext["signing.password"] = System.getenv("SIGNING_PASSWORD")
     ext["signing.secretKey"] = System.getenv("SIGNING_SECRET_KEY")
-    ext["ossrhUsername"] = System.getenv("OSSRH_USERNAME")
-    ext["ossrhPassword"] = System.getenv("OSSRH_PASSWORD")
+    ext["signingInMemoryKey"] = System.getenv("SIGNING_KEY_ID")
+    ext["signingInMemoryKeyPassword"] = System.getenv("SIGNING_PASSWORD")
+    ext["mavenCentralUsername"] = System.getenv("MAVEN_CENTRAL_USERNAME")
+    ext["mavenCentralPassword"] = System.getenv("MAVEN_CENTRAL_PASSWORD")
+    ext["signing.secretKeyRingFile"] = System.getenv("SIGNING_SECRET_KEY_RING_FILE")
 }
 
-fun getExtraString(name: String) = ext[name]?.toString()
+mavenPublishing {
+    publishToMavenCentral()
 
-// Stub javadoc.jar (required by Maven Central)
-val javadocJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("javadoc")
-}
+    signAllPublications()
 
-publishing {
+    coordinates(group.toString(), project.name, version.toString())
 
-    repositories {
-        maven {
-            name = "sonatype"
-            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-            credentials {
-                username = getExtraString("ossrhUsername")
-                password = getExtraString("ossrhPassword")
+    pom {
+        name = "NetMock"
+        description = "Network test library for JVM, Kotlin, Android and Kotlin Multiplatform"
+        inceptionYear = "2023"
+        url = "https://github.com/DenisBronx/NetMock"
+        licenses {
+            license {
+                name = "MIT"
+                url = "https://opensource.org/licenses/MIT"
             }
         }
-    }
-
-    publications.withType<MavenPublication>().configureEach {
-
-        artifact(javadocJar)
-
-        pom {
-            name.set("NetMock")
-            description.set("Network test library for JVM, Kotlin, Android and Kotlin Multiplatform")
-            url.set("https://github.com/DenisBronx/NetMock")
-
-            licenses {
-                license {
-                    name.set("MIT")
-                    url.set("https://opensource.org/licenses/MIT")
-                }
-            }
-
-            developers {
-                developer {
-                    id.set("DenisBronx")
-                    name.set("Denis Brandi")
-                    email.set("dnsbrnd@gmail.com")
-                }
-            }
-
-            scm {
-                url.set("https://github.com/DenisBronx/NetMock")
+        developers {
+            developer {
+                id = "DenisBronx"
+                name = "Denis Brandi"
+                url = "https://github.com/DenisBronx/NetMock"
+                email = "dnsbrnd@gmail.com"
+                organization = "Denis Brandi"
+                organizationUrl = "https://github.com/DenisBronx/NetMock"
             }
         }
-    }
-}
-
-/**
- * 🔥 CRITICAL FIX FOR GRADLE 8+
- *
- * Ensure publish tasks depend on signing tasks.
- * This removes the implicit dependency error.
- */
-tasks.withType<AbstractPublishToMaven>().configureEach {
-    dependsOn(tasks.withType<Sign>())
-}
-
-/**
- * Signing configuration
- */
-signing {
-
-    val signingKeyId = getExtraString("signing.keyId")
-    val signingKey = getExtraString("signing.secretKey")
-    val signingPassword = getExtraString("signing.password")
-
-    val hasSigningKeys =
-        !signingKeyId.isNullOrBlank() &&
-            !signingKey.isNullOrBlank() &&
-            !signingPassword.isNullOrBlank()
-
-    if (hasSigningKeys) {
-        useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
-        sign(publishing.publications)
+        scm {
+            url = "https://github.com/DenisBronx/NetMock"
+            connection = "scm:git:git://github.com/DenisBronx/NetMock.git"
+            developerConnection = "scm:git:ssh://git@github.com:DenisBronx/NetMock.git"
+        }
     }
 }
