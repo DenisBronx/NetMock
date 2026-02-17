@@ -1,7 +1,8 @@
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
 import org.gradle.api.tasks.bundling.Jar
-import org.gradle.kotlin.dsl.`maven-publish`
-import org.gradle.kotlin.dsl.signing
+import org.gradle.kotlin.dsl.*
+import org.gradle.plugins.signing.Sign
 import java.util.*
 
 plugins {
@@ -17,14 +18,12 @@ ext["signing.secretKey"] = null
 ext["ossrhUsername"] = null
 ext["ossrhPassword"] = null
 
-// Grabbing secrets from local.properties file or from environment variables, which could be used on CI
+// Load secrets from secrets.properties or environment (CI)
 val secretPropsFile = project.rootProject.file("secrets.properties")
 if (secretPropsFile.exists()) {
-    secretPropsFile.reader().use {
-        Properties().apply {
-            load(it)
-        }
-    }.onEach { (name, value) ->
+    Properties().apply {
+        secretPropsFile.reader().use { load(it) }
+    }.forEach { (name, value) ->
         ext[name.toString()] = value
     }
 } else {
@@ -35,18 +34,19 @@ if (secretPropsFile.exists()) {
     ext["ossrhPassword"] = System.getenv("OSSRH_PASSWORD")
 }
 
+fun getExtraString(name: String) = ext[name]?.toString()
+
+// Stub javadoc.jar (required by Maven Central)
 val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
 }
 
-fun getExtraString(name: String) = ext[name]?.toString()
-
 publishing {
-    // Configure maven central repository
+
     repositories {
         maven {
             name = "sonatype"
-            setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
             credentials {
                 username = getExtraString("ossrhUsername")
                 password = getExtraString("ossrhPassword")
@@ -54,12 +54,10 @@ publishing {
         }
     }
 
-    // Configure all publications
-    publications.withType<MavenPublication> {
-        // Stub javadoc.jar artifact
-        artifact(javadocJar.get())
+    publications.withType<MavenPublication>().configureEach {
 
-        // Provide artifacts information requited by Maven Central
+        artifact(javadocJar)
+
         pom {
             name.set("NetMock")
             description.set("Network test library for JVM, Kotlin, Android and Kotlin Multiplatform")
@@ -71,6 +69,7 @@ publishing {
                     url.set("https://opensource.org/licenses/MIT")
                 }
             }
+
             developers {
                 developer {
                     id.set("DenisBronx")
@@ -78,6 +77,7 @@ publishing {
                     email.set("dnsbrnd@gmail.com")
                 }
             }
+
             scm {
                 url.set("https://github.com/DenisBronx/NetMock")
             }
@@ -85,11 +85,32 @@ publishing {
     }
 }
 
-// Signing artifacts. Signing.* extra properties values will be used
+/**
+ * 🔥 CRITICAL FIX FOR GRADLE 8+
+ *
+ * Ensure publish tasks depend on signing tasks.
+ * This removes the implicit dependency error.
+ */
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    dependsOn(tasks.withType<Sign>())
+}
+
+/**
+ * Signing configuration
+ */
 signing {
-    val signingKeyId: String = project.ext["signing.keyId"] as String
-    val signingKey: String = project.ext["signing.secretKey"] as String
-    val signingPassword: String = project.ext["signing.password"] as String
-    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
-    sign(publishing.publications)
+
+    val signingKeyId = getExtraString("signing.keyId")
+    val signingKey = getExtraString("signing.secretKey")
+    val signingPassword = getExtraString("signing.password")
+
+    val hasSigningKeys =
+        !signingKeyId.isNullOrBlank() &&
+            !signingKey.isNullOrBlank() &&
+            !signingPassword.isNullOrBlank()
+
+    if (hasSigningKeys) {
+        useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+        sign(publishing.publications)
+    }
 }
