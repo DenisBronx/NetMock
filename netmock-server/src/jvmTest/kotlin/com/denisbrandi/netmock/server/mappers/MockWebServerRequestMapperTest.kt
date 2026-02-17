@@ -2,11 +2,12 @@ package com.denisbrandi.netmock.server.mappers
 
 import com.denisbrandi.netmock.interceptors.InterceptedRequest
 import com.denisbrandi.netmock.server.INTERCEPTED_REQUEST_URL_HEADER
-import java.net.Socket
 import java.nio.charset.Charset
+import mockwebserver3.RecordedRequest
 import okhttp3.Headers
-import okhttp3.mockwebserver.RecordedRequest
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okio.Buffer
+import okio.ByteString
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -16,9 +17,11 @@ class MockWebServerRequestMapperTest {
     @Test
     fun `EXPECT mapped request WHEN has all fields`() {
         val recordedRequest = makeRecordedRequest(
-            requestLine = "GET /somePath?1=2&3=4 HTTP/1.1",
+            method = "GET",
+            target = "/somePath?1=2&3=4",
+            version = "HTTP/1.1",
             headers = RECORDED_HEADERS,
-            body = Buffer().writeString("data", Charset.defaultCharset())
+            body = Buffer().writeString("data", Charset.defaultCharset()).readByteString()
         )
 
         val result = sut.mapRequest(recordedRequest)
@@ -29,9 +32,11 @@ class MockWebServerRequestMapperTest {
     @Test
     fun `EXPECT mapped request WHEN there are missing fields`() {
         val recordedRequest = makeRecordedRequest(
-            requestLine = "",
+            method = "",
+            target = "",
+            version = "",
             headers = Headers.headersOf(),
-            body = Buffer()
+            body = null
         )
 
         val result = sut.mapRequest(recordedRequest)
@@ -64,25 +69,32 @@ class MockWebServerRequestMapperTest {
         )
 
         val EXPECTED_REQUEST_ALL_FIELDS_MISSING = InterceptedRequest(
-            requestUrl = "",
+            requestUrl = "https://requesturl.com/",
             headers = emptyMap(),
             method = "",
             body = ""
         )
 
         fun makeRecordedRequest(
-            requestLine: String,
+            method: String,
+            target: String,
+            version: String,
             headers: Headers,
-            body: Buffer
+            body: ByteString?,
         ): RecordedRequest {
             return RecordedRequest(
-                requestLine = requestLine,
+                method = method,
+                target = target,
+                version = version,
                 headers = headers,
                 chunkSizes = emptyList(),
                 bodySize = 5,
                 body = body,
-                sequenceNumber = 9,
-                socket = Socket()
+                connectionIndex = 0,
+                exchangeIndex = 0,
+                handshake = null,
+                handshakeServerNames = emptyList(),
+                url = "https://requesturl.com".toHttpUrl()
             )
         }
     }

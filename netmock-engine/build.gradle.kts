@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
-    id("maven-publish")
     id("convention.publication")
 }
 
@@ -18,7 +17,6 @@ publishing {
 kotlin {
     jvmToolchain(17)
     jvm {
-        withJava()
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
