@@ -1,4 +1,4 @@
 #!/bin/sh
 set -e
-./scripts/publish.sh
-./gradlew closeAndReleaseStagingRepository --max-workers 1
+./scripts/build.sh
+./gradlew publishToMavenCentral --no-configuration-cache

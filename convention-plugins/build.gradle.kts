@@ -5,3 +5,7 @@ plugins {
 repositories {
     gradlePluginPortal() // To use 'maven-publish' and 'signing' plugins in our own plugin
 }
+
+dependencies {
+    implementation("com.vanniktech:gradle-maven-publish-plugin:0.36.0")
+}
