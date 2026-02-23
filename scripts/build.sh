@@ -2,4 +2,6 @@
 set -e
 ./scripts/ktlintCheck.sh
 ./scripts/test.sh
-./gradlew build publishToMavenLocal
+./gradlew build
+./gradlew checkSigningConfiguration
+./gradlew checkPomFileForKotlinMultiplatformPublication
