@@ -1,24 +1,22 @@
 package com.denisbrandi.netmock.resources
 
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import com.goncalossilva.resources.Resource
+import kotlin.test.*
 
 class ResourceTest {
 
-    private val sut = Resource(COMMON_RESOURCES_PATH, FILE_PATH)
+    private val sut = Resource(FILE_PATH)
 
     @Test
     fun `EXPECT text and exists WHEN file exists`() {
         assertTrue(sut.exists())
         assertEquals(EXPECTED_TEXT, sut.readText())
-        assertEquals(EXPECTED_TEXT, readFromCommonResources(FILE_PATH))
+        assertEquals(EXPECTED_TEXT, readFromResources(FILE_PATH))
     }
 
     @Test
     fun `EXPECT false WHEN file does not exists`() {
-        val sut = Resource(COMMON_RESOURCES_PATH, "a")
+        val sut = Resource("a")
 
         assertFalse(sut.exists())
     }

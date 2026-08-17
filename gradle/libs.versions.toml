@@ -11,6 +11,7 @@ retrofit = "3.0.0"
 retrofit-serialization = "1.0.0"
 serialization-version = "1.10.0"
 kermit = "2.0.8"
+kmp-resources = "0.15.0"
 
 [libraries]
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
@@ -30,6 +31,7 @@ retrofit-serialization = { group = "com.jakewharton.retrofit", name = "retrofit2
 okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
 mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver3" }
+kmp-resources = { group = "com.goncalossilva", name = "resources", version.ref = "kmp-resources" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -39,3 +41,4 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+kmp-resources = { id = "com.goncalossilva.resources", version.ref = "kmp-resources" }

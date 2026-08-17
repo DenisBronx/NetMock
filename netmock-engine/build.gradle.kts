@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kmp.resources)
     id("convention.publication")
 }
 
@@ -37,6 +38,7 @@ kotlin {
             sourceSets {
                 dependencies {
                     api(project(":netmock-core"))
+                    api(project(":netmock-resources"))
                     api(libs.ktor)
                     implementation(libs.ktor.serialization)
                     api(libs.ktor.mock)

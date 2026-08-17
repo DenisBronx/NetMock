@@ -1,7 +1,5 @@
 package com.denisbrandi.netmock.engine
 
-const val RESPONSE_BODY = """{
-  "code": 200,
-  "message": "some message",
-  "data": "some text"
-}"""
+import com.denisbrandi.netmock.resources.readFromResources
+
+val RESPONSE_BODY = readFromResources("responses/response_body.json")
