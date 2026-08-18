@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kmp.resources)
     id("convention.publication")
 }
 
@@ -49,6 +50,7 @@ kotlin {
                     implementation(libs.ktor.content.negotiation)
                     implementation(libs.kotlin.test)
                     implementation(libs.coroutines.test)
+                    implementation(project(":netmock-resources"))
                 }
             }
         }
