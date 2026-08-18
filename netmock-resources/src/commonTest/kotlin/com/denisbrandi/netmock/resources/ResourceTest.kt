@@ -16,7 +16,7 @@ class ResourceTest {
 
     @Test
     fun `EXPECT false WHEN file does not exists`() {
-        val sut = Resource("a")
+        val sut = Resource("does_not_exist.txt")
 
         assertFalse(sut.exists())
     }

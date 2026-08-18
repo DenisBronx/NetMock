@@ -38,7 +38,6 @@ kotlin {
             sourceSets {
                 dependencies {
                     api(project(":netmock-core"))
-                    api(project(":netmock-resources"))
                     api(libs.ktor)
                     implementation(libs.ktor.serialization)
                     api(libs.ktor.mock)
@@ -51,6 +50,7 @@ kotlin {
                     implementation(libs.ktor.content.negotiation)
                     implementation(libs.kotlin.test)
                     implementation(libs.coroutines.test)
+                    implementation(project(":netmock-resources"))
                 }
             }
         }

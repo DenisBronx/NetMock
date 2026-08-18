@@ -267,12 +267,24 @@ and response bodies from your real web server to create representative test case
 
 ### Multiplatform Resources
 
-If you are working on a multiplatform project, your `resources` folder will be located in a
-different path.
-Use the following methods for reading the correct files:
+To read test resources across Kotlin Multiplatform targets (including iOS and Native), apply the [kotlinx-resources](https://github.com/goncalossilva/kotlinx-resources/#kotlinx-resources)
+plugin and add the `netmock-resources` dependency to your module's `build.gradle.kts`:
+```agsl
+plugins {
+    id("com.goncalossilva.resources") version "<version>"
+}
 
-| Method                    | Resolved path              |
-|---------------------------|----------------------------|
-| `readFromCommonResources` | `src/commonTest/resources` |
-| `readFromJvmResources`    | `src/jvmTest/resources`    |
-| `readFromNativeResources` | `src/nativeTest/resources` |
+// ...
+
+kotlin {
+    sourceSets {
+        val commonTest by getting {
+            dependencies {
+                // you should already have this one
+                implementation("io.github.denisbronx.netmock:netmock-engine:<netmockVersion>")
+                implementation("io.github.denisbronx.netmock:netmock-resources:<netmockVersion>")
+            }
+        }
+    }
+}
+```
