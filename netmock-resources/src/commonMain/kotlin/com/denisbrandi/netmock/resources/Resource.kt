@@ -1,30 +1,22 @@
 package com.denisbrandi.netmock.resources
 
-const val RESOURCES_PATH = "./src/test/resources"
-const val COMMON_RESOURCES_PATH = "./src/commonTest/resources"
-const val JVM_RESOURCES_PATH = "./src/jvmTest/resources"
-const val NATIVE_RESOURCES_PATH = "./src/nativeTest/resources"
+import com.goncalossilva.resources.Resource
 
-expect class Resource(path: String, name: String) {
-    val path: String
-    val name: String
-
-    fun exists(): Boolean
-    fun readText(): String
-}
-
+@Deprecated(message = "Use `readFromResources` instead", replaceWith = ReplaceWith("readFromResources(fileName)"))
 fun readFromCommonResources(fileName: String): String {
-    return Resource(COMMON_RESOURCES_PATH, fileName).readText()
+    return Resource(fileName).readText()
 }
 
 fun readFromResources(fileName: String): String {
-    return Resource(RESOURCES_PATH, fileName).readText()
+    return Resource(fileName).readText()
 }
 
+@Deprecated(message = "Use `readFromResources` instead", replaceWith = ReplaceWith("readFromResources(fileName)"))
 fun readFromJvmResources(fileName: String): String {
-    return Resource(JVM_RESOURCES_PATH, fileName).readText()
+    return Resource(fileName).readText()
 }
 
+@Deprecated(message = "Use `readFromResources` instead", replaceWith = ReplaceWith("readFromResources(fileName)"))
 fun readFromNativeResources(fileName: String): String {
-    return Resource(NATIVE_RESOURCES_PATH, fileName).readText()
+    return Resource(fileName).readText()
 }

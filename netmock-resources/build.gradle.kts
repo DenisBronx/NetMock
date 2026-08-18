@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kmp.resources)
     id("convention.publication")
 }
 
@@ -28,7 +29,15 @@ kotlin {
         isMingwX64 -> mingwX64("native")
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
     sourceSets {
+        commonMain {
+            dependencies {
+                api(libs.kmp.resources)
+            }
+        }
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
