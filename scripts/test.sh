@@ -1,6 +1,5 @@
 #!/bin/sh
 set -e
-./gradlew jsTest
-./gradlew wasmJsTest
+./gradlew test
 ./gradlew koverXmlReportCustom
 ./scripts/testCoverageValidator.sh
