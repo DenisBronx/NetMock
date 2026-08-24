@@ -40,7 +40,10 @@ kotlin {
         browser()
         nodejs()
     }
-    wasmJs()
+    wasmJs {
+        browser()
+        nodejs()
+    }
     sourceSets {
         commonMain {
             dependencies {
