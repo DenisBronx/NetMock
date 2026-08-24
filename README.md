@@ -1,4 +1,11 @@
 # NetMock
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.denisbronx.netmock/netmock-engine?style=flat-square&color=blue)](https://central.sonatype.com/artifact/io.github.denisbronx/netmock-engine)
+
+### netmock-engine
+[![Platforms](https://img.shields.io/badge/Platforms-JVM%20%7C%20Android%20%7C%20iOS%20%7C%20macOS%20%7C%20Linux%20%7C%20Windows%20%7C%20JS%20%7C%20Wasm-blue?style=flat-square&logo=kotlin&logoColor=white)](#supported-targets)
+
+### netmock-server
+[![Platforms](https://img.shields.io/badge/Platforms-JVM%20%7C%20Android-blue?style=flat-square&logo=kotlin&logoColor=white)](#supported-targets)
 
 NetMock is a powerful testing library that makes it incredibly easy to unit test your network
 requests.
@@ -28,6 +35,15 @@ If your project is not a Kotlin multiplatform project, and you are using a varie
 you don't want to import both flavors, just use `netmock-server` as it is compatible with all the
 libraries including `Ktor`.
 
+## Modules & Target Matrix
+
+| Module                  | JVM | Android | iOS / Native | JS | Wasm | Core Engine / Under the Hood |
+|:------------------------| :---: |:-------:| :---: | :---: | :---: | :--- |
+| **`netmock-core`**      | ✅ |   ✅    | ✅ | ✅ | ✅ | Common API & Models |
+| **`netmock-engine`**    | ✅ |   ✅    | ✅ | ✅ | ✅ | Ktor `MockEngine` |
+| **`netmock-resources`** | ✅ |   ✅    | ✅ | ✅ | ✅ | Multiplatform Resource Loader |
+| **`netmock-server`**    | ✅ |   ✅    | ❌ | ❌ | ❌ | OkHttp `MockWebServer` |
+
 # Install
 
 `Netmock` is available on Maven Central.
@@ -37,11 +53,11 @@ For Gradle users, add the following to your module’s `build.gradle`
 ```groovy
 dependencies {
     //compatible with all libraries
-    testImplementation "io.github.denisbronx.netmock:netmock-server:0.10.0"
+    testImplementation "io.github.denisbronx.netmock:netmock-server:<version>"
     //mutliplatform and lighter weight option for ktor only library users
-    testImplementation "io.github.denisbronx.netmock:netmock-engine:0.10.0"
+    testImplementation "io.github.denisbronx.netmock:netmock-engine:<version>"
     //library for accessing local json files in the test folder
-    testImplementation "io.github.denisbronx.netmock:netmock-resources:0.10.0"
+    testImplementation "io.github.denisbronx.netmock:netmock-resources:<version>"
 }
 ```
 
