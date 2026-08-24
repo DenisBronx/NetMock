@@ -93,7 +93,7 @@ class DefaultInterceptorTest {
         assertEquals(listOf(EXPECTED_REQUEST, EXPECTED_REQUEST), sut.interceptedRequests)
     }
 
-    @JsName("mappedResponse_matchCustomMock")
+    @JsName("mappedResponse_matchCustomMatcher")
     @Test
     fun `EXPECT mapped response WHEN request matches the custom matcher`() {
         fakeRequestMatcher.isMatching = true
