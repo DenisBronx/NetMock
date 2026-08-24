@@ -1,4 +1,4 @@
 #!/bin/sh
 set -e
-./gradlew clean koverXmlReportCustom
+./gradlew koverXmlReportCustom
 ./scripts/testCoverageValidator.sh
